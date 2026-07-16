@@ -44,38 +44,9 @@
       "videoUrl": "https://youtu.be/SDA-RRWBVwk",
       "link": "https://github.com/tamilarasangithub",
       "description": "A comprehensive crash course teaching version control with Git and GitHub. Topics cover repositories, commits, branching, and pushing to remote."
-    },
-    {
-      "id": "b4a28ad1-e3c8-41e2-9e4f-7d7c70fadbc0",
-      "title": "AI Fitness Buddy",
-      "category": "AI & ML",
-      "link": "https://github.com/example/fitness-buddy",
-      "description": "A web app that combines health tracking with AI-based suggestions and reporting."
-    },
-    {
-      "id": "84c86a4f-f7bc-4bdb-b165-8ddd1deddbe8",
-      "title": "Prompt Engineering Showcase",
-      "category": "Prompt Engineering",
-      "link": "https://www.linkedin.com/",
-      "description": "Practical prompt design work and AI workflow optimization for modern tools."
     }
   ],
-  "certifications": [
-    {
-      "id": "7702faaf-2a4e-4f2c-afe3-b87e3762aa71",
-      "title": "Artificial Intelligence Professional",
-      "issuer": "Intellipaat",
-      "year": "2025",
-      "description": "Completed structured AI learning focused on practical applications and core concepts."
-    },
-    {
-      "id": "ff22f0da-ab88-437a-a32f-bcad2658ee9d",
-      "title": "Python Certification",
-      "issuer": "HCL / Google / GUVI",
-      "year": "2024",
-      "description": "Strengthened Python skills for programming, automation, and AI-related workflows."
-    }
-  ],
+  "certifications": [],
   "researchPapers": [],
   "tools": []
 }
