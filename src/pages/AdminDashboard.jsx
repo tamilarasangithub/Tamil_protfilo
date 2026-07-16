@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { db } from '../firebase';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 
 function AdminDashboard({ state, setState }) {
   const navigate = useNavigate();
@@ -46,11 +46,11 @@ function AdminDashboard({ state, setState }) {
     if (!adminForms.about1.trim() || !adminForms.about2.trim()) return;
     setIsSubmitting(true);
     try {
-      await updateDoc(docRef, {
+      await setDoc(docRef, {
         aboutIntro1: adminForms.about1.trim(),
         aboutIntro2: adminForms.about2.trim(),
         lastUpdate: 'About section updated'
-      });
+      }, { merge: true });
       setFeedback('About section updated.');
     } catch(e) {
       setFeedback('Error: ' + e.message);
@@ -63,10 +63,10 @@ function AdminDashboard({ state, setState }) {
     if (!adminForms.skills.trim()) return;
     setIsSubmitting(true);
     try {
-      await updateDoc(docRef, {
+      await setDoc(docRef, {
         skills: adminForms.skills.split(',').map((skill) => skill.trim()).filter(Boolean),
         lastUpdate: 'Core skills updated'
-      });
+      }, { merge: true });
       setFeedback('Skills updated.');
     } catch(e) {
       setFeedback('Error: ' + e.message);
@@ -79,7 +79,7 @@ function AdminDashboard({ state, setState }) {
     if (!eduForm.title.trim() || !eduForm.school.trim()) return;
     setIsSubmitting(true);
     try {
-      await updateDoc(docRef, {
+      await setDoc(docRef, {
         education: [{
           id: crypto.randomUUID(),
           title: eduForm.title.trim(),
@@ -88,7 +88,7 @@ function AdminDashboard({ state, setState }) {
           description: eduForm.description.trim()
         }, ...(state.education || [])],
         lastUpdate: `Education added: ${eduForm.title.trim()}`
-      });
+      }, { merge: true });
       setEduForm({ title: '', school: '', year: '', description: '' });
       setFeedback('Education added successfully.');
     } catch(e) {
@@ -102,7 +102,7 @@ function AdminDashboard({ state, setState }) {
     if (!expForm.title.trim() || !expForm.year.trim()) return;
     setIsSubmitting(true);
     try {
-      await updateDoc(docRef, {
+      await setDoc(docRef, {
         experience: [{
           id: crypto.randomUUID(),
           title: expForm.title.trim(),
@@ -110,7 +110,7 @@ function AdminDashboard({ state, setState }) {
           description: expForm.description.trim()
         }, ...(state.experience || [])],
         lastUpdate: `Experience added: ${expForm.title.trim()}`
-      });
+      }, { merge: true });
       setExpForm({ title: '', year: '', description: '' });
       setFeedback('Experience added successfully.');
     } catch(e) {
@@ -124,7 +124,7 @@ function AdminDashboard({ state, setState }) {
     if (!projectForm.title.trim() || !projectForm.category.trim() || !projectForm.description.trim()) return;
     setIsSubmitting(true);
     try {
-      await updateDoc(docRef, {
+      await setDoc(docRef, {
         projects: [{
           id: crypto.randomUUID(),
           title: projectForm.title.trim(),
@@ -134,7 +134,7 @@ function AdminDashboard({ state, setState }) {
           description: projectForm.description.trim()
         }, ...(state.projects || [])],
         lastUpdate: `Project added: ${projectForm.title.trim()}`
-      });
+      }, { merge: true });
       setProjectForm({ title: '', category: '', link: '', videoUrl: '', description: '' });
       setFeedback('Project added successfully.');
     } catch(e) {
@@ -185,7 +185,7 @@ function AdminDashboard({ state, setState }) {
     if (!certForm.title.trim() || !certForm.issuer.trim() || !certForm.description.trim()) return;
     setIsSubmitting(true);
     try {
-      await updateDoc(docRef, {
+      await setDoc(docRef, {
         certifications: [{
           id: crypto.randomUUID(),
           title: certForm.title.trim(),
@@ -196,7 +196,7 @@ function AdminDashboard({ state, setState }) {
           description: certForm.description.trim()
         }, ...(state.certifications || [])],
         lastUpdate: `Certification added: ${certForm.title.trim()}`
-      });
+      }, { merge: true });
       setCertForm({ title: '', issuer: '', year: '', category: '', image: '', description: '' });
       setFeedback('Certification added successfully.');
     } catch(e) {
@@ -210,7 +210,7 @@ function AdminDashboard({ state, setState }) {
     if (!researchForm.title.trim() || !researchForm.conference.trim()) return;
     setIsSubmitting(true);
     try {
-      await updateDoc(docRef, {
+      await setDoc(docRef, {
         researchPapers: [{
           id: crypto.randomUUID(),
           title: researchForm.title.trim(),
@@ -222,7 +222,7 @@ function AdminDashboard({ state, setState }) {
           description: researchForm.description.trim()
         }, ...(state.researchPapers || [])],
         lastUpdate: `Research paper added: ${researchForm.title.trim()}`
-      });
+      }, { merge: true });
       setResearchForm({ title: '', conference: '', year: '', category: '', link: '', videoUrl: '', description: '' });
       setFeedback('Research paper added successfully.');
     } catch(e) {
@@ -233,9 +233,9 @@ function AdminDashboard({ state, setState }) {
 
   const handleRemoveItem = async (key, id) => {
     try {
-      await updateDoc(docRef, {
+      await setDoc(docRef, {
         [key]: state[key].filter((item) => item.id !== id)
-      });
+      }, { merge: true });
       setFeedback(`Item removed from ${key}.`);
     } catch(e) {
       setFeedback('Error: ' + e.message);
@@ -439,7 +439,7 @@ function AdminDashboard({ state, setState }) {
               setFeedback('Syncing to database...');
               try {
                 const { loggedIn, ...dataToSave } = state;
-                await updateDoc(docRef, dataToSave);
+                await setDoc(docRef, dataToSave, { merge: true });
                 setFeedback('Successfully synced all data to the database!');
               } catch(e) {
                 setFeedback('Error syncing: ' + e.message);
