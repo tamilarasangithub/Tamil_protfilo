@@ -3,7 +3,7 @@
   "aboutIntro2": "In parallel, I have strong, separate foundations in Web Development and IoT Engineering. I build scalable full-stack applications and program smart hardware devices. Looking forward, I am actively merging these fields to specialize in IoT Hacking and embedded hardware security.",
   "education": [
     {
-      "id": "6211ee7a-df53-4c56-95f6-61fa388d1425",
+      "id": "f17d3f06-8a45-443d-b64a-897f0d8ab351",
       "title": "B.E. in Computer Science",
       "school": "J.K.K. Nataraja College of Engineering and Technologies",
       "year": "2022–2026",
@@ -12,13 +12,13 @@
   ],
   "experience": [
     {
-      "id": "09a2f104-10c0-4fb0-8604-13c6c0f6a98c",
+      "id": "544f0ade-1f36-4404-a3bc-3e95f8b8a7f7",
       "title": "IBM SkillBuild Virtual Intern – AI & Cloud",
       "year": "Jul 2025 – Aug 2025",
       "description": "Developed cloud-integrated AI applications using IBM Watson Assistant and NLP-style workflows for intelligent recommendations."
     },
     {
-      "id": "aaa8cca0-f211-4f4d-8edd-e2a1e4000e21",
+      "id": "6739310e-ac38-41d7-bf97-d54fb058d240",
       "title": "TATA Forage Virtual Intern – Data Analytics",
       "year": "2025",
       "description": "Conducted performance analysis and data visualization on GenAI business models, improving insight delivery and analytical thinking."
@@ -38,7 +38,7 @@
   ],
   "projects": [
     {
-      "id": "58154b7b-45ec-4cb7-9192-44f4913a6e49",
+      "id": "p1",
       "title": "Git and GitHub Crash Course",
       "category": "Web Development",
       "videoUrl": "https://youtu.be/SDA-RRWBVwk",
