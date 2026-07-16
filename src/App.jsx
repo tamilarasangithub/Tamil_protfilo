@@ -167,6 +167,7 @@ function AnimatedRoutes({ state, setState }) {
 function App() {
   const [state, setState] = useState(defaultState);
   const [loading, setLoading] = useState(true);
+  const [dbError, setDbError] = useState(null);
 
   useEffect(() => {
     const docRef = doc(db, 'portfolio', 'main');
@@ -185,13 +186,26 @@ function App() {
           await setDoc(docRef, defaultState);
         } catch(e) {
            console.error("Error seeding DB", e);
+           setDbError("Permission Denied: Could not create database. Did you enable Firestore in Test Mode?");
         }
       }
+      setLoading(false);
+    }, (error) => {
+      console.error("Firebase Snapshot Error:", error);
+      setDbError(error.message);
       setLoading(false);
     });
 
     return () => unsubscribe();
   }, []);
+
+  if (dbError) {
+     return <div style={{color: '#ff4444', padding: '2rem', background: '#1a1a1a', height: '100vh'}}>
+       <h2>Database Connection Error</h2>
+       <p>{dbError}</p>
+       <p>Please check your Firebase console to ensure Firestore Database is created and Rules are set to Test Mode.</p>
+     </div>;
+  }
 
   if (loading) {
      return <div style={{color: 'white', padding: '2rem'}}>Connecting to database...</div>;
