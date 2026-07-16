@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-
-const ADMIN_EMAIL = 'tamilarasanss.dev@gmail.com';
-const ADMIN_PASSWORD = 'Tamil@2003##';
+import { auth } from '../firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 function Login({ setState }) {
   const [loginForm, setLoginForm] = useState({ email: '', password: '' });
@@ -13,7 +12,7 @@ function Login({ setState }) {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = (event) => {
+  const handleLogin = async (event) => {
     event.preventDefault();
     
     if (lockedOutUntil && Date.now() < lockedOutUntil) {
@@ -23,25 +22,25 @@ function Login({ setState }) {
 
     setIsLoading(true);
     
-    // Simulated network delay to prevent brute-forcing
-    setTimeout(() => {
-      setIsLoading(false);
-      if (loginForm.email.trim().toLowerCase() === ADMIN_EMAIL && loginForm.password === ADMIN_PASSWORD) {
-        setState((prev) => ({ ...prev, loggedIn: true }));
-        setError('');
-        setAttempts(0);
-        navigate('/admin');
+    try {
+      await signInWithEmailAndPassword(auth, loginForm.email, loginForm.password);
+      // Success - onAuthStateChanged in App.jsx will handle the state update
+      setError('');
+      setAttempts(0);
+      navigate('/admin');
+    } catch (err) {
+      const newAttempts = attempts + 1;
+      setAttempts(newAttempts);
+      if (newAttempts >= 3) {
+        setLockedOutUntil(Date.now() + 30000); // 30s lockout
+        setError('Too many failed attempts. Form locked for 30 seconds.');
       } else {
-        const newAttempts = attempts + 1;
-        setAttempts(newAttempts);
-        if (newAttempts >= 3) {
-          setLockedOutUntil(Date.now() + 30000); // 30s lockout
-          setError('Too many failed attempts. Form locked for 30 seconds.');
-        } else {
-          setError('Incorrect credentials. Access denied.');
-        }
+        // Provide generic error message for security
+        setError('Incorrect email or password. Access denied.');
       }
-    }, 1200);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

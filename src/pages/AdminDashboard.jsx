@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { db } from '../firebase';
+import { db, auth } from '../firebase';
 import { doc, setDoc } from 'firebase/firestore';
+import { signOut } from 'firebase/auth';
 
 function AdminDashboard({ state, setState }) {
   const navigate = useNavigate();
@@ -36,9 +37,14 @@ function AdminDashboard({ state, setState }) {
     return () => window.clearTimeout(timer);
   }, [feedback]);
 
-  const handleLogout = () => {
-    setState((prev) => ({ ...prev, loggedIn: false }));
-    navigate('/');
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      // state.loggedIn is updated automatically via onAuthStateChanged in App.jsx
+      navigate('/');
+    } catch (error) {
+      console.error('Logout error', error);
+    }
   };
 
   const handleAboutSave = async (event) => {

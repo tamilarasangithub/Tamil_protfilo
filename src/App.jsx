@@ -145,8 +145,9 @@ import AdminDashboard from './pages/AdminDashboard';
 import Details from './pages/Details';
 
 import defaultState from './data.json';
-import { db } from './firebase';
+import { db, auth } from './firebase';
 import { doc, setDoc, onSnapshot } from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth';
 
 function AnimatedRoutes({ state, setState }) {
   const location = useLocation();
@@ -169,9 +170,16 @@ function App() {
   const [dbError, setDbError] = useState(null);
 
   useEffect(() => {
+    const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+      setState(prevState => ({
+        ...prevState,
+        loggedIn: !!user
+      }));
+    });
+
     const docRef = doc(db, 'portfolio', 'main');
 
-    const unsubscribe = onSnapshot(docRef, async (docSnap) => {
+    const unsubscribeDb = onSnapshot(docRef, async (docSnap) => {
       if (docSnap.exists()) {
         const data = docSnap.data();
         
@@ -194,7 +202,10 @@ function App() {
       setDbError(error.message);
     });
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribeAuth();
+      unsubscribeDb();
+    };
   }, []);
 
   return (
