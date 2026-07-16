@@ -14,30 +14,37 @@ function Portfolio({ state, setState }) {
       let scrollLeft;
 
       const down = (e) => {
+        if (e.pointerType !== 'mouse') return;
         isDown = true;
         startX = e.pageX - slider.offsetLeft;
         scrollLeft = slider.scrollLeft;
       };
-      const leave = () => { isDown = false; };
-      const up = () => { isDown = false; };
+      const leave = (e) => {
+        if (e.pointerType !== 'mouse') return;
+        isDown = false;
+      };
+      const up = (e) => {
+        if (e.pointerType !== 'mouse') return;
+        isDown = false;
+      };
       const move = (e) => {
-        if (!isDown) return;
+        if (!isDown || e.pointerType !== 'mouse') return;
         e.preventDefault();
         const x = e.pageX - slider.offsetLeft;
         const walk = (x - startX) * 2.5;
         slider.scrollLeft = scrollLeft - walk;
       };
 
-      slider.addEventListener('mousedown', down);
-      slider.addEventListener('mouseleave', leave);
-      slider.addEventListener('mouseup', up);
-      slider.addEventListener('mousemove', move);
+      slider.addEventListener('pointerdown', down);
+      slider.addEventListener('pointerleave', leave);
+      slider.addEventListener('pointerup', up);
+      slider.addEventListener('pointermove', move);
 
       return () => {
-        slider.removeEventListener('mousedown', down);
-        slider.removeEventListener('mouseleave', leave);
-        slider.removeEventListener('mouseup', up);
-        slider.removeEventListener('mousemove', move);
+        slider.removeEventListener('pointerdown', down);
+        slider.removeEventListener('pointerleave', leave);
+        slider.removeEventListener('pointerup', up);
+        slider.removeEventListener('pointermove', move);
       };
     };
 
