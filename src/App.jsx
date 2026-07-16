@@ -166,7 +166,6 @@ function AnimatedRoutes({ state, setState }) {
 
 function App() {
   const [state, setState] = useState(defaultState);
-  const [loading, setLoading] = useState(true);
   const [dbError, setDbError] = useState(null);
 
   useEffect(() => {
@@ -189,33 +188,26 @@ function App() {
            setDbError("Permission Denied: Could not create database. Did you enable Firestore in Test Mode?");
         }
       }
-      setLoading(false);
     }, (error) => {
       console.error("Firebase Snapshot Error:", error);
+      // We log the error but don't block the UI anymore, it will just use defaultState.
       setDbError(error.message);
-      setLoading(false);
     });
 
     return () => unsubscribe();
   }, []);
-
-  if (dbError) {
-     return <div style={{color: '#ff4444', padding: '2rem', background: '#1a1a1a', height: '100vh'}}>
-       <h2>Database Connection Error</h2>
-       <p>{dbError}</p>
-       <p>Please check your Firebase console to ensure Firestore Database is created and Rules are set to Test Mode.</p>
-     </div>;
-  }
-
-  if (loading) {
-     return <div style={{color: 'white', padding: '2rem'}}>Connecting to database...</div>;
-  }
 
   return (
     <BrowserRouter>
       <CustomCursor />
       <AnimatedBackground />
       <ScrollToTop />
+      {dbError && (
+        <div style={{ position: 'fixed', bottom: 10, right: 10, background: 'rgba(255,0,0,0.8)', color: 'white', padding: '10px', borderRadius: '8px', zIndex: 9999, fontSize: '0.8rem', maxWidth: '300px' }}>
+          Database Error: {dbError} <br/>
+          (Showing local data instead)
+        </div>
+      )}
       <AnimatedRoutes state={state} setState={setState} />
     </BrowserRouter>
   );
