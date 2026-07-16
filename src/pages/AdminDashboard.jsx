@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { db } from '../firebase';
+import { doc, updateDoc } from 'firebase/firestore';
 
 function AdminDashboard({ state, setState }) {
   const navigate = useNavigate();
 
-  // If not logged in, redirect to login
   useEffect(() => {
     if (!state.loggedIn) {
       navigate('/login');
@@ -27,61 +28,7 @@ function AdminDashboard({ state, setState }) {
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  // GitHub Sync State
-  const [githubToken, setGithubToken] = useState('');
-  const [syncStatus, setSyncStatus] = useState('');
-
-  const handleGithubSync = async () => {
-    if (!githubToken.trim()) {
-      setSyncStatus('Please enter a GitHub Personal Access Token.');
-      return;
-    }
-    
-    setSyncStatus('Syncing to GitHub...');
-    setIsSubmitting(true);
-    
-    try {
-      // 1. Prepare data (exclude loggedIn and lastUpdate)
-      const { loggedIn, lastUpdate, ...dataToSave } = state;
-      const jsonString = JSON.stringify(dataToSave, null, 2);
-      const base64Content = window.btoa(unescape(encodeURIComponent(jsonString)));
-      
-      const repoUrl = 'https://api.github.com/repos/tamilarasangithub/Tamil_protfilo/contents/src/data.json';
-      const headers = {
-        'Authorization': `Bearer ${githubToken.trim()}`,
-        'Accept': 'application/vnd.github.v3+json',
-        'Content-Type': 'application/json'
-      };
-
-      // 2. Get current SHA
-      const getRes = await fetch(repoUrl, { headers });
-      if (!getRes.ok) throw new Error('Failed to fetch file info. Check your token.');
-      const getResData = await getRes.json();
-      const sha = getResData.sha;
-
-      // 3. Put new file
-      const putRes = await fetch(repoUrl, {
-        method: 'PUT',
-        headers,
-        body: JSON.stringify({
-          message: 'Auto-sync: update portfolio data from Admin Dashboard',
-          content: base64Content,
-          sha: sha,
-          branch: 'main'
-        })
-      });
-
-      if (!putRes.ok) throw new Error('Failed to push update to GitHub. Token needs "repo" scope.');
-      
-      setSyncStatus('Successfully synced to GitHub! Vercel will now deploy your changes (takes ~1 minute).');
-      setFeedback('Permanent save successful.');
-      setGithubToken(''); // clear token for security
-    } catch (err) {
-      setSyncStatus(`Error: ${err.message}`);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  const docRef = doc(db, 'portfolio', 'main');
 
   useEffect(() => {
     if (!feedback) return;
@@ -94,87 +41,90 @@ function AdminDashboard({ state, setState }) {
     navigate('/');
   };
 
-  const handleAboutSave = (event) => {
+  const handleAboutSave = async (event) => {
     event.preventDefault();
     if (!adminForms.about1.trim() || !adminForms.about2.trim()) return;
     setIsSubmitting(true);
-    setTimeout(() => {
-      setState((prev) => ({
-        ...prev,
+    try {
+      await updateDoc(docRef, {
         aboutIntro1: adminForms.about1.trim(),
         aboutIntro2: adminForms.about2.trim(),
         lastUpdate: 'About section updated'
-      }));
+      });
       setFeedback('About section updated.');
-      setIsSubmitting(false);
-    }, 180);
+    } catch(e) {
+      setFeedback('Error: ' + e.message);
+    }
+    setIsSubmitting(false);
   };
 
-  const handleSkillsSave = (event) => {
+  const handleSkillsSave = async (event) => {
     event.preventDefault();
     if (!adminForms.skills.trim()) return;
     setIsSubmitting(true);
-    setTimeout(() => {
-      setState((prev) => ({
-        ...prev,
+    try {
+      await updateDoc(docRef, {
         skills: adminForms.skills.split(',').map((skill) => skill.trim()).filter(Boolean),
         lastUpdate: 'Core skills updated'
-      }));
+      });
       setFeedback('Skills updated.');
-      setIsSubmitting(false);
-    }, 180);
+    } catch(e) {
+      setFeedback('Error: ' + e.message);
+    }
+    setIsSubmitting(false);
   };
 
-  const handleEduAdd = (event) => {
+  const handleEduAdd = async (event) => {
     event.preventDefault();
     if (!eduForm.title.trim() || !eduForm.school.trim()) return;
     setIsSubmitting(true);
-    setTimeout(() => {
-      setState((prev) => ({
-        ...prev,
+    try {
+      await updateDoc(docRef, {
         education: [{
           id: crypto.randomUUID(),
           title: eduForm.title.trim(),
           school: eduForm.school.trim(),
           year: eduForm.year.trim(),
           description: eduForm.description.trim()
-        }, ...(prev.education || [])],
+        }, ...(state.education || [])],
         lastUpdate: `Education added: ${eduForm.title.trim()}`
-      }));
+      });
       setEduForm({ title: '', school: '', year: '', description: '' });
       setFeedback('Education added successfully.');
-      setIsSubmitting(false);
-    }, 180);
+    } catch(e) {
+      setFeedback('Error: ' + e.message);
+    }
+    setIsSubmitting(false);
   };
 
-  const handleExpAdd = (event) => {
+  const handleExpAdd = async (event) => {
     event.preventDefault();
     if (!expForm.title.trim() || !expForm.year.trim()) return;
     setIsSubmitting(true);
-    setTimeout(() => {
-      setState((prev) => ({
-        ...prev,
+    try {
+      await updateDoc(docRef, {
         experience: [{
           id: crypto.randomUUID(),
           title: expForm.title.trim(),
           year: expForm.year.trim(),
           description: expForm.description.trim()
-        }, ...(prev.experience || [])],
+        }, ...(state.experience || [])],
         lastUpdate: `Experience added: ${expForm.title.trim()}`
-      }));
+      });
       setExpForm({ title: '', year: '', description: '' });
       setFeedback('Experience added successfully.');
-      setIsSubmitting(false);
-    }, 180);
+    } catch(e) {
+      setFeedback('Error: ' + e.message);
+    }
+    setIsSubmitting(false);
   };
 
-  const handleProjectAdd = (event) => {
+  const handleProjectAdd = async (event) => {
     event.preventDefault();
     if (!projectForm.title.trim() || !projectForm.category.trim() || !projectForm.description.trim()) return;
     setIsSubmitting(true);
-    setTimeout(() => {
-      setState((prev) => ({
-        ...prev,
+    try {
+      await updateDoc(docRef, {
         projects: [{
           id: crypto.randomUUID(),
           title: projectForm.title.trim(),
@@ -182,16 +132,17 @@ function AdminDashboard({ state, setState }) {
           link: projectForm.link.trim(),
           videoUrl: projectForm.videoUrl.trim(),
           description: projectForm.description.trim()
-        }, ...prev.projects],
+        }, ...(state.projects || [])],
         lastUpdate: `Project added: ${projectForm.title.trim()}`
-      }));
+      });
       setProjectForm({ title: '', category: '', link: '', videoUrl: '', description: '' });
       setFeedback('Project added successfully.');
-      setIsSubmitting(false);
-    }, 180);
+    } catch(e) {
+      setFeedback('Error: ' + e.message);
+    }
+    setIsSubmitting(false);
   };
 
-  // --- Image Compressor ---
   const handleImageUpload = (e, setFormState, formStateKey) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -223,20 +174,18 @@ function AdminDashboard({ state, setState }) {
         canvas.height = height;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0, width, height);
-        // Compress to tiny WebP/JPEG to save localStorage space
         const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
         setFormState((prev) => ({ ...prev, [formStateKey]: dataUrl }));
       };
     };
   };
 
-  const handleCertAdd = (event) => {
+  const handleCertAdd = async (event) => {
     event.preventDefault();
     if (!certForm.title.trim() || !certForm.issuer.trim() || !certForm.description.trim()) return;
     setIsSubmitting(true);
-    setTimeout(() => {
-      setState((prev) => ({
-        ...prev,
+    try {
+      await updateDoc(docRef, {
         certifications: [{
           id: crypto.randomUUID(),
           title: certForm.title.trim(),
@@ -245,22 +194,23 @@ function AdminDashboard({ state, setState }) {
           category: certForm.category.trim(),
           image: certForm.image,
           description: certForm.description.trim()
-        }, ...prev.certifications],
+        }, ...(state.certifications || [])],
         lastUpdate: `Certification added: ${certForm.title.trim()}`
-      }));
+      });
       setCertForm({ title: '', issuer: '', year: '', category: '', image: '', description: '' });
       setFeedback('Certification added successfully.');
-      setIsSubmitting(false);
-    }, 180);
+    } catch(e) {
+      setFeedback('Error: ' + e.message);
+    }
+    setIsSubmitting(false);
   };
 
-  const handleResearchAdd = (event) => {
+  const handleResearchAdd = async (event) => {
     event.preventDefault();
     if (!researchForm.title.trim() || !researchForm.conference.trim()) return;
     setIsSubmitting(true);
-    setTimeout(() => {
-      setState((prev) => ({
-        ...prev,
+    try {
+      await updateDoc(docRef, {
         researchPapers: [{
           id: crypto.randomUUID(),
           title: researchForm.title.trim(),
@@ -270,27 +220,30 @@ function AdminDashboard({ state, setState }) {
           link: researchForm.link.trim(),
           videoUrl: researchForm.videoUrl.trim(),
           description: researchForm.description.trim()
-        }, ...(prev.researchPapers || [])],
+        }, ...(state.researchPapers || [])],
         lastUpdate: `Research paper added: ${researchForm.title.trim()}`
-      }));
+      });
       setResearchForm({ title: '', conference: '', year: '', category: '', link: '', videoUrl: '', description: '' });
       setFeedback('Research paper added successfully.');
-      setIsSubmitting(false);
-    }, 180);
+    } catch(e) {
+      setFeedback('Error: ' + e.message);
+    }
+    setIsSubmitting(false);
   };
 
-  const removeItem = (type, id) => {
-    setState((prev) => ({ ...prev, [type]: prev[type].filter((item) => item.id !== id) }));
-    setFeedback(`Item removed from ${type}.`);
-  };
-
-  const handleRemoveItem = (key, id) => {
-    setState((prev) => ({ ...prev, [key]: prev[key].filter((item) => item.id !== id) }));
-    setFeedback(`Item removed from ${key}.`);
+  const handleRemoveItem = async (key, id) => {
+    try {
+      await updateDoc(docRef, {
+        [key]: state[key].filter((item) => item.id !== id)
+      });
+      setFeedback(`Item removed from ${key}.`);
+    } catch(e) {
+      setFeedback('Error: ' + e.message);
+    }
   };
 
   if (!state.loggedIn) {
-    return null; // Will redirect
+    return null;
   }
 
   return (
@@ -431,7 +384,7 @@ function AdminDashboard({ state, setState }) {
           <div>
             <h3>Manage Projects</h3>
             <div className="card-list">
-              {state.projects.map((project) => (
+              {(state.projects || []).map((project) => (
                 <article key={project.id} className="project-card">
                   <div className="pill-tag">{project.category}</div>
                   <h4>{project.title}</h4>
@@ -444,7 +397,7 @@ function AdminDashboard({ state, setState }) {
           <div>
             <h3>Manage Certifications</h3>
             <div className="card-list">
-              {state.certifications.map((cert) => (
+              {(state.certifications || []).map((cert) => (
                 <article key={cert.id} className="cert-card">
                   <h4>{cert.title}</h4>
                   <p className="meta">{cert.issuer}{cert.year ? ` • ${cert.year}` : ''}</p>
@@ -470,38 +423,6 @@ function AdminDashboard({ state, setState }) {
               ))}
             </div>
           </div>
-        </div>
-        
-        <div className="section-heading" style={{ marginTop: '60px' }}>
-          <h2>Permanent Save (GitHub Sync)</h2>
-          <p>Sync your local changes directly to your GitHub repository so Vercel can rebuild the site with your new data.</p>
-        </div>
-        
-        <div className="card admin-form-card" style={{ border: '2px solid rgba(0, 251, 255, 0.4)', background: 'rgba(0, 251, 255, 0.05)' }}>
-          <div className="form-group">
-            <label>GitHub Personal Access Token (PAT) <span style={{fontSize: '0.8rem', color: '#FFA116'}}>(Needs 'repo' scope)</span></label>
-            <input 
-              type="password" 
-              value={githubToken} 
-              onChange={(e) => setGithubToken(e.target.value)} 
-              placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" 
-              style={{ background: 'rgba(0,0,0,0.5)' }}
-            />
-          </div>
-          {syncStatus && (
-            <div style={{ marginBottom: '15px', color: syncStatus.includes('Error') ? '#ff4444' : '#00fbff', fontWeight: '500' }}>
-              {syncStatus}
-            </div>
-          )}
-          <button 
-            type="button" 
-            className="btn btn-primary" 
-            onClick={handleGithubSync} 
-            disabled={isSubmitting}
-            style={{ width: '100%', background: 'linear-gradient(135deg, #00fbff, #9900ff)' }}
-          >
-            {isSubmitting ? 'Syncing...' : 'Sync to GitHub & Vercel'}
-          </button>
         </div>
       </section>
     </motion.div>

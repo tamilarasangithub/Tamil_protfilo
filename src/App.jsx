@@ -144,44 +144,9 @@ import Login from './pages/Login';
 import AdminDashboard from './pages/AdminDashboard';
 import Details from './pages/Details';
 
-const STORAGE_KEY = 'tamilarasan-portfolio-state-v2';
-
 import defaultState from './data.json';
-
-function loadState() {
-  try {
-    const saved = window.localStorage.getItem(STORAGE_KEY);
-    if (!saved) return defaultState;
-
-    const parsed = JSON.parse(saved);
-    
-    // Inject the new hacking-focused about text to override old local storage values
-    parsed.aboutIntro1 = defaultState.aboutIntro1;
-    parsed.aboutIntro2 = defaultState.aboutIntro2;
-    
-    let loadedProjects = parsed.projects?.length ? parsed.projects : defaultState.projects;
-    
-    // Auto-inject the Git video project for the user without clearing local storage
-    const hasGitVideo = loadedProjects.some(p => p.videoUrl === 'https://youtu.be/SDA-RRWBVwk');
-    if (!hasGitVideo) {
-      loadedProjects = [defaultState.projects[0], ...loadedProjects];
-    }
-
-    return {
-      ...defaultState,
-      ...parsed,
-      projects: loadedProjects,
-      certifications: parsed.certifications?.length ? parsed.certifications : defaultState.certifications,
-      education: parsed.education?.length ? parsed.education : defaultState.education,
-      experience: parsed.experience?.length ? parsed.experience : defaultState.experience,
-      researchPapers: parsed.researchPapers || defaultState.researchPapers,
-      tools: parsed.tools || defaultState.tools,
-    };
-  } catch (error) {
-    console.warn('Could not load saved portfolio state.', error);
-    return defaultState;
-  }
-}
+import { db } from './firebase';
+import { doc, setDoc, onSnapshot } from 'firebase/firestore';
 
 function AnimatedRoutes({ state, setState }) {
   const location = useLocation();
@@ -200,11 +165,37 @@ function AnimatedRoutes({ state, setState }) {
 }
 
 function App() {
-  const [state, setState] = useState(loadState);
+  const [state, setState] = useState(defaultState);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  }, [state]);
+    const docRef = doc(db, 'portfolio', 'main');
+
+    const unsubscribe = onSnapshot(docRef, async (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        
+        setState(prevState => ({ 
+          ...defaultState, 
+          ...data,
+          loggedIn: prevState.loggedIn 
+        }));
+      } else {
+        try {
+          await setDoc(docRef, defaultState);
+        } catch(e) {
+           console.error("Error seeding DB", e);
+        }
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  if (loading) {
+     return <div style={{color: 'white', padding: '2rem'}}>Connecting to database...</div>;
+  }
 
   return (
     <BrowserRouter>
