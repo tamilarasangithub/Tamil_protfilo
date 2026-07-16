@@ -276,26 +276,30 @@ function Portfolio({ state, setState }) {
           <div className="resume-grid">
             <div>
               <h3>Education</h3>
-              <div className="timeline-track">
-                {(state.education || []).map((edu) => (
-                  <div key={edu.id} className="timeline-card">
-                    <h4>{edu.title}</h4>
-                    <p className="meta">{edu.school} {edu.year ? `• ${edu.year}` : ''}</p>
-                    <p>{edu.description}</p>
-                  </div>
-                ))}
+              <div className="resume-scroll-container">
+                <div className="timeline-track">
+                  {(state.education || []).map((edu) => (
+                    <div key={edu.id} className="timeline-card">
+                      <h4>{edu.title}</h4>
+                      <p className="meta">{edu.school} {edu.year ? `• ${edu.year}` : ''}</p>
+                      <p>{edu.description}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
             <div>
               <h3>Experience</h3>
-              <div className="timeline-track">
-                {(state.experience || []).map((exp) => (
-                  <div key={exp.id} className="timeline-card">
-                    <h4>{exp.title}</h4>
-                    <p className="meta">{exp.year}</p>
-                    <p>{exp.description}</p>
-                  </div>
-                ))}
+              <div className="resume-scroll-container">
+                <div className="timeline-track">
+                  {(state.experience || []).map((exp) => (
+                    <div key={exp.id} className="timeline-card">
+                      <h4>{exp.title}</h4>
+                      <p className="meta">{exp.year}</p>
+                      <p>{exp.description}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>

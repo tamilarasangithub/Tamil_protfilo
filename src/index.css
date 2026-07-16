@@ -77,6 +77,20 @@ h4 { font-size: 1.1rem; }
 .timeline-track .timeline-card { position: relative; margin-bottom: 20px; margin-top: 0; }
 .timeline-track .timeline-card:last-child { margin-bottom: 0; }
 .timeline-track .timeline-card::before { content: ''; position: absolute; top: 22px; left: -32px; width: 14px; height: 14px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 12px var(--accent); border: 2px solid #0b0710; }
+
+.resume-scroll-container {
+  max-height: 500px;
+  overflow-y: auto;
+  padding-right: 12px;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: rgba(124, 58, 237, 0.4) transparent;
+}
+.resume-scroll-container::-webkit-scrollbar { width: 6px; }
+.resume-scroll-container::-webkit-scrollbar-track { background: transparent; }
+.resume-scroll-container::-webkit-scrollbar-thumb { background-color: rgba(124, 58, 237, 0.4); border-radius: 6px; }
+.resume-scroll-container:hover::-webkit-scrollbar-thumb { background-color: rgba(124, 58, 237, 0.8); }
+
 .skill-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
 .skill-tags span, .meta, .pill-tag { color: var(--accent); background: rgba(124, 58, 237, 0.1); padding: 7px 10px; border-radius: 999px; font-size: 0.9rem; }
 .login-card { margin-bottom: 20px; }

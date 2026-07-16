@@ -1,0 +1,111 @@
+{
+  "loggedIn": false,
+  "lastUpdate": "No updates yet.",
+  "aboutIntro1": "My primary expertise lies in Ethical Hacking and Penetration Testing. I am constantly analyzing digital infrastructures, uncovering vulnerabilities, and testing systems to build impenetrable defenses against modern cyber threats.",
+  "aboutIntro2": "In parallel, I have strong, separate foundations in Web Development and IoT Engineering. I build scalable full-stack applications and program smart hardware devices. Looking forward, I am actively merging these fields to specialize in IoT Hacking and embedded hardware security.",
+  "education": [
+    {
+      "id": "e1",
+      "title": "B.E. in Computer Science",
+      "school": "J.K.K. Nataraja College of Engineering and Technologies",
+      "year": "2022 - 2026",
+      "description": "Built strong foundations in software engineering, networking, operating systems, and problem solving through lab-based projects and collaborative work."
+    }
+  ],
+  "experience": [
+    {
+      "id": "exp1",
+      "title": "Penetration Testing & Security Research",
+      "year": "2024 - Present",
+      "description": "Working on ethical hacking, vulnerability discovery, and defensive security workflows while continuously strengthening attack surface analysis skills."
+    },
+    {
+      "id": "exp2",
+      "title": "IBM SkillBuild Virtual Intern - AI & Cloud",
+      "year": "Jul 2025 - Aug 2025",
+      "description": "Developed cloud-integrated AI applications using IBM Watson Assistant and NLP-style workflows for intelligent recommendations."
+    },
+    {
+      "id": "exp3",
+      "title": "TATA Forage Virtual Intern - Data Analytics",
+      "year": "2025",
+      "description": "Conducted performance analysis and data visualization on GenAI business models, improving insight delivery and analytical thinking."
+    },
+    {
+      "id": "exp4",
+      "title": "Smart Wildlife Intrusion Alert System",
+      "year": "2024 - Present",
+      "description": "Created an IoT + AI solution for real-time wildlife monitoring using ESP32, embedded systems, and Telegram/email alerts."
+    }
+  ],
+  "skills": [
+    "Python",
+    "JavaScript",
+    "Dart",
+    "C / C++",
+    "React / Tailwind / Node.js",
+    "Django / FastAPI",
+    "PyTorch / OpenCV",
+    "ESP32 / STM32",
+    "Web Security",
+    "Cloud & DevOps Basics"
+  ],
+  "projects": [
+    {
+      "id": "p1",
+      "title": "Git and GitHub Crash Course",
+      "category": "Web Development",
+      "videoUrl": "https://youtu.be/SDA-RRWBVwk",
+      "link": "https://github.com/tamilarasangithub",
+      "description": "A comprehensive crash course teaching version control with Git and GitHub. Topics cover repositories, commits, branching, and pushing to remote."
+    },
+    {
+      "id": "p2",
+      "title": "Python Developer Intern - S.S.S Technology",
+      "category": "Software Engineering",
+      "link": "https://github.com/tamilarasangithub",
+      "description": "Contributed to backend architecture and implemented various Python-based automation scripts."
+    },
+    {
+      "id": "p3",
+      "title": "Wild Animal Intrusion System",
+      "category": "IoT / Hardware",
+      "link": "https://github.com/tamilarasangithub",
+      "description": "Integrated ESP32 camera module with motion detection and automated alerts to prevent agricultural crop damage."
+    }
+  ],
+  "certifications": [
+    {
+      "id": "c1",
+      "title": "Certified Ethical Hacker (CEH) prep",
+      "issuer": "Self-Study",
+      "year": "2025",
+      "description": "Comprehensive understanding of network security, scanning, enumeration, and exploitation."
+    },
+    {
+      "id": "c2",
+      "title": "Complete Python Developer",
+      "issuer": "Udemy",
+      "year": "2024",
+      "description": "Mastery of advanced Python programming, algorithms, and application building."
+    },
+    {
+      "id": "c3",
+      "title": "React.js Complete Guide",
+      "issuer": "Coursera",
+      "year": "2025",
+      "description": "Deep dive into React components, hooks, state management, and modern frontend architecture."
+    }
+  ],
+  "researchPapers": [
+    {
+      "id": "r1",
+      "title": "AI-Driven Wildlife Detection Systems in Rural Farming",
+      "conference": "IoT Security Symposium",
+      "year": "2025",
+      "description": "Explores the integration of low-power ESP32 microcontrollers with cloud-based AI to alert farmers of intruding wildlife, preventing crop damage.",
+      "pdfUrl": "/dummy.pdf",
+      "link": "https://github.com/tamilarasangithub"
+    }
+  ]
+}

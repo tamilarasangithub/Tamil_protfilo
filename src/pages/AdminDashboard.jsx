@@ -26,6 +26,62 @@ function AdminDashboard({ state, setState }) {
   const [researchForm, setResearchForm] = useState({ title: '', conference: '', year: '', category: '', link: '', videoUrl: '', description: '' });
   
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  // GitHub Sync State
+  const [githubToken, setGithubToken] = useState('');
+  const [syncStatus, setSyncStatus] = useState('');
+
+  const handleGithubSync = async () => {
+    if (!githubToken.trim()) {
+      setSyncStatus('Please enter a GitHub Personal Access Token.');
+      return;
+    }
+    
+    setSyncStatus('Syncing to GitHub...');
+    setIsSubmitting(true);
+    
+    try {
+      // 1. Prepare data (exclude loggedIn and lastUpdate)
+      const { loggedIn, lastUpdate, ...dataToSave } = state;
+      const jsonString = JSON.stringify(dataToSave, null, 2);
+      const base64Content = window.btoa(unescape(encodeURIComponent(jsonString)));
+      
+      const repoUrl = 'https://api.github.com/repos/tamilarasangithub/Tamil_protfilo/contents/src/data.json';
+      const headers = {
+        'Authorization': `Bearer ${githubToken.trim()}`,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      };
+
+      // 2. Get current SHA
+      const getRes = await fetch(repoUrl, { headers });
+      if (!getRes.ok) throw new Error('Failed to fetch file info. Check your token.');
+      const getResData = await getRes.json();
+      const sha = getResData.sha;
+
+      // 3. Put new file
+      const putRes = await fetch(repoUrl, {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify({
+          message: 'Auto-sync: update portfolio data from Admin Dashboard',
+          content: base64Content,
+          sha: sha,
+          branch: 'main'
+        })
+      });
+
+      if (!putRes.ok) throw new Error('Failed to push update to GitHub. Token needs "repo" scope.');
+      
+      setSyncStatus('Successfully synced to GitHub! Vercel will now deploy your changes (takes ~1 minute).');
+      setFeedback('Permanent save successful.');
+      setGithubToken(''); // clear token for security
+    } catch (err) {
+      setSyncStatus(`Error: ${err.message}`);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   useEffect(() => {
     if (!feedback) return;
@@ -413,7 +469,40 @@ function AdminDashboard({ state, setState }) {
                 </article>
               ))}
             </div>
+            </div>
           </div>
+        </div>
+        
+        <div className="section-heading" style={{ marginTop: '60px' }}>
+          <h2>Permanent Save (GitHub Sync)</h2>
+          <p>Sync your local changes directly to your GitHub repository so Vercel can rebuild the site with your new data.</p>
+        </div>
+        
+        <div className="card admin-form-card" style={{ border: '2px solid rgba(0, 251, 255, 0.4)', background: 'rgba(0, 251, 255, 0.05)' }}>
+          <div className="form-group">
+            <label>GitHub Personal Access Token (PAT) <span style={{fontSize: '0.8rem', color: '#FFA116'}}>(Needs 'repo' scope)</span></label>
+            <input 
+              type="password" 
+              value={githubToken} 
+              onChange={(e) => setGithubToken(e.target.value)} 
+              placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" 
+              style={{ background: 'rgba(0,0,0,0.5)' }}
+            />
+          </div>
+          {syncStatus && (
+            <div style={{ marginBottom: '15px', color: syncStatus.includes('Error') ? '#ff4444' : '#00fbff', fontWeight: '500' }}>
+              {syncStatus}
+            </div>
+          )}
+          <button 
+            type="button" 
+            className="btn btn-primary" 
+            onClick={handleGithubSync} 
+            disabled={isSubmitting}
+            style={{ width: '100%', background: 'linear-gradient(135deg, #00fbff, #9900ff)' }}
+          >
+            {isSubmitting ? 'Syncing...' : 'Sync to GitHub & Vercel'}
+          </button>
         </div>
       </section>
     </motion.div>
