@@ -33,10 +33,10 @@ function Login({ setState }) {
       setAttempts(newAttempts);
       if (newAttempts >= 3) {
         setLockedOutUntil(Date.now() + 30000); // 30s lockout
-        setError('Too many failed attempts. Form locked for 30 seconds.');
+        setError(`Form locked for 30s. Last error: ${err.message}`);
       } else {
-        // Provide generic error message for security
-        setError('Incorrect email or password. Access denied.');
+        // Show exact error message for debugging
+        setError(`Firebase Error: ${err.message}`);
       }
     } finally {
       setIsLoading(false);
