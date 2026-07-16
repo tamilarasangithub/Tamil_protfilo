@@ -7,25 +7,48 @@ function Portfolio({ state, setState }) {
   const pubsRef = React.useRef(null);
 
   React.useEffect(() => {
-    const handleWheel = (e) => {
-      if (e.deltaY !== 0) {
+    const setupDrag = (slider) => {
+      if (!slider) return () => {};
+      let isDown = false;
+      let startX;
+      let scrollLeft;
+
+      const down = (e) => {
+        isDown = true;
+        startX = e.pageX - slider.offsetLeft;
+        scrollLeft = slider.scrollLeft;
+      };
+      const leave = () => { isDown = false; };
+      const up = () => { isDown = false; };
+      const move = (e) => {
+        if (!isDown) return;
         e.preventDefault();
-        e.currentTarget.scrollLeft += e.deltaY;
-      }
+        const x = e.pageX - slider.offsetLeft;
+        const walk = (x - startX) * 2.5;
+        slider.scrollLeft = scrollLeft - walk;
+      };
+
+      slider.addEventListener('mousedown', down);
+      slider.addEventListener('mouseleave', leave);
+      slider.addEventListener('mouseup', up);
+      slider.addEventListener('mousemove', move);
+
+      return () => {
+        slider.removeEventListener('mousedown', down);
+        slider.removeEventListener('mouseleave', leave);
+        slider.removeEventListener('mouseup', up);
+        slider.removeEventListener('mousemove', move);
+      };
     };
-    
-    const pRef = projectsRef.current;
-    const cRef = certsRef.current;
-    const puRef = pubsRef.current;
-    
-    if (pRef) pRef.addEventListener('wheel', handleWheel, { passive: false });
-    if (cRef) cRef.addEventListener('wheel', handleWheel, { passive: false });
-    if (puRef) puRef.addEventListener('wheel', handleWheel, { passive: false });
-    
+
+    const cleanupProjects = setupDrag(projectsRef.current);
+    const cleanupCerts = setupDrag(certsRef.current);
+    const cleanupPubs = setupDrag(pubsRef.current);
+
     return () => {
-      if (pRef) pRef.removeEventListener('wheel', handleWheel);
-      if (cRef) cRef.removeEventListener('wheel', handleWheel);
-      if (puRef) puRef.removeEventListener('wheel', handleWheel);
+      cleanupProjects();
+      cleanupCerts();
+      cleanupPubs();
     };
   }, []);
 
@@ -479,17 +502,15 @@ function Portfolio({ state, setState }) {
               <h3>Projects</h3>
               <div className="card-list" ref={projectsRef}>
                 {filteredProjects.map((project) => (
-                  <motion.article 
+                  <article 
                     key={project.id} 
                     className="project-card"
-                    whileHover={{ scale: 1.05, rotate: 1, zIndex: 10 }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                   >
                     <div className="pill-tag">{project.category}</div>
                     <h4>{project.title}</h4>
                     <p>{project.description}</p>
                     <Link to={`/project/${project.id}`} style={{ color: 'var(--accent)', textDecoration: 'none', fontWeight: '600' }}>View details</Link>
-                  </motion.article>
+                  </article>
                 ))}
               </div>
             </div>
@@ -497,21 +518,19 @@ function Portfolio({ state, setState }) {
               <h3>Certifications</h3>
               <div className="card-list" ref={certsRef}>
                 {state.certifications.map((cert) => (
-                  <motion.article 
+                  <article 
                     key={cert.id} 
                     className="cert-card"
-                    whileHover={{ scale: 1.05, rotate: -1, zIndex: 10 }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                   >
                     {cert.image && (
-                      <div style={{ marginBottom: '16px', borderRadius: '12px', overflow: 'hidden', height: '240px' }}>
-                        <img src={cert.image} alt={cert.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                      <div className="cert-image-container">
+                        <img src={cert.image} alt={cert.title} />
                       </div>
                     )}
                     <h4>{cert.title}</h4>
                     <p className="meta">{cert.issuer}{cert.year ? ` • ${cert.year}` : ''}</p>
                     <p>{cert.description}</p>
-                  </motion.article>
+                  </article>
                 ))}
               </div>
             </div>
@@ -526,11 +545,9 @@ function Portfolio({ state, setState }) {
             </div>
             <div className="card-list" ref={pubsRef} style={{ marginTop: '20px' }}>
               {state.researchPapers.map((paper) => (
-                <motion.article 
+                <article 
                   key={paper.id} 
                   className="project-card"
-                  whileHover={{ scale: 1.02, zIndex: 10, borderColor: 'rgba(124, 58, 237, 0.6)' }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                   style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '10px' }}>
@@ -539,7 +556,7 @@ function Portfolio({ state, setState }) {
                   </div>
                   <p className="meta" style={{ margin: 0 }}>{paper.conference} {paper.year ? `• ${paper.year}` : ''}</p>
                   <p style={{ margin: 0, marginTop: '8px' }}>{paper.description}</p>
-                </motion.article>
+                </article>
               ))}
             </div>
           </section>

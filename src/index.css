@@ -71,8 +71,14 @@ h4 { font-size: 1.1rem; }
 .section-heading h2 { margin: 0; font-size: clamp(1.5rem, 2.5vw, 2rem); color: #fff; line-height: 1.3; }
 .about-grid, .resume-grid, .contact-grid { display: grid; gap: 24px; grid-template-columns: 1.2fr 0.8fr; align-items: start; }
 .stats-grid { display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(140px, 1fr)); margin-top: 20px; }
-.stat-card, .service-card, .timeline-card, .admin-card, .project-card, .cert-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 18px; padding: 24px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); backdrop-filter: blur(12px); color: #fff; transition: transform 220ms ease, border-color 220ms ease; }
-.stat-card:hover, .service-card:hover, .timeline-card:hover, .project-card:hover, .cert-card:hover { transform: translateY(-3px); border-color: rgba(124, 58, 237, 0.4); }
+.stat-card, .service-card, .timeline-card, .admin-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 18px; padding: 24px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); backdrop-filter: blur(12px); color: #fff; transition: transform 220ms ease, border-color 220ms ease; }
+.project-card, .cert-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 18px; padding: 24px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); backdrop-filter: blur(12px); color: #fff; transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1), border-color 300ms ease, box-shadow 300ms ease; }
+.stat-card:hover, .service-card:hover, .timeline-card:hover { transform: translateY(-3px); border-color: rgba(124, 58, 237, 0.4); }
+.project-card:hover, .cert-card:hover { transform: translateY(-8px); border-color: rgba(124, 58, 237, 0.6); box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(124, 58, 237, 0.15); }
+
+.cert-image-container { overflow: hidden; border-radius: 12px; height: 240px; margin-bottom: 16px; }
+.cert-image-container img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 500ms cubic-bezier(0.4, 0, 0.2, 1); }
+.cert-card:hover .cert-image-container img { transform: scale(1.08); }
 .timeline-track { position: relative; padding-left: 24px; border-left: 2px solid rgba(124, 58, 237, 0.4); margin-left: 10px; margin-top: 14px; }
 .timeline-track .timeline-card { position: relative; margin-bottom: 20px; margin-top: 0; }
 .timeline-track .timeline-card:last-child { margin-bottom: 0; }
