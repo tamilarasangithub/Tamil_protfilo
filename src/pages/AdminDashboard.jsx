@@ -469,7 +469,6 @@ function AdminDashboard({ state, setState }) {
                 </article>
               ))}
             </div>
-            </div>
           </div>
         </div>
         
