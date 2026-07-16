@@ -144,7 +144,7 @@ import Login from './pages/Login';
 import AdminDashboard from './pages/AdminDashboard';
 import Details from './pages/Details';
 
-const STORAGE_KEY = 'tamilarasan-portfolio-state-v1';
+const STORAGE_KEY = 'tamilarasan-portfolio-state-v2';
 
 import defaultState from './data.json';
 
