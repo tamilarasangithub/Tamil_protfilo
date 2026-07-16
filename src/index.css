@@ -123,7 +123,8 @@ h4 { font-size: 1.1rem; }
 .card-list::-webkit-scrollbar-thumb { background: transparent; border-radius: 4px; transition: background 0.3s; }
 .card-list:hover::-webkit-scrollbar-thumb { background: rgba(124, 58, 237, 0.4); }
 .card-list::-webkit-scrollbar-thumb:hover { background: rgba(124, 58, 237, 0.8); }
-.card-list > article { flex: 0 0 min(320px, 85vw); scroll-snap-align: start; }
+.card-list > article.project-card { flex: 0 0 min(320px, 85vw); scroll-snap-align: start; }
+.card-list > article.cert-card { flex: 0 0 min(480px, 90vw); scroll-snap-align: start; }
 .project-card a, .cert-card a { color: var(--accent); text-decoration: none; font-weight: 600; }
 .map-card { overflow: hidden; border-radius: 18px; border: 1px solid var(--border); }
 .map-card iframe { width: 100%; min-height: 320px; border: 0; }

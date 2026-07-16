@@ -2,6 +2,33 @@ import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 function Portfolio({ state, setState }) {
+  const projectsRef = React.useRef(null);
+  const certsRef = React.useRef(null);
+  const pubsRef = React.useRef(null);
+
+  React.useEffect(() => {
+    const handleWheel = (e) => {
+      if (e.deltaY !== 0) {
+        e.preventDefault();
+        e.currentTarget.scrollLeft += e.deltaY;
+      }
+    };
+    
+    const pRef = projectsRef.current;
+    const cRef = certsRef.current;
+    const puRef = pubsRef.current;
+    
+    if (pRef) pRef.addEventListener('wheel', handleWheel, { passive: false });
+    if (cRef) cRef.addEventListener('wheel', handleWheel, { passive: false });
+    if (puRef) puRef.addEventListener('wheel', handleWheel, { passive: false });
+    
+    return () => {
+      if (pRef) pRef.removeEventListener('wheel', handleWheel);
+      if (cRef) cRef.removeEventListener('wheel', handleWheel);
+      if (puRef) puRef.removeEventListener('wheel', handleWheel);
+    };
+  }, []);
+
   const [activeFilter, setActiveFilter] = useState('all');
 
   const filteredProjects = useMemo(() => {
@@ -450,7 +477,7 @@ function Portfolio({ state, setState }) {
           <div className="portfolio-grid">
             <div>
               <h3>Projects</h3>
-              <div className="card-list">
+              <div className="card-list" ref={projectsRef}>
                 {filteredProjects.map((project) => (
                   <motion.article 
                     key={project.id} 
@@ -468,7 +495,7 @@ function Portfolio({ state, setState }) {
             </div>
             <div>
               <h3>Certifications</h3>
-              <div className="card-list">
+              <div className="card-list" ref={certsRef}>
                 {state.certifications.map((cert) => (
                   <motion.article 
                     key={cert.id} 
@@ -477,8 +504,8 @@ function Portfolio({ state, setState }) {
                     transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                   >
                     {cert.image && (
-                      <div style={{ marginBottom: '16px', borderRadius: '12px', overflow: 'hidden' }}>
-                        <img src={cert.image} alt={cert.title} style={{ width: '100%', height: 'auto', display: 'block' }} />
+                      <div style={{ marginBottom: '16px', borderRadius: '12px', overflow: 'hidden', height: '240px' }}>
+                        <img src={cert.image} alt={cert.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
                       </div>
                     )}
                     <h4>{cert.title}</h4>
@@ -497,7 +524,7 @@ function Portfolio({ state, setState }) {
               <p className="eyebrow">Publications</p>
               <h2>Research Papers & Articles.</h2>
             </div>
-            <div className="card-list" style={{ marginTop: '20px' }}>
+            <div className="card-list" ref={pubsRef} style={{ marginTop: '20px' }}>
               {state.researchPapers.map((paper) => (
                 <motion.article 
                   key={paper.id} 
