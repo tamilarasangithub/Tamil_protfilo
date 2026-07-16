@@ -424,6 +424,34 @@ function AdminDashboard({ state, setState }) {
             </div>
           </div>
         </div>
+        
+        <div className="section-heading" style={{ marginTop: '60px' }}>
+          <h2>Manual Database Sync</h2>
+          <p>Your changes are saved to the database automatically when you click 'Add' or 'Save'. However, you can click the button below to force a full synchronization of all data across all devices.</p>
+        </div>
+        
+        <div className="card admin-form-card" style={{ border: '2px solid rgba(0, 251, 255, 0.4)', background: 'rgba(0, 251, 255, 0.05)' }}>
+          <button 
+            type="button" 
+            className="btn btn-primary" 
+            onClick={async () => {
+              setIsSubmitting(true);
+              setFeedback('Syncing to database...');
+              try {
+                const { loggedIn, ...dataToSave } = state;
+                await updateDoc(docRef, dataToSave);
+                setFeedback('Successfully synced all data to the database!');
+              } catch(e) {
+                setFeedback('Error syncing: ' + e.message);
+              }
+              setIsSubmitting(false);
+            }} 
+            disabled={isSubmitting}
+            style={{ width: '100%', background: 'linear-gradient(135deg, #00fbff, #9900ff)' }}
+          >
+            {isSubmitting ? 'Syncing...' : 'Force Save All Changes to Database'}
+          </button>
+        </div>
       </section>
     </motion.div>
   );
