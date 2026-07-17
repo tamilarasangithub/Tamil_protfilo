@@ -1,9 +1,23 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 function Portfolio({ state, setState }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const projectsCarouselRef = useRef(null);
+  const certsCarouselRef = useRef(null);
+
+  const scrollProjects = (dir) => {
+    if (projectsCarouselRef.current) {
+      projectsCarouselRef.current.scrollBy({ left: dir === 'left' ? -360 : 360, behavior: 'smooth' });
+    }
+  };
+  const scrollCerts = (dir) => {
+    if (certsCarouselRef.current) {
+      certsCarouselRef.current.scrollBy({ left: dir === 'left' ? -360 : 360, behavior: 'smooth' });
+    }
+  };
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -561,8 +575,17 @@ function Portfolio({ state, setState }) {
             <div style={{ position: 'relative' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                 <h3>Projects</h3>
+                <div className="slider-nav">
+                  <button type="button" className="slider-btn" onClick={() => scrollProjects('left')}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
+                  </button>
+                  <button type="button" className="slider-btn" onClick={() => scrollProjects('right')}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
+                  </button>
+                </div>
               </div>
-              <div className="card-list">
+              <div className="carousel-wrapper" ref={projectsCarouselRef} style={{ overflowX: 'auto', scrollSnapType: 'x mandatory', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
+                <div className="card-list">
                 {filteredProjects.map((project, index) => (
                   <motion.article 
                     key={project.id} 
@@ -578,13 +601,23 @@ function Portfolio({ state, setState }) {
                     <Link to={`/project/${project.id}`} style={{ color: 'var(--accent)', textDecoration: 'none', fontWeight: '600' }}>View details</Link>
                   </motion.article>
                 ))}
+                </div>
               </div>
             </div>
             <div style={{ position: 'relative' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                 <h3>Certifications</h3>
+                <div className="slider-nav">
+                  <button type="button" className="slider-btn" onClick={() => scrollCerts('left')}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
+                  </button>
+                  <button type="button" className="slider-btn" onClick={() => scrollCerts('right')}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
+                  </button>
+                </div>
               </div>
-              <div className="card-list">
+              <div className="carousel-wrapper" ref={certsCarouselRef} style={{ overflowX: 'auto', scrollSnapType: 'x mandatory', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
+                <div className="card-list">
                 {state.certifications.map((cert, index) => (
                   <motion.article 
                     key={cert.id} 
@@ -604,6 +637,7 @@ function Portfolio({ state, setState }) {
                     <div dangerouslySetInnerHTML={{ __html: cert.description }} />
                   </motion.article>
                 ))}
+                </div>
               </div>
             </div>
           </div>
