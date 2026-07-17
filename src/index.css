@@ -131,6 +131,9 @@ h4 { font-size: 1.1rem; }
 .card-list > article.project-card { flex: 0 0 min(320px, 85vw); scroll-snap-align: start; }
 .card-list > article.cert-card { flex: 0 0 min(320px, 85vw); scroll-snap-align: start; }
 .project-card a, .cert-card a { color: var(--accent); text-decoration: none; font-weight: 600; }
+.slider-nav { display: flex; gap: 8px; }
+.slider-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); width: 36px; height: 36px; border-radius: 50%; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease; padding: 0; }
+.slider-btn:hover { background: rgba(124, 58, 237, 0.4); border-color: rgba(124, 58, 237, 0.8); }
 .map-card { overflow: hidden; border-radius: 18px; border: 1px solid var(--border); }
 .map-card iframe { width: 100%; min-height: 320px; border: 0; }
 
@@ -240,6 +243,7 @@ h4 { font-size: 1.1rem; }
     display: flex;
     animation: fadeInUp 200ms ease forwards;
   }
+  .slider-nav { display: none; }
 }
 
 /* Mobile (max-width: 560px) */

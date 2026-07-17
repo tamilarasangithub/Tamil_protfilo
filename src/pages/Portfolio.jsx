@@ -76,7 +76,7 @@ function Portfolio({ state, setState }) {
     leetcode: 'https://leetcode.com/u/tamilarasangithub'
   };
 
-  const [liveStats, setLiveStats] = useState({ github: 0, leetcode: 0, topLanguages: [], leetcodeDetails: [], loading: true });
+  const [liveStats, setLiveStats] = useState({ github: 0, leetcode: 0, topLanguages: [], leetcodeDetails: [], githubDetails: [], loading: true });
   const [formStatus, setFormStatus] = useState(null);
 
   React.useEffect(() => {
@@ -85,7 +85,7 @@ function Portfolio({ state, setState }) {
         const [userRes, reposRes, lcRes] = await Promise.all([
           fetch('https://api.github.com/users/tamilarasangithub').catch(() => null),
           fetch('https://api.github.com/users/tamilarasangithub/repos?per_page=100').catch(() => null),
-          fetch('https://alfa-leetcode-api.onrender.com/tamilarasangithub/solved').catch(() => null)
+          fetch('https://leetcode-api-faisalshohag.vercel.app/tamilarasangithub').catch(() => null)
         ]);
         
         const defaultTopLanguages = [
@@ -106,9 +106,20 @@ function Portfolio({ state, setState }) {
         let topLanguages = defaultTopLanguages;
         let leetcodeDetails = defaultLeetcodeDetails;
 
+        let githubDetails = [
+          { name: 'Followers', count: 0, color: '#9900ff' },
+          { name: 'Following', count: 0, color: '#00b8a3' },
+          { name: 'Public Repos', count: 21, color: '#ffc01e' }
+        ];
+
         if (userRes && userRes.ok) {
           const ghData = await userRes.json();
           githubCount = ghData.public_repos || 21;
+          githubDetails = [
+            { name: 'Followers', count: ghData.followers || 0, color: '#9900ff' },
+            { name: 'Following', count: ghData.following || 0, color: '#00b8a3' },
+            { name: 'Public Repos', count: ghData.public_repos || 21, color: '#ffc01e' }
+          ];
         }
 
         if (reposRes && reposRes.ok) {
@@ -130,8 +141,8 @@ function Portfolio({ state, setState }) {
 
         if (lcRes && lcRes.ok) {
           const lcData = await lcRes.json();
-          if (lcData && lcData.solvedProblem !== undefined) {
-            leetcodeCount = lcData.solvedProblem || 5;
+          if (lcData && (lcData.totalSolved !== undefined || lcData.solvedProblem !== undefined)) {
+            leetcodeCount = lcData.totalSolved || lcData.solvedProblem || 5;
             leetcodeDetails = [
               { name: 'Easy Problems', count: lcData.easySolved || 0, color: '#00b8a3' },
               { name: 'Medium Problems', count: lcData.mediumSolved || 0, color: '#ffc01e' },
@@ -140,7 +151,7 @@ function Portfolio({ state, setState }) {
           }
         }
 
-        setLiveStats({ github: githubCount, leetcode: leetcodeCount, topLanguages, leetcodeDetails, loading: false });
+        setLiveStats({ github: githubCount, leetcode: leetcodeCount, topLanguages, leetcodeDetails, githubDetails, loading: false });
       } catch (error) {
         console.error("Error fetching live stats", error);
         setLiveStats({ 
@@ -157,6 +168,11 @@ function Portfolio({ state, setState }) {
             { name: 'Medium Problems', count: 0, color: '#ffc01e' },
             { name: 'Hard Problems', count: 0, color: '#ff375f' }
           ], 
+          githubDetails: [
+            { name: 'Followers', count: 0, color: '#9900ff' },
+            { name: 'Following', count: 0, color: '#00b8a3' },
+            { name: 'Public Repos', count: 21, color: '#ffc01e' }
+          ],
           loading: false 
         });
       }
@@ -455,6 +471,41 @@ function Portfolio({ state, setState }) {
             </div>
           )}
 
+          {!liveStats.loading && liveStats.githubDetails && liveStats.githubDetails.length > 0 && (
+            <div style={{ padding: '0 2rem', maxWidth: '800px', margin: '2rem auto 0 auto', width: '100%' }}>
+              <h3 style={{ marginBottom: '2rem', color: '#00b8a3', textAlign: 'center' }}>GitHub Insights</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                {liveStats.githubDetails.map((detail, idx) => {
+                  const maxCount = Math.max(...liveStats.githubDetails.map(d => d.count), 1);
+                  const percentage = (detail.count / maxCount) * 100;
+                  return (
+                    <motion.div 
+                      key={detail.name}
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: idx * 0.1 }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                        <span style={{ fontWeight: '500', color: 'var(--text-main)' }}>{detail.name}</span>
+                        <span style={{ color: 'var(--text-muted)' }}>{detail.count}</span>
+                      </div>
+                      <div style={{ width: '100%', height: '12px', background: 'rgba(255,255,255,0.05)', borderRadius: '6px', overflow: 'hidden' }}>
+                        <motion.div 
+                          initial={{ width: 0 }}
+                          whileInView={{ width: `${percentage}%` }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 1, delay: 0.2 + idx * 0.1, ease: 'easeOut' }}
+                          style={{ height: '100%', background: detail.color, borderRadius: '6px' }}
+                        />
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           {!liveStats.loading && liveStats.leetcodeDetails && liveStats.leetcodeDetails.length > 0 && (
             <div style={{ padding: '0 2rem', maxWidth: '800px', margin: '2rem auto 3rem auto', width: '100%' }}>
               <h3 style={{ marginBottom: '2rem', color: '#FFA116', textAlign: 'center' }}>LeetCode Problems Solved</h3>
@@ -505,8 +556,14 @@ function Portfolio({ state, setState }) {
           </div>
 
           <div className="portfolio-grid">
-            <div>
-              <h3>Projects</h3>
+            <div style={{ position: 'relative' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h3>Projects</h3>
+                <div className="slider-nav">
+                  <button onClick={() => projectsRef.current.scrollBy({ left: -300, behavior: 'smooth' })} className="slider-btn">←</button>
+                  <button onClick={() => projectsRef.current.scrollBy({ left: 300, behavior: 'smooth' })} className="slider-btn">→</button>
+                </div>
+              </div>
               <div className="card-list" ref={projectsRef}>
                 {filteredProjects.map((project) => (
                   <article 
@@ -521,8 +578,14 @@ function Portfolio({ state, setState }) {
                 ))}
               </div>
             </div>
-            <div>
-              <h3>Certifications</h3>
+            <div style={{ position: 'relative' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h3>Certifications</h3>
+                <div className="slider-nav">
+                  <button onClick={() => certsRef.current.scrollBy({ left: -300, behavior: 'smooth' })} className="slider-btn">←</button>
+                  <button onClick={() => certsRef.current.scrollBy({ left: 300, behavior: 'smooth' })} className="slider-btn">→</button>
+                </div>
+              </div>
               <div className="card-list" ref={certsRef}>
                 {state.certifications.map((cert) => (
                   <article 
