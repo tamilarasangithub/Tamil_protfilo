@@ -212,6 +212,31 @@ function Portfolio({ state, setState }) {
       transition={{ type: "spring", stiffness: 80, damping: 15 }}
       className="page-shell"
     >
+      <nav className="top-nav card" style={{ marginBottom: '16px' }}>
+        <div className="mobile-menu-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </div>
+        <div className="nav-links">
+          <a href="#about">About</a>
+          <a href="#resume">Resume</a>
+          <a href="#portfolio">Portfolio</a>
+          <a href="#insights">Insights</a>
+          <a href="#contact">Contact</a>
+          {state.loggedIn ? (
+            <>
+              <Link className="nav-cta" to="/admin">Admin</Link>
+              <button type="button" className="nav-cta" onClick={handleLogout} style={{marginLeft: '10px'}}>Logout</button>
+            </>
+          ) : (
+            <Link className="nav-cta" to="/login">Login</Link>
+          )}
+        </div>
+      </nav>
+
       <header className="hero card">
         <div className="hero-content">
           <p className="eyebrow">Ethical Hacker • IoT Engineer • Web Developer</p>
@@ -287,30 +312,7 @@ function Portfolio({ state, setState }) {
         </aside>
       </header>
 
-      <nav className="top-nav card">
-        <div className="mobile-menu-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="3" y1="12" x2="21" y2="12"></line>
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <line x1="3" y1="18" x2="21" y2="18"></line>
-          </svg>
-        </div>
-        <div className="nav-links">
-          <a href="#about">About</a>
-          <a href="#resume">Resume</a>
-          <a href="#portfolio">Portfolio</a>
-          <a href="#insights">Insights</a>
-          <a href="#contact">Contact</a>
-          {state.loggedIn ? (
-            <>
-              <Link className="nav-cta" to="/admin">Admin</Link>
-              <button type="button" className="nav-cta" onClick={handleLogout} style={{marginLeft: '10px'}}>Logout</button>
-            </>
-          ) : (
-            <Link className="nav-cta" to="/login">Login</Link>
-          )}
-        </div>
-      </nav>
+
 
       <main className="main-stack">
         
