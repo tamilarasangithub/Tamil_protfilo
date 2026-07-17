@@ -38,8 +38,12 @@ img, iframe { display: block; max-width: 100%; }
 }
 .card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(124, 58, 237, 0.3); border: 1px solid rgba(124, 58, 237, 0.3); }
 .reveal-up { animation: revealUp 650ms cubic-bezier(0.22, 1, 0.36, 1) both; }
-.hero { display: grid; gap: 24px; grid-template-columns: 1.3fr 0.9fr; padding: 60px 30px 30px 30px; }
-.eyebrow { text-transform: uppercase; letter-spacing: 0.24em; font-size: 0.74rem; color: var(--accent); margin: 0 0 10px; font-weight: 700; }
+.hero { display: grid; gap: 24px; grid-template-columns: 1.3fr 0.9fr; padding: 60px 30px 30px 30px; overflow: visible; }
+.hero-cutout { position: absolute; top: -1px; left: -1px; height: 50px; width: var(--nav-width, 600px); background: #0b0710; border-bottom-right-radius: 24px; z-index: 1; }
+.hero-cutout::before, .hero-cutout::after { content: ''; position: absolute; width: 24px; height: 24px; background: transparent; border-radius: 50%; pointer-events: none; }
+.hero-cutout::before { bottom: -24px; left: -1px; box-shadow: -12px -12px 0 0 #0b0710; }
+.hero-cutout::after { top: -1px; right: -24px; box-shadow: -12px -12px 0 0 #0b0710; }
+.eyebrow { text-transform: uppercase; letter-spacing: 0.24em; font-size: 0.74rem; color: var(--accent); margin: 0 0 10px; font-weight: 700; position: relative; z-index: 2; }
 .hero-content { display: flex; flex-direction: column; justify-content: center; }
 .hero h1 { font-size: clamp(2rem, 4vw, 3.1rem); margin: 0 0 16px; color: #fff; line-height: 1.2; }
 .hero-text, .section p, .service-card p, .timeline-card p, .helper-text, .contact-form input, .contact-form textarea, .stack-form input, .stack-form textarea, .login-info p { color: rgba(255,255,255,0.7); line-height: 1.8; margin-top: 0; margin-bottom: 16px; }
@@ -268,6 +272,7 @@ h4 { font-size: 1.2rem; font-weight: 500; }
   .stat-card { padding: 16px; }
   .stat-card strong { font-size: 1.5rem; }
   .stat-card span { font-size: 0.85rem; }
+  .hero-cutout { display: none; }
   .portfolio-grid { grid-template-columns: 1fr; }
   .top-nav { padding: 10px; border-radius: 16px; bottom: 10px; width: calc(100% - 20px); }
   .top-nav a, .top-nav button { padding: 8px 12px; font-size: 0.9rem; }
