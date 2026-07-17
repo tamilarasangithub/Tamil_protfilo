@@ -244,6 +244,62 @@ h1:hover, h2:hover { animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) bot
   width: 100%; display: flex; flex-direction: column; height: 100%;
 }
 
+/* Certification Timeline Card V2 */
+.cert-card-v2 {
+  position: relative;
+  background: rgba(10, 5, 22, 0.7); /* dark obsidian */
+  border: 1px solid rgba(168, 85, 247, 0.3); /* thin violet glassmorphic outline stroke */
+  border-radius: 16px; /* rounded-2xl */
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  transition: all 300ms ease;
+  height: 100%;
+  margin-left: 8px; /* space for the bullet */
+}
+.cert-card-v2::before {
+  content: '';
+  position: absolute;
+  top: 24px;
+  left: -8px; /* indicator bullet line on the absolute left boundary */
+  width: 14px;
+  height: 14px;
+  background: #a855f7;
+  border-radius: 50%;
+  box-shadow: 0 0 12px #a855f7;
+  border: 2px solid #0b0710;
+  z-index: 2;
+}
+.cert-card-v2 .cert-image {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  border-radius: 16px 16px 0 0; /* rounded-t-xl */
+  max-height: 180px;
+  margin-bottom: 16px; /* mb-4 */
+}
+.cert-card-v2 h4 {
+  text-transform: uppercase; /* title in uppercase */
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+  margin-top: 0;
+  margin-bottom: 12px;
+  letter-spacing: 0.05em;
+}
+.cert-card-v2 .meta-pill {
+  /* metadata info pill styled like the institution capsule tag container */
+  color: #a855f7;
+  background: rgba(124, 58, 237, 0.1);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  width: fit-content;
+  margin-bottom: 16px;
+  border: 1px solid rgba(168, 85, 247, 0.2);
+}
+.carousel-native-wrapper::-webkit-scrollbar { display: none; }
+
 .slider-nav { display: none; } /* Hidden by default on Mobile/Tablet */
 .slider-btn { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); width: 40px; height: 40px; border-radius: 50%; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); padding: 0; backdrop-filter: blur(8px); }
 .slider-btn:hover { background: rgba(176, 38, 255, 0.5); border-color: rgba(0, 240, 255, 0.8); transform: scale(1.1); box-shadow: 0 0 15px rgba(0, 240, 255, 0.4); }
@@ -294,7 +350,7 @@ h1:hover, h2:hover { animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) bot
   
   /* Premium Carousel Tablet */
   .premium-card-list { display: flex; flex-direction: row; gap: 24px; width: max-content; }
-  .premium-card-list > article.premium-card {
+  .premium-card-list > article.premium-card, .premium-card-list > article.cert-card-v2 {
     width: calc(50vw - 40px);
     min-width: 320px;
     max-width: 400px;
@@ -330,7 +386,7 @@ h1:hover, h2:hover { animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) bot
   
   /* Premium Carousel Desktop */
   .premium-card-list { display: flex; flex-direction: row; gap: 24px; width: max-content; }
-  .premium-card-list > article.premium-card {
+  .premium-card-list > article.premium-card, .premium-card-list > article.cert-card-v2 {
     min-width: calc((100% - 48px) / 3); 
     max-width: calc((100% - 48px) / 3); 
     flex-shrink: 0;

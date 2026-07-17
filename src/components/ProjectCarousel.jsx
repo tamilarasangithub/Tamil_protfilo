@@ -8,33 +8,10 @@ function ProjectCarousel({ title, items, type = 'project' }) {
   const trackRef = useRef(null);
   const containerRef = useRef(null);
 
-  // Recalculate if window resizes to prevent dragging past limits
-  useEffect(() => {
-    const handleResize = () => {
-      setXPos(0);
-      controls.start({ x: 0 });
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [controls]);
-
   const slide = (direction) => {
-    if (!trackRef.current || !containerRef.current) return;
-    
-    const containerWidth = containerRef.current.offsetWidth;
-    const cardElement = trackRef.current.children[0];
-    const shift = cardElement ? cardElement.offsetWidth + 24 : 350; 
-
-    // Calculate maximum scroll boundary
-    const maxScroll = trackRef.current.scrollWidth - containerWidth;
-    if (maxScroll <= 0) return;
-
-    let newX = xPos + (direction === 'left' ? shift : -shift);
-    if (newX > 0) newX = 0;
-    if (newX < -maxScroll) newX = -maxScroll;
-
-    setXPos(newX);
-    controls.start({ x: newX, transition: { type: 'spring', stiffness: 200, damping: 25 } });
+    if (!containerRef.current) return;
+    const shift = 380; 
+    containerRef.current.scrollBy({ left: direction === 'left' ? -shift : shift, behavior: 'smooth' });
   };
 
   return (
@@ -51,45 +28,47 @@ function ProjectCarousel({ title, items, type = 'project' }) {
         </div>
       </div>
       
-      <div ref={containerRef} style={{ overflow: 'hidden', width: '100%', padding: '24px 8px', margin: '-24px -8px' }}>
+      <div ref={containerRef} className="carousel-native-wrapper" style={{ overflowX: 'auto', overflowY: 'hidden', width: '100%', scrollbarWidth: 'none', msOverflowStyle: 'none', padding: '10px 4px' }}>
         <motion.div 
           ref={trackRef}
           className="premium-card-list" 
-          animate={controls}
-          initial={{ x: 0 }}
           style={{ display: 'flex', gap: '24px', width: 'max-content' }}
         >
-          {items.map((item, index) => (
+          {items.map((item, index) => {
+            const isCert = type === 'cert';
+            const cardClass = isCert ? 'cert-card-v2' : 'premium-card';
+            return (
             <motion.article 
               key={item.id} 
-              className="premium-card"
+              className={cardClass}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.4, delay: index * 0.1 }}
-              whileHover={{ 
+              whileHover={!isCert ? { 
                 scale: 1.02, 
                 boxShadow: '0 0 30px rgba(168,85,247,0.15)',
                 borderColor: 'rgba(168,85,247,0.4)'
-              }}
+              } : { scale: 1.02, borderColor: 'rgba(168,85,247,0.8)' }}
             >
-              {type === 'cert' && item.image && (
-                <div className="cert-image-container">
-                  <img src={item.image} alt={item.title} />
-                </div>
+              {isCert ? (
+                <>
+                  {item.image && <img src={item.image} alt={item.title} className="cert-image" />}
+                  <h4>{item.title}</h4>
+                  <div className="meta-pill">{item.issuer}{item.year ? ` • ${item.year}` : ''}</div>
+                  <div className="premium-desc" dangerouslySetInnerHTML={{ __html: item.description }} />
+                  <Link to={`/cert/${item.id}`} className="premium-link">View details</Link>
+                </>
+              ) : (
+                <>
+                  <div className="pill-tag premium-badge">{item.category?.toLowerCase() || 'project'}</div>
+                  <h4>{item.title}</h4>
+                  <div className="premium-desc" dangerouslySetInnerHTML={{ __html: item.description }} />
+                  <Link to={`/project/${item.id}`} className="premium-link">View details</Link>
+                </>
               )}
-              {type === 'project' && <div className="pill-tag premium-badge">{item.category?.toLowerCase() || 'project'}</div>}
-              <h4>{item.title}</h4>
-              
-              {type === 'cert' && <p className="meta">{item.issuer}{item.year ? ` • ${item.year}` : ''}</p>}
-              
-              <div className="premium-desc" dangerouslySetInnerHTML={{ __html: item.description }} />
-              
-              <Link to={`/${type === 'project' ? 'project' : 'cert'}/${item.id}`} className="premium-link">
-                View details
-              </Link>
             </motion.article>
-          ))}
+          )})}
         </motion.div>
       </div>
     </div>
