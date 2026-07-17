@@ -37,7 +37,7 @@ img, iframe { display: block; max-width: 100%; }
 .hero-cutout::before, .hero-cutout::after { content: ''; position: absolute; width: 24px; height: 24px; pointer-events: none; }
 .hero-cutout::before { bottom: -24px; left: 0; background: radial-gradient(circle at bottom right, transparent 24px, black 24.5px); }
 .hero-cutout::after { top: 0; right: -24px; background: radial-gradient(circle at bottom right, transparent 24px, black 24.5px); }
-.hero:hover { filter: drop-shadow(1px 1px 0 #b026ff) drop-shadow(-1px -1px 0 #b026ff); transform: translateY(-3px); }
+.hero:hover { transform: translateY(-3px); }
 .eyebrow { text-transform: uppercase; letter-spacing: 0.24em; font-size: 0.74rem; color: var(--accent); margin: 0 0 10px; font-weight: 700; position: relative; z-index: 2; }
 .hero-content { display: flex; flex-direction: column; justify-content: center; position: relative; z-index: 2; }
 .hero h1 { font-size: clamp(2rem, 4vw, 3.1rem); margin: 0 0 16px; color: #fff; line-height: 1.2; }
