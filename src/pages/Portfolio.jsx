@@ -209,7 +209,7 @@ function Portfolio({ state, setState }) {
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -15 }}
-      transition={{ duration: 0.6, ease: "easeInOut" }}
+      transition={{ type: "spring", stiffness: 80, damping: 15 }}
       className="page-shell"
     >
       <header className="hero card">
@@ -403,7 +403,7 @@ function Portfolio({ state, setState }) {
                   initial={{ opacity: 0, scale: 0.8 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.15 }}
+                  transition={{ type: "spring", stiffness: 120, damping: 15, delay: index * 0.1 }}
                   whileHover={{ scale: 1.05 }}
                   style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem', background: 'rgba(255,255,255,0.02)', padding: '30px', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.05)', width: '250px' }}
                 >
@@ -449,7 +449,7 @@ function Portfolio({ state, setState }) {
                       initial={{ opacity: 0, x: -20 }}
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true }}
-                      transition={{ duration: 0.5, delay: idx * 0.1 }}
+                      transition={{ type: "spring", stiffness: 120, damping: 15, delay: idx * 0.08 }}
                     >
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
                         <span style={{ fontWeight: '500', color: 'var(--text-main)' }}>{lang.name}</span>
@@ -484,7 +484,7 @@ function Portfolio({ state, setState }) {
                       initial={{ opacity: 0, x: -20 }}
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true }}
-                      transition={{ duration: 0.5, delay: idx * 0.1 }}
+                      transition={{ type: "spring", stiffness: 120, damping: 15, delay: idx * 0.08 }}
                     >
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
                         <span style={{ fontWeight: '500', color: 'var(--text-main)' }}>{detail.name}</span>
@@ -519,7 +519,7 @@ function Portfolio({ state, setState }) {
                       initial={{ opacity: 0, x: -20 }}
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true }}
-                      transition={{ duration: 0.5, delay: idx * 0.1 }}
+                      transition={{ type: "spring", stiffness: 120, damping: 15, delay: idx * 0.08 }}
                     >
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
                         <span style={{ fontWeight: '500', color: 'var(--text-main)' }}>{detail.name}</span>
