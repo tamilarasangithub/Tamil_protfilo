@@ -214,32 +214,34 @@ function Portfolio({ state, setState }) {
     >
 
 
+      <nav className="top-nav card" style={{ marginBottom: '20px' }}>
+        <div className="mobile-menu-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </div>
+        <div className="nav-links">
+          <a href="#about">About</a>
+          <a href="#resume">Resume</a>
+          <a href="#portfolio">Portfolio</a>
+          <a href="#insights">Insights</a>
+          <a href="#contact">Contact</a>
+          {state.loggedIn ? (
+            <>
+              <Link className="nav-cta" to="/admin">Admin</Link>
+              <button type="button" className="nav-cta" onClick={handleLogout} style={{marginLeft: '10px'}}>Logout</button>
+            </>
+          ) : (
+            <Link className="nav-cta" to="/login">Login</Link>
+          )}
+        </div>
+      </nav>
+
       <header className="hero card">
         <div className="hero-content">
-          <nav className="top-nav card" style={{ marginTop: 0, marginBottom: '24px', position: 'relative', top: 0, width: 'fit-content', padding: '10px 16px' }}>
-            <div className="mobile-menu-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="3" y1="12" x2="21" y2="12"></line>
-                <line x1="3" y1="6" x2="21" y2="6"></line>
-                <line x1="3" y1="18" x2="21" y2="18"></line>
-              </svg>
-            </div>
-            <div className="nav-links">
-              <a href="#about">About</a>
-              <a href="#resume">Resume</a>
-              <a href="#portfolio">Portfolio</a>
-              <a href="#insights">Insights</a>
-              <a href="#contact">Contact</a>
-              {state.loggedIn ? (
-                <>
-                  <Link className="nav-cta" to="/admin">Admin</Link>
-                  <button type="button" className="nav-cta" onClick={handleLogout} style={{marginLeft: '10px'}}>Logout</button>
-                </>
-              ) : (
-                <Link className="nav-cta" to="/login">Login</Link>
-              )}
-            </div>
-          </nav>
+
 
           <p className="eyebrow">Ethical Hacker • IoT Engineer • Web Developer</p>
           <h1 style={{ background: 'linear-gradient(135deg, #fff 0%, #d8b4fe 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', display: 'inline-block' }}>Hi, I’m Tamilarasan S.</h1>
