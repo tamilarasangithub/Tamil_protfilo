@@ -254,6 +254,14 @@ function Portfolio({ state, setState }) {
       <header className="hero" style={{ position: 'relative' }}>
         <div className="hero-content">
 
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+            <motion.div 
+              animate={{ opacity: [1, 0.4, 1, 0.8, 1, 1, 0.2, 1] }} 
+              transition={{ repeat: Infinity, duration: 4, times: [0, 0.1, 0.2, 0.3, 0.4, 0.8, 0.9, 1] }}
+              style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#b026ff', boxShadow: '0 0 8px #b026ff' }} 
+            />
+            <span style={{ color: '#b026ff', fontSize: '0.75rem', fontWeight: '600', letterSpacing: '2px', textShadow: '0 0 5px rgba(176, 38, 255, 0.5)' }}>SYSTEM STATUS: ONLINE</span>
+          </div>
           <p className="eyebrow">Ethical Hacker • IoT Engineer • Web Developer</p>
           <h1 style={{ background: 'linear-gradient(135deg, #fff 0%, #d8b4fe 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', display: 'inline-block' }}>Hi, I’m Tamilarasan S.</h1>
           <p className="hero-text">
