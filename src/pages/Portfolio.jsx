@@ -215,7 +215,7 @@ function Portfolio({ state, setState }) {
       <header className="hero card">
         <div className="hero-content">
           <p className="eyebrow">Ethical Hacker • IoT Engineer • Web Developer</p>
-          <h1>Hi, I’m Tamilarasan S.</h1>
+          <h1 style={{ background: 'linear-gradient(135deg, #fff 0%, #d8b4fe 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', display: 'inline-block' }}>Hi, I’m Tamilarasan S.</h1>
           <p className="hero-text">
             I am a dedicated Penetration Tester, a Full-Stack Web Developer, and an IoT Engineer—bridging the gap between building systems and breaking them.
           </p>
@@ -254,11 +254,26 @@ function Portfolio({ state, setState }) {
             </motion.a>
           </div>
 
-          <ul className="hero-highlights">
-            <li style={{ marginBottom: '6px' }}><strong>Ethical Hacking:</strong> Penetration testing and vulnerability assessment</li>
-            <li style={{ marginBottom: '6px' }}><strong>Web Development:</strong> Secure, modern full-stack web applications</li>
-            <li style={{ marginBottom: '6px' }}><strong>IoT Engineering:</strong> Smart hardware with a future focus on IoT Hacking</li>
-          </ul>
+          <div className="hero-highlights">
+            <div className="hero-highlight-card">
+              <div className="highlight-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              </div>
+              <div><strong>Ethical Hacking:</strong> <span style={{color: 'rgba(255,255,255,0.7)'}}>Penetration testing & vulnerability assessment</span></div>
+            </div>
+            <div className="hero-highlight-card">
+              <div className="highlight-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline><polyline points="8 13 6 15 8 17"></polyline><polyline points="16 17 18 15 16 13"></polyline><line x1="10" y1="18" x2="14" y2="12"></line></svg>
+              </div>
+              <div><strong>Web Development:</strong> <span style={{color: 'rgba(255,255,255,0.7)'}}>Secure, modern full-stack web applications</span></div>
+            </div>
+            <div className="hero-highlight-card">
+              <div className="highlight-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
+              </div>
+              <div><strong>IoT Engineering:</strong> <span style={{color: 'rgba(255,255,255,0.7)'}}>Smart hardware with a focus on IoT Hacking</span></div>
+            </div>
+          </div>
         </div>
 
         <aside className="hero-card">
