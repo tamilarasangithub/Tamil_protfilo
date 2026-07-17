@@ -29,11 +29,11 @@ function CustomCursor() {
           position: 'fixed',
           top: 0, left: 0,
           width: '8px', height: '8px',
-          backgroundColor: '#00f0ff',
+          backgroundColor: '#b026ff',
           borderRadius: '50%',
           pointerEvents: 'none',
           zIndex: 9999,
-          boxShadow: '0 0 10px #00f0ff'
+          boxShadow: '0 0 10px #b026ff'
         }}
         animate={{ 
           x: mousePosition.x - 4, 
@@ -78,7 +78,7 @@ function AnimatedBackground() {
           position: 'absolute',
           top: '20%', left: '30%',
           width: '40vw', height: '40vw',
-          background: 'radial-gradient(circle, rgba(153,0,255,0.15) 0%, rgba(153,0,255,0) 70%)',
+          background: 'radial-gradient(circle, rgba(176, 38, 255, 0.15) 0%, rgba(176, 38, 255, 0) 70%)',
           borderRadius: '50%',
           filter: 'blur(60px)'
         }}
@@ -94,7 +94,7 @@ function AnimatedBackground() {
           position: 'absolute',
           bottom: '20%', right: '20%',
           width: '30vw', height: '30vw',
-          background: 'radial-gradient(circle, rgba(0,251,255,0.1) 0%, rgba(0,251,255,0) 70%)',
+          background: 'radial-gradient(circle, rgba(124, 58, 237, 0.15) 0%, rgba(124, 58, 237, 0) 70%)',
           borderRadius: '50%',
           filter: 'blur(60px)'
         }}
