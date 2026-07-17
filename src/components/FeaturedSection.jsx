@@ -46,7 +46,7 @@ export const FeaturedSection = ({ projects, certifications }) => {
             {projects.map((project, index) => (
               <div 
                 key={index}
-                className="group min-w-[85vw] md:min-w-[45vw] lg:min-w-[calc((100%-3rem)/3)] max-w-[calc((100%-3rem)/3)] flex-shrink-0 snap-start bg-[#040209] border border-white/5 rounded-2xl p-6 relative hover:border-[#a855f7] hover:shadow-[0_0_25px_rgba(168,85,247,0.15)] transition-all duration-300 ease-out flex flex-col"
+                className="group min-w-[85vw] md:min-w-[45vw] lg:min-w-[calc((100%-3rem)/3)] max-w-[calc((100%-3rem)/3)] flex-shrink-0 snap-start bg-[#040209] border border-white/5 rounded-2xl p-6 relative hover:border-[#a855f7] hover:shadow-[0_0_15px_rgba(168,85,247,0.6),inset_0_0_15px_rgba(168,85,247,0.3)] transition-all duration-300 ease-out flex flex-col"
               >
 
                 <h3 className="text-xl md:text-2xl text-white uppercase font-bold tracking-wider font-['Rajdhani'] mb-4 leading-snug">{project.title}</h3>
@@ -89,7 +89,7 @@ export const FeaturedSection = ({ projects, certifications }) => {
             {certifications.map((cert, index) => (
               <div 
                 key={index}
-                className="group min-w-[85vw] md:min-w-[45vw] lg:min-w-[calc((100%-3rem)/3)] max-w-[calc((100%-3rem)/3)] flex-shrink-0 snap-start bg-[#040209] border border-white/5 rounded-2xl p-6 relative hover:border-[#a855f7] hover:shadow-[0_0_25px_rgba(168,85,247,0.15)] transition-all duration-300 ease-out flex flex-col"
+                className="group min-w-[85vw] md:min-w-[45vw] lg:min-w-[calc((100%-3rem)/3)] max-w-[calc((100%-3rem)/3)] flex-shrink-0 snap-start bg-[#040209] border border-white/5 rounded-2xl p-6 relative hover:border-[#a855f7] hover:shadow-[0_0_15px_rgba(168,85,247,0.6),inset_0_0_15px_rgba(168,85,247,0.3)] transition-all duration-300 ease-out flex flex-col"
               >
                 <div className="w-full h-40 mb-6 overflow-hidden rounded-xl bg-black/40 flex items-center justify-center relative z-10 border border-white/5">
                   <img src={cert.image} alt={cert.title} className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" />
