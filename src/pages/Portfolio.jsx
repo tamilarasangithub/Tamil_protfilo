@@ -64,7 +64,8 @@ function Portfolio({ state, setState }) {
   React.useEffect(() => {
     const updateNavWidth = () => {
       if (navRef.current) {
-        setNavWidth(navRef.current.offsetWidth + 12); 
+        // Tightly hug the nav bar, no extra gap
+        setNavWidth(navRef.current.offsetWidth); 
       }
     };
     updateNavWidth();
