@@ -36,7 +36,7 @@ function ProjectCarousel({ title, items, type = 'project' }) {
         >
           {items.map((item, index) => {
             const isCert = type === 'cert';
-            const cardClass = isCert ? 'cert-card-v2' : 'premium-card';
+            const cardClass = isCert ? 'cert-card-v2' : 'project-card';
             return (
             <motion.article 
               key={item.id} 
@@ -45,11 +45,7 @@ function ProjectCarousel({ title, items, type = 'project' }) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.4, delay: index * 0.1 }}
-              whileHover={!isCert ? { 
-                scale: 1.02, 
-                boxShadow: '0 0 30px rgba(168,85,247,0.15)',
-                borderColor: 'rgba(168,85,247,0.4)'
-              } : { scale: 1.02, borderColor: 'rgba(168,85,247,0.8)' }}
+              whileHover={isCert ? { scale: 1.02, borderColor: 'rgba(168,85,247,0.8)' } : undefined}
             >
               {isCert ? (
                 <>
@@ -61,10 +57,10 @@ function ProjectCarousel({ title, items, type = 'project' }) {
                 </>
               ) : (
                 <>
-                  <div className="pill-tag premium-badge">{item.category?.toLowerCase() || 'project'}</div>
+                  <div className="pill-tag">{item.category}</div>
                   <h4>{item.title}</h4>
-                  <div className="premium-desc" dangerouslySetInnerHTML={{ __html: item.description }} />
-                  <Link to={`/project/${item.id}`} className="premium-link">View details</Link>
+                  <div dangerouslySetInnerHTML={{ __html: item.description }} />
+                  <Link to={`/project/${item.id}`} style={{ color: 'var(--accent)', textDecoration: 'none', fontWeight: '600', marginTop: 'auto', display: 'inline-block', paddingTop: '12px' }}>View details</Link>
                 </>
               )}
             </motion.article>

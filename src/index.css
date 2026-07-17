@@ -240,7 +240,7 @@ h1:hover, h2:hover { animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) bot
 .premium-card-list {
   display: flex; flex-direction: column; gap: 24px; width: 100%;
 }
-.premium-card-list > article.premium-card {
+.premium-card-list > article.project-card, .premium-card-list > article.premium-card {
   width: 100%; display: flex; flex-direction: column; height: 100%;
 }
 
@@ -350,7 +350,7 @@ h1:hover, h2:hover { animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) bot
   
   /* Premium Carousel Tablet */
   .premium-card-list { display: flex; flex-direction: row; gap: 24px; width: max-content; }
-  .premium-card-list > article.premium-card, .premium-card-list > article.cert-card-v2 {
+  .premium-card-list > article.project-card, .premium-card-list > article.premium-card, .premium-card-list > article.cert-card-v2 {
     width: calc(50vw - 40px);
     min-width: 320px;
     max-width: 400px;
@@ -386,7 +386,7 @@ h1:hover, h2:hover { animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) bot
   
   /* Premium Carousel Desktop */
   .premium-card-list { display: flex; flex-direction: row; gap: 24px; width: max-content; }
-  .premium-card-list > article.premium-card, .premium-card-list > article.cert-card-v2 {
+  .premium-card-list > article.project-card, .premium-card-list > article.premium-card, .premium-card-list > article.cert-card-v2 {
     min-width: calc((100% - 48px) / 3); 
     max-width: calc((100% - 48px) / 3); 
     flex-shrink: 0;
