@@ -41,17 +41,30 @@ export const FeaturedSection = ({ projects, certifications }) => {
           {/* Bound Viewport Wrapper */}
           <div 
             ref={projectScrollRef}
-            className="flex flex-row gap-6 w-full overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-none pb-4"
+            className="flex flex-row gap-10 w-full overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-none pb-8 pt-4 pl-6 pr-6"
           >
             {projects.map((project, index) => (
               <div 
                 key={index}
-                className="min-w-[85vw] md:min-w-[45vw] lg:min-w-[calc((100%-3rem)/3)] max-w-[calc((100%-3rem)/3)] flex-shrink-0 snap-start bg-[#040209] border border-white/5 rounded-2xl p-6 relative hover:border-[#a855f7] hover:shadow-[0_0_25px_rgba(168,85,247,0.15)] transition-all duration-300 ease-out"
+                className="group min-w-[85vw] md:min-w-[45vw] lg:min-w-[calc((100%-4.5rem)/3)] max-w-[calc((100%-4.5rem)/3)] flex-shrink-0 snap-start bg-[#040209] border border-white/5 rounded-2xl p-8 relative hover:border-[#a855f7] hover:shadow-[0_0_25px_rgba(168,85,247,0.15)] transition-all duration-300 ease-out flex flex-col mt-2 ml-4"
               >
-                <span className="text-xs text-purple-400 uppercase tracking-widest">{project.category}</span>
-                <h3 className="text-xl text-white uppercase font-bold tracking-wider mt-2 mb-3">{project.title}</h3>
-                <p className="text-slate-400 text-sm leading-relaxed mb-6" dangerouslySetInnerHTML={{ __html: project.description }} />
-                <a href={project.link || '#'} className="text-purple-400 hover:text-purple-300 text-sm font-semibold absolute bottom-6 left-6">View details</a>
+                {/* Vertical Timeline Track (Outside Card) */}
+                <div className="absolute -top-4 -bottom-4 -left-8 w-[2px] bg-[#a855f7]/20 group-hover:bg-[#a855f7]/50 transition-colors duration-300"></div>
+                {/* Glowing Timeline Node */}
+                <div className="absolute top-10 -left-[37px] w-4 h-4 rounded-full bg-[#a855f7] border-[3px] border-[#040209] shadow-[0_0_10px_#a855f7] group-hover:bg-[#d8b4fe] group-hover:shadow-[0_0_15px_#d8b4fe] transition-all duration-300"></div>
+
+                {/* Top Right Hover Target Icon */}
+                <div className="absolute top-6 right-6 w-8 h-8 rounded-full border border-[#a855f7] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-[0_0_10px_rgba(168,85,247,0.4)]">
+                  <div className="w-2 h-2 rounded-full bg-[#a855f7]"></div>
+                </div>
+
+                <h3 className="text-xl md:text-2xl text-white uppercase font-bold tracking-wider font-['Rajdhani'] pr-12 mb-4 leading-snug">{project.title}</h3>
+                
+                <div className="inline-flex bg-[#130927] rounded-full px-5 py-2 text-sm text-slate-300 mb-6 w-fit font-['Outfit'] border border-[#a855f7]/20 shadow-inner shadow-white/5">
+                  {project.category}
+                </div>
+                
+                <p className="text-slate-400 text-sm md:text-base leading-relaxed font-['Outfit'] flex-grow mb-6" dangerouslySetInnerHTML={{ __html: project.description }} />
               </div>
             ))}
           </div>
@@ -80,21 +93,34 @@ export const FeaturedSection = ({ projects, certifications }) => {
           {/* Bound Viewport Wrapper */}
           <div 
             ref={certScrollRef}
-            className="flex flex-row gap-6 w-full overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-none pb-4"
+            className="flex flex-row gap-10 w-full overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-none pb-8 pt-4 pl-6 pr-6"
           >
             {certifications.map((cert, index) => (
               <div 
                 key={index}
-                className="min-w-[85vw] md:min-w-[45vw] lg:min-w-[calc((100%-3rem)/3)] max-w-[calc((100%-3rem)/3)] flex-shrink-0 snap-start bg-[#040209] border border-white/5 rounded-2xl p-6 border-l-4 border-l-[#a855f7] hover:border-[#a855f7] hover:shadow-[0_0_25px_rgba(168,85,247,0.15)] transition-all duration-300 ease-out relative"
+                className="group min-w-[85vw] md:min-w-[45vw] lg:min-w-[calc((100%-4.5rem)/3)] max-w-[calc((100%-4.5rem)/3)] flex-shrink-0 snap-start bg-[#040209] border border-white/5 rounded-2xl p-8 relative hover:border-[#a855f7] hover:shadow-[0_0_25px_rgba(168,85,247,0.15)] transition-all duration-300 ease-out flex flex-col mt-2 ml-4"
               >
-                <div className="w-full h-40 mb-4 overflow-hidden rounded-xl bg-black/40 flex items-center justify-center">
-                  <img src={cert.image} alt={cert.title} className="w-full h-full object-contain" />
+                {/* Vertical Timeline Track (Outside Card) */}
+                <div className="absolute -top-4 -bottom-4 -left-8 w-[2px] bg-[#a855f7]/20 group-hover:bg-[#a855f7]/50 transition-colors duration-300"></div>
+                {/* Glowing Timeline Node */}
+                <div className="absolute top-10 -left-[37px] w-4 h-4 rounded-full bg-[#a855f7] border-[3px] border-[#040209] shadow-[0_0_10px_#a855f7] group-hover:bg-[#d8b4fe] group-hover:shadow-[0_0_15px_#d8b4fe] transition-all duration-300"></div>
+
+                {/* Top Right Hover Target Icon */}
+                <div className="absolute top-6 right-6 w-8 h-8 rounded-full border border-[#a855f7] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-[0_0_10px_rgba(168,85,247,0.4)] z-20 bg-[#040209]">
+                  <div className="w-2 h-2 rounded-full bg-[#a855f7]"></div>
                 </div>
-                <h3 className="text-lg text-white uppercase font-bold tracking-wider">{cert.title}</h3>
-                <div className="inline-block bg-purple-950/40 border border-purple-500/30 rounded-full px-3 py-1 text-xs text-purple-300 my-2">
+
+                <div className="w-full h-40 mb-6 overflow-hidden rounded-xl bg-black/40 flex items-center justify-center relative z-10 border border-white/5">
+                  <img src={cert.image} alt={cert.title} className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" />
+                </div>
+
+                <h3 className="text-xl md:text-2xl text-white uppercase font-bold tracking-wider font-['Rajdhani'] pr-12 mb-4 leading-snug">{cert.title}</h3>
+                
+                <div className="inline-flex bg-[#130927] rounded-full px-5 py-2 text-sm text-slate-300 mb-6 w-fit font-['Outfit'] border border-[#a855f7]/20 shadow-inner shadow-white/5">
                   {cert.issuer} • {cert.year}
                 </div>
-                <p className="text-slate-400 text-sm leading-relaxed mt-2" dangerouslySetInnerHTML={{ __html: cert.description }} />
+                
+                <p className="text-slate-400 text-sm md:text-base leading-relaxed font-['Outfit'] flex-grow" dangerouslySetInnerHTML={{ __html: cert.description }} />
               </div>
             ))}
           </div>
