@@ -5,8 +5,6 @@ function Portfolio({ state, setState }) {
   const projectsRef = React.useRef(null);
   const certsRef = React.useRef(null);
   const pubsRef = React.useRef(null);
-  const navRef = React.useRef(null);
-  const [navWidth, setNavWidth] = useState(580);
 
   React.useEffect(() => {
     const setupDrag = (slider) => {
@@ -60,12 +58,6 @@ function Portfolio({ state, setState }) {
       cleanupPubs();
     };
   }, []);
-
-  React.useEffect(() => {
-    if (navRef.current) {
-      setNavWidth(navRef.current.offsetWidth + 30 + 24); 
-    }
-  }, [state.loggedIn]);
 
   const [activeFilter, setActiveFilter] = useState('all');
 
@@ -222,7 +214,7 @@ function Portfolio({ state, setState }) {
     >
 
 
-      <nav ref={navRef} className="top-nav card">
+      <nav className="top-nav card">
         <div className="mobile-menu-icon">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <line x1="3" y1="12" x2="21" y2="12"></line>
@@ -247,8 +239,7 @@ function Portfolio({ state, setState }) {
         </div>
       </nav>
 
-      <header className="hero card" style={{ position: 'relative' }}>
-        <div className="hero-cutout" style={{ '--nav-width': `${navWidth}px` }}></div>
+      <header className="hero card">
         <div className="hero-content">
 
           <p className="eyebrow">Ethical Hacker • IoT Engineer • Web Developer</p>
