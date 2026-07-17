@@ -33,11 +33,11 @@ img, iframe { display: block; max-width: 100%; }
 .card:hover { transform: translateY(-3px); box-shadow: 0 12px 60px rgba(176, 38, 255, 0.2); border-color: rgba(176, 38, 255, 0.4); }
 .reveal-up { animation: revealUp 650ms cubic-bezier(0.22, 1, 0.36, 1) both; }
 .hero { display: grid; gap: 24px; grid-template-columns: 1.3fr 0.9fr; padding: clamp(55px, 8vw, 75px) clamp(20px, 4vw, 30px) clamp(20px, 4vw, 30px); overflow: visible; border: none !important; box-shadow: none !important; isolation: isolate; filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4)); transition: filter 220ms ease, transform 220ms ease; }
-.hero-cutout { position: absolute; top: -1px; left: -1px; height: 50px; width: calc(var(--nav-width, 600px) + 16px); background: black; border-bottom-right-radius: 24px; z-index: 1; pointer-events: none; mix-blend-mode: destination-out; }
+.hero-cutout { position: absolute; top: -1px; left: -1px; height: 50px; background: black; border-bottom-right-radius: 24px; z-index: 1; pointer-events: none; mix-blend-mode: destination-out; }
 .hero-cutout::before, .hero-cutout::after { content: ''; position: absolute; width: 24px; height: 24px; pointer-events: none; }
 .hero-cutout::before { bottom: -24px; left: 0; background: radial-gradient(circle at bottom right, transparent 24px, black 24.5px); }
 .hero-cutout::after { top: 0; right: -24px; background: radial-gradient(circle at bottom right, transparent 24px, black 24.5px); }
-.hero:hover { filter: drop-shadow(0 12px 30px rgba(176, 38, 255, 0.2)) drop-shadow(0 0 10px rgba(176, 38, 255, 0.5)) drop-shadow(0 0 2px rgba(176, 38, 255, 1)); transform: translateY(-3px); border-color: transparent; }
+.hero:hover { filter: drop-shadow(1px 1px 0 #b026ff) drop-shadow(-1px -1px 0 #b026ff); transform: translateY(-3px); }
 .eyebrow { text-transform: uppercase; letter-spacing: 0.24em; font-size: 0.74rem; color: var(--accent); margin: 0 0 10px; font-weight: 700; position: relative; z-index: 2; }
 .hero-content { display: flex; flex-direction: column; justify-content: center; position: relative; z-index: 2; }
 .hero h1 { font-size: clamp(2rem, 4vw, 3.1rem); margin: 0 0 16px; color: #fff; line-height: 1.2; }

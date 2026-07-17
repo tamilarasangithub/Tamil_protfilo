@@ -62,9 +62,18 @@ function Portfolio({ state, setState }) {
   }, []);
 
   React.useEffect(() => {
-    if (navRef.current) {
-      setNavWidth(navRef.current.offsetWidth + 24); 
-    }
+    const updateNavWidth = () => {
+      if (navRef.current) {
+        setNavWidth(navRef.current.offsetWidth + 12); 
+      }
+    };
+    updateNavWidth();
+    const timeout = setTimeout(updateNavWidth, 300);
+    window.addEventListener('resize', updateNavWidth);
+    return () => {
+      clearTimeout(timeout);
+      window.removeEventListener('resize', updateNavWidth);
+    };
   }, [state.loggedIn]);
 
   const [activeFilter, setActiveFilter] = useState('all');
@@ -248,7 +257,7 @@ function Portfolio({ state, setState }) {
       </nav>
 
       <header className="hero card" style={{ position: 'relative' }}>
-        <div className="hero-cutout" style={{ '--nav-width': `${navWidth}px` }}></div>
+        <div className="hero-cutout" style={{ width: `${navWidth}px` }}></div>
         <div className="hero-content">
 
           <p className="eyebrow">Ethical Hacker • IoT Engineer • Web Developer</p>
