@@ -72,6 +72,9 @@ h4 { font-size: 1.1rem; }
 .about-grid, .resume-grid, .contact-grid { display: grid; gap: 24px; grid-template-columns: 1.2fr 0.8fr; align-items: start; }
 .stats-grid { display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(140px, 1fr)); margin-top: 20px; }
 .stat-card, .service-card, .timeline-card, .admin-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 18px; padding: 24px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); backdrop-filter: blur(12px); color: #fff; transition: transform 220ms ease, border-color 220ms ease; }
+.stat-card { display: flex; flex-direction: column; gap: 8px; justify-content: center; }
+.stat-card strong { font-size: 2rem; color: #fff; line-height: 1; font-weight: 700; }
+.stat-card span { font-size: 0.95rem; color: rgba(255,255,255,0.7); line-height: 1.4; }
 .project-card, .cert-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 18px; padding: 24px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); backdrop-filter: blur(12px); color: #fff; transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1), border-color 300ms ease, box-shadow 300ms ease; }
 .stat-card:hover, .service-card:hover, .timeline-card:hover { transform: translateY(-3px); border-color: rgba(124, 58, 237, 0.4); }
 .project-card:hover, .cert-card:hover { transform: translateY(-8px); border-color: rgba(124, 58, 237, 0.6); box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(124, 58, 237, 0.15); }
@@ -253,7 +256,11 @@ h4 { font-size: 1.1rem; }
   .hero-actions { flex-direction: column; width: 100%; } 
   .btn, button { width: 100%; justify-content: center; text-align: center; } 
   .hero h1 { font-size: 2.1rem; }
-  .stats-grid, .portfolio-grid { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .stat-card { padding: 16px; }
+  .stat-card strong { font-size: 1.5rem; }
+  .stat-card span { font-size: 0.85rem; }
+  .portfolio-grid { grid-template-columns: 1fr; }
   .top-nav { padding: 10px; border-radius: 16px; bottom: 10px; width: calc(100% - 20px); }
   .top-nav a, .top-nav button { padding: 8px 12px; font-size: 0.9rem; }
   .timeline-track { padding-left: 16px; margin-left: 6px; }
