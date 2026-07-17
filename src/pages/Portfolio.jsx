@@ -61,21 +61,7 @@ function Portfolio({ state, setState }) {
     };
   }, []);
 
-  React.useEffect(() => {
-    const updateNavWidth = () => {
-      if (navRef.current) {
-        // Tightly hug the nav bar, no extra gap
-        setNavWidth(navRef.current.offsetWidth); 
-      }
-    };
-    updateNavWidth();
-    const timeout = setTimeout(updateNavWidth, 300);
-    window.addEventListener('resize', updateNavWidth);
-    return () => {
-      clearTimeout(timeout);
-      window.removeEventListener('resize', updateNavWidth);
-    };
-  }, [state.loggedIn]);
+  // Removed navWidth logic for Unified Bento layout
 
   const [activeFilter, setActiveFilter] = useState('all');
 
@@ -232,7 +218,7 @@ function Portfolio({ state, setState }) {
     >
 
 
-      <nav ref={navRef} className="top-nav card">
+      <nav className="top-nav">
         <div className="mobile-menu-icon">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <line x1="3" y1="12" x2="21" y2="12"></line>
@@ -257,8 +243,7 @@ function Portfolio({ state, setState }) {
         </div>
       </nav>
 
-      <header className="hero card" style={{ position: 'relative' }}>
-        <div className="hero-cutout" style={{ width: `${navWidth}px` }}></div>
+      <header className="hero" style={{ position: 'relative' }}>
         <div className="hero-content">
 
           <p className="eyebrow">Ethical Hacker • IoT Engineer • Web Developer</p>
@@ -338,7 +323,7 @@ function Portfolio({ state, setState }) {
 
       <main className="main-stack">
         
-        <section id="about" className="card section">
+        <section id="about" className="section bento-inner">
           <div className="section-heading">
             <p className="eyebrow">About me</p>
             <h2>A hardcore Ethical Hacker with a passion for secure Web & IoT systems.</h2>
@@ -380,7 +365,7 @@ function Portfolio({ state, setState }) {
           </div>
         </section>
 
-        <section id="resume" className="card section">
+        <section id="resume" className="section bento-inner">
           <div className="section-heading">
             <p className="eyebrow">Resume</p>
             <h2>Education, experience, and technical strengths.</h2>
@@ -417,7 +402,7 @@ function Portfolio({ state, setState }) {
           </div>
         </section>
 
-        <section id="insights" className="card section">
+        <section id="insights" className="section bento-inner">
           <div className="section-heading">
             <p className="eyebrow">Dashboard</p>
             <h2>Live Coding Insights</h2>
@@ -582,7 +567,7 @@ function Portfolio({ state, setState }) {
 
         </section>
 
-        <section id="portfolio" className="card section">
+        <section id="portfolio" className="section bento-inner">
           <div className="section-heading">
             <p className="eyebrow">Portfolio</p>
             <h2>Featured projects and certifications.</h2>
@@ -647,7 +632,7 @@ function Portfolio({ state, setState }) {
         </section>
 
         {state.researchPapers && state.researchPapers.length > 0 && (
-          <section id="research" className="card section">
+          <section id="research" className="section bento-inner">
             <div className="section-heading">
               <p className="eyebrow">Publications</p>
               <h2>Research Papers & Articles.</h2>
@@ -671,7 +656,7 @@ function Portfolio({ state, setState }) {
           </section>
         )}
 
-        <section id="contact" className="card section">
+        <section id="contact" className="section bento-inner">
           <div className="section-heading">
             <p className="eyebrow">Contact</p>
             <h2>Let’s discuss security work, web builds, or collaborative ideas.</h2>
