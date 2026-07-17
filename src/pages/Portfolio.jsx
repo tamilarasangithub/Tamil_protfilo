@@ -2,66 +2,8 @@ import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 function Portfolio({ state, setState }) {
-  const projectsRef = React.useRef(null);
-  const certsRef = React.useRef(null);
-  const pubsRef = React.useRef(null);
-  const navRef = React.useRef(null);
-  const [navWidth, setNavWidth] = useState(580);
-
-  React.useEffect(() => {
-    const setupDrag = (slider) => {
-      if (!slider) return () => {};
-      let isDown = false;
-      let startX;
-      let scrollLeft;
-
-      const down = (e) => {
-        if (e.pointerType !== 'mouse') return;
-        isDown = true;
-        startX = e.pageX - slider.offsetLeft;
-        scrollLeft = slider.scrollLeft;
-      };
-      const leave = (e) => {
-        if (e.pointerType !== 'mouse') return;
-        isDown = false;
-      };
-      const up = (e) => {
-        if (e.pointerType !== 'mouse') return;
-        isDown = false;
-      };
-      const move = (e) => {
-        if (!isDown || e.pointerType !== 'mouse') return;
-        e.preventDefault();
-        const x = e.pageX - slider.offsetLeft;
-        const walk = (x - startX) * 2.5;
-        slider.scrollLeft = scrollLeft - walk;
-      };
-
-      slider.addEventListener('pointerdown', down);
-      slider.addEventListener('pointerleave', leave);
-      slider.addEventListener('pointerup', up);
-      slider.addEventListener('pointermove', move);
-
-      return () => {
-        slider.removeEventListener('pointerdown', down);
-        slider.removeEventListener('pointerleave', leave);
-        slider.removeEventListener('pointerup', up);
-        slider.removeEventListener('pointermove', move);
-      };
-    };
-
-    const cleanupProjects = setupDrag(projectsRef.current);
-    const cleanupCerts = setupDrag(certsRef.current);
-    const cleanupPubs = setupDrag(pubsRef.current);
-
-    return () => {
-      cleanupProjects();
-      cleanupCerts();
-      cleanupPubs();
-    };
-  }, []);
-
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -227,14 +169,14 @@ function Portfolio({ state, setState }) {
 
 
       <nav className={`top-nav ${isScrolled ? 'scrolled' : ''}`}>
-        <div className="mobile-menu-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="3" y1="12" x2="21" y2="12"></line>
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <line x1="3" y1="18" x2="21" y2="18"></line>
-          </svg>
+        <div className="mobile-menu-icon" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} style={{ cursor: 'pointer' }}>
+          {isMobileMenuOpen ? (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          ) : (
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          )}
         </div>
-        <div className="nav-links">
+        <div className={`nav-links ${isMobileMenuOpen ? 'open' : ''}`} onClick={() => setIsMobileMenuOpen(false)}>
           <a href="#about">About</a>
           <a href="#resume">Resume</a>
           <a href="#portfolio">Portfolio</a>
@@ -243,7 +185,7 @@ function Portfolio({ state, setState }) {
           {state.loggedIn ? (
             <>
               <Link className="nav-cta" to="/admin">Admin</Link>
-              <button type="button" className="nav-cta" onClick={handleLogout} style={{marginLeft: '10px'}}>Logout</button>
+              <button type="button" className="nav-cta" onClick={(e) => { e.stopPropagation(); handleLogout(); }} style={{marginLeft: '10px'}}>Logout</button>
             </>
           ) : (
             <Link className="nav-cta" to="/login">Login</Link>
@@ -597,14 +539,10 @@ function Portfolio({ state, setState }) {
 
           <div className="portfolio-grid">
             <div style={{ position: 'relative' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                 <h3>Projects</h3>
-                <div className="slider-nav">
-                  <button onClick={() => projectsRef.current.scrollBy({ left: -300, behavior: 'smooth' })} className="slider-btn">←</button>
-                  <button onClick={() => projectsRef.current.scrollBy({ left: 300, behavior: 'smooth' })} className="slider-btn">→</button>
-                </div>
               </div>
-              <div className="card-list" ref={projectsRef}>
+              <div className="card-list">
                 {filteredProjects.map((project) => (
                   <article 
                     key={project.id} 
@@ -619,14 +557,10 @@ function Portfolio({ state, setState }) {
               </div>
             </div>
             <div style={{ position: 'relative' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                 <h3>Certifications</h3>
-                <div className="slider-nav">
-                  <button onClick={() => certsRef.current.scrollBy({ left: -300, behavior: 'smooth' })} className="slider-btn">←</button>
-                  <button onClick={() => certsRef.current.scrollBy({ left: 300, behavior: 'smooth' })} className="slider-btn">→</button>
-                </div>
               </div>
-              <div className="card-list" ref={certsRef}>
+              <div className="card-list">
                 {state.certifications.map((cert) => (
                   <article 
                     key={cert.id} 
@@ -653,7 +587,7 @@ function Portfolio({ state, setState }) {
               <p className="eyebrow">Publications</p>
               <h2>Research Papers & Articles.</h2>
             </div>
-            <div className="card-list" ref={pubsRef} style={{ marginTop: '20px' }}>
+            <div className="card-list" style={{ marginTop: '20px' }}>
               {state.researchPapers.map((paper) => (
                 <article 
                   key={paper.id} 

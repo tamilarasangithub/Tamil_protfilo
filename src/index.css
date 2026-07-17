@@ -15,6 +15,7 @@
 html { scroll-behavior: smooth; }
 html, body { 
   margin: 0; padding: 0; min-height: 100vh; 
+  overflow-x: hidden; width: 100%;
   background-color: #000000; 
   background-image: linear-gradient(rgba(176, 38, 255, 0.05) 1px, transparent 1px),
   linear-gradient(90deg, rgba(176, 38, 255, 0.05) 1px, transparent 1px);
@@ -116,22 +117,19 @@ h1:hover, h2:hover { animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) bot
 /* Navbar (Mobile First) */
 .top-nav {
   position: fixed; top: 10px; bottom: auto; left: 50%; transform: translateX(-50%);
-  width: calc(100% - 20px); z-index: 1005; display: flex; justify-content: flex-start; align-items: center;
+  width: calc(100% - 20px); z-index: 1005; display: flex; flex-direction: column;
   background: rgba(20, 10, 30, 0.15); border: 1px solid rgba(255, 255, 255, 0.08); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border-radius: 999px; padding: 8px 12px; margin: 0;
-  overflow-x: auto; overflow-y: hidden; -ms-overflow-style: none; scrollbar-width: none;
+  border-radius: 20px; padding: 12px; margin: 0;
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.05);
 }
-.top-nav::-webkit-scrollbar { display: none; }
-.mobile-menu-icon { display: none; }
+.mobile-menu-icon { display: flex; justify-content: flex-end; color: #fff; align-self: flex-end; }
 .nav-links {
-  display: flex !important; position: static; flex-direction: row; gap: 8px;
-  background: transparent; border: none; box-shadow: none; padding: 0; backdrop-filter: none;
+  display: none !important; flex-direction: column; gap: 8px; margin-top: 16px; width: 100%;
 }
-.top-nav a, .top-nav button { padding: 8px 12px; font-size: 0.9rem; white-space: nowrap; background: rgba(255,255,255,0.05); color: #fff; text-decoration: none; border-radius: 999px; border: 0; transition: background-color 200ms ease; margin: 0; }
+.nav-links.open { display: flex !important; }
+.top-nav a, .top-nav button { padding: 12px 16px; font-size: 1rem; width: 100%; text-align: left; background: rgba(255,255,255,0.05); color: #fff; text-decoration: none; border-radius: 12px; border: 0; transition: background-color 200ms ease; margin: 0; }
 .top-nav a:active, .top-nav button:active { background: rgba(255,255,255,0.15); }
 .nav-cta { background: var(--accent) !important; color: #fff !important; }
-.slider-nav { display: none; } /* Hide on mobile */
 
 /* Grids and Sections (Mobile First) */
 .main-stack { display: flex; flex-direction: column; gap: 60px; margin-top: 30px; }
@@ -177,12 +175,8 @@ h1:hover, h2:hover { animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) bot
 .filter-row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin: 12px 0 24px; }
 .filter-chip { border: 1px solid rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.05); color: #fff; transition: background 200ms ease; }
 .filter-chip.active { background: var(--accent); color: #fff; border-color: transparent; }
-.card-list { display: flex; gap: 24px; overflow-x: auto; padding: 16px 8px 32px; margin: -16px -8px -32px; scroll-snap-type: x mandatory; scroll-behavior: smooth; -ms-overflow-style: none; scrollbar-width: none; }
-.card-list::-webkit-scrollbar { height: 8px; background: transparent; }
-.card-list::-webkit-scrollbar-thumb { background: transparent; border-radius: 4px; transition: background 0.3s; }
-.card-list:hover::-webkit-scrollbar-thumb { background: rgba(124, 58, 237, 0.4); }
-.card-list::-webkit-scrollbar-thumb:hover { background: rgba(124, 58, 237, 0.8); }
-.card-list > article.project-card, .card-list > article.cert-card { flex: 0 0 min(320px, 85vw); scroll-snap-align: start; display: flex; flex-direction: column; }
+.card-list { display: grid; grid-template-columns: 1fr; gap: 24px; padding: 0; margin: 0; }
+.card-list > article.project-card, .card-list > article.cert-card { display: flex; flex-direction: column; }
 .project-card a, .cert-card a, .project-card .btn, .cert-card .btn { color: var(--accent); text-decoration: none; font-weight: 600; margin-top: auto; display: inline-block; }
 
 .slider-btn { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); width: 40px; height: 40px; border-radius: 50%; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); padding: 0; backdrop-filter: blur(8px); }
@@ -227,6 +221,19 @@ h1:hover, h2:hover { animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) bot
   .timeline-track .timeline-card::before { left: -32px; }
 }
 
+/* Desktop (min-width: 768px) requested by user */
+@media (min-width: 768px) {
+  .card-list { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+  .top-nav {
+    flex-direction: row; align-items: center; justify-content: center;
+    border-radius: 999px; padding: 14px 18px; width: fit-content;
+  }
+  .mobile-menu-icon { display: none; }
+  .nav-links { display: flex !important; flex-direction: row; gap: 10px; margin-top: 0; width: auto; }
+  .top-nav a, .top-nav button { padding: 9px 14px; width: auto; text-align: center; border-radius: 999px; background: transparent; }
+  .top-nav a:hover, .top-nav button:hover { background-color: rgba(255,255,255,0.1); }
+}
+
 /* Tablet / Small Desktop */
 @media (min-width: 861px) {
   .hero { grid-template-columns: 1.3fr 0.9fr; padding: clamp(60px, 8vw, 80px) 0 clamp(20px, 4vw, 30px) 0; }
@@ -235,17 +242,8 @@ h1:hover, h2:hover { animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) bot
   .hero-card { display: flex; padding: 32px; }
   .hero-cutout { display: block; }
   
-  .top-nav {
-    display: flex; gap: 10px; padding: 14px 18px; width: fit-content;
-    background: rgba(20, 10, 30, 0.15); border: 1px solid rgba(255, 255, 255, 0.08); 
-    border-radius: 999px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.05); 
-    backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%);
-    transition: background 300ms ease, border-color 300ms ease, box-shadow 300ms ease;
-  }
   .top-nav.scrolled { background: rgba(20, 10, 30, 0.4); border: 1px solid rgba(176, 38, 255, 0.4); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(176, 38, 255, 0.2); }
-  .nav-links { gap: 10px; }
-  .top-nav a, .top-nav button { padding: 9px 14px; background: transparent; }
-  .top-nav a:hover, .top-nav button:hover { background-color: rgba(255,255,255,0.1); transform: none !important; }
+  
   
   .slider-nav { display: flex; gap: 8px; }
   .scroll-top-btn { bottom: 30px; right: 30px; }
