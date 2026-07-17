@@ -300,25 +300,45 @@ function Portfolio({ state, setState }) {
           </div>
           <div className="skills-wrap" style={{ marginTop: '3rem' }}>
             <h3 style={{ marginBottom: '1.5rem', color: '#fff' }}>Core skills</h3>
-            <div className="marquee-wrapper">
-              <div className="marquee-content">
-                {[...state.skills, ...state.skills, ...state.skills, ...state.skills].map((skill, index) => (
-                  <span key={index} style={{
-                    color: '#fff', 
-                    background: 'rgba(124, 58, 237, 0.4)', 
-                    padding: '10px 20px', 
-                    borderRadius: '999px', 
-                    fontSize: '1rem',
-                    fontWeight: '500',
-                    boxShadow: '0 4px 15px rgba(124, 58, 237, 0.2)',
-                    backdropFilter: 'blur(8px)',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    whiteSpace: 'nowrap'
-                  }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', justifyContent: 'center', padding: '20px' }}>
+              {state.skills.map((skill, index) => {
+                const duration = 3 + (index % 3);
+                const delay = (index % 5) * 0.2;
+                return (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    animate={{ y: [0, -15, 0], x: [0, index % 2 === 0 ? 10 : -10, 0] }}
+                    transition={{
+                      opacity: { duration: 0.5 },
+                      scale: { duration: 0.5 },
+                      y: { duration: duration, repeat: Infinity, ease: "easeInOut", delay: delay },
+                      x: { duration: duration, repeat: Infinity, ease: "easeInOut", delay: delay }
+                    }}
+                    whileHover={{ scale: 1.15, zIndex: 10, boxShadow: '0 0 25px rgba(176,38,255,0.6)', borderColor: 'rgba(176,38,255,1)' }}
+                    style={{
+                      color: '#fff', 
+                      background: 'rgba(124, 58, 237, 0.2)', 
+                      padding: '12px 24px', 
+                      borderRadius: '50px', 
+                      fontSize: '1.1rem',
+                      fontWeight: '600',
+                      boxShadow: '0 4px 15px rgba(124, 58, 237, 0.1)',
+                      backdropFilter: 'blur(8px)',
+                      border: '1px solid rgba(176, 38, 255, 0.3)',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      position: 'relative'
+                    }}
+                  >
                     {skill}
-                  </span>
-                ))}
-              </div>
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
         </section>
@@ -543,16 +563,20 @@ function Portfolio({ state, setState }) {
                 <h3>Projects</h3>
               </div>
               <div className="card-list">
-                {filteredProjects.map((project) => (
-                  <article 
+                {filteredProjects.map((project, index) => (
+                  <motion.article 
                     key={project.id} 
                     className="project-card"
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{ type: "spring", stiffness: 100, damping: 15, delay: index * 0.1 }}
                   >
                     <div className="pill-tag">{project.category}</div>
                     <h4>{project.title}</h4>
-                    <p>{project.description}</p>
+                    <div dangerouslySetInnerHTML={{ __html: project.description }} />
                     <Link to={`/project/${project.id}`} style={{ color: 'var(--accent)', textDecoration: 'none', fontWeight: '600' }}>View details</Link>
-                  </article>
+                  </motion.article>
                 ))}
               </div>
             </div>
@@ -561,10 +585,14 @@ function Portfolio({ state, setState }) {
                 <h3>Certifications</h3>
               </div>
               <div className="card-list">
-                {state.certifications.map((cert) => (
-                  <article 
+                {state.certifications.map((cert, index) => (
+                  <motion.article 
                     key={cert.id} 
                     className="cert-card"
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{ type: "spring", stiffness: 100, damping: 15, delay: index * 0.1 }}
                   >
                     {cert.image && (
                       <div className="cert-image-container">
@@ -573,8 +601,8 @@ function Portfolio({ state, setState }) {
                     )}
                     <h4>{cert.title}</h4>
                     <p className="meta">{cert.issuer}{cert.year ? ` • ${cert.year}` : ''}</p>
-                    <p>{cert.description}</p>
-                  </article>
+                    <div dangerouslySetInnerHTML={{ __html: cert.description }} />
+                  </motion.article>
                 ))}
               </div>
             </div>

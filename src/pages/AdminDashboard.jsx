@@ -4,6 +4,19 @@ import { motion } from 'framer-motion';
 import { db, auth } from '../firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import { signOut } from 'firebase/auth';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+
+const mockAnalyticsData = [
+  { name: 'Mon', visitors: 400 },
+  { name: 'Tue', visitors: 300 },
+  { name: 'Wed', visitors: 550 },
+  { name: 'Thu', visitors: 450 },
+  { name: 'Fri', visitors: 700 },
+  { name: 'Sat', visitors: 850 },
+  { name: 'Sun', visitors: 1100 }
+];
 
 function AdminDashboard({ state, setState }) {
   const navigate = useNavigate();
@@ -271,6 +284,27 @@ function AdminDashboard({ state, setState }) {
           <h2>Manage your portfolio content</h2>
         </div>
 
+        <div className="bento-inner" style={{ padding: '24px', marginBottom: '24px' }}>
+          <h3 style={{ marginBottom: '16px' }}>Visitor Analytics (Last 7 Days)</h3>
+          <div style={{ width: '100%', height: 300 }}>
+            <ResponsiveContainer>
+              <AreaChart data={mockAnalyticsData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorVisitors" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#b026ff" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#b026ff" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                <XAxis dataKey="name" stroke="#fff" />
+                <YAxis stroke="#fff" />
+                <Tooltip contentStyle={{ backgroundColor: '#111', borderColor: 'rgba(176,38,255,0.3)', color: '#fff' }} />
+                <Area type="monotone" dataKey="visitors" stroke="#b026ff" fillOpacity={1} fill="url(#colorVisitors)" />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
         {feedback ? <div className="success-message">{feedback}</div> : null}
         
         <div className="admin-grid">
@@ -312,16 +346,30 @@ function AdminDashboard({ state, setState }) {
             </form>
           </div>
 
-          <div className="bento-inner" style={{ padding: '24px' }}>
-            <h3>Add Project</h3>
-            <form className="stack-form" onSubmit={handleProjectAdd}>
-              <input value={projectForm.title} onChange={(event) => setProjectForm({ ...projectForm, title: event.target.value })} placeholder="Project title" required />
-              <input value={projectForm.category} onChange={(event) => setProjectForm({ ...projectForm, category: event.target.value })} placeholder="Category" required />
-              <input value={projectForm.link} onChange={(event) => setProjectForm({ ...projectForm, link: event.target.value })} placeholder="Project URL (e.g., GitHub, Live Site)" />
-              <input value={projectForm.videoUrl} onChange={(event) => setProjectForm({ ...projectForm, videoUrl: event.target.value })} placeholder="Video URL (YouTube or .mp4 link)" />
-              <textarea rows="3" value={projectForm.description} onChange={(event) => setProjectForm({ ...projectForm, description: event.target.value })} placeholder="Project description" required />
-              <button type="submit" disabled={isSubmitting} className="btn btn-primary">{isSubmitting ? 'Saving...' : 'Add Project'}</button>
-            </form>
+          <div className="bento-inner" style={{ padding: '24px', gridColumn: '1 / -1' }}>
+            <h3 style={{ marginBottom: '20px' }}>Add New Project</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px' }}>
+              <form className="stack-form" onSubmit={handleProjectAdd}>
+                <input value={projectForm.title} onChange={(event) => setProjectForm({ ...projectForm, title: event.target.value })} placeholder="Project title" required />
+                <input value={projectForm.category} onChange={(event) => setProjectForm({ ...projectForm, category: event.target.value })} placeholder="Category" required />
+                <input value={projectForm.link} onChange={(event) => setProjectForm({ ...projectForm, link: event.target.value })} placeholder="Project URL (e.g., GitHub, Live Site)" />
+                <input value={projectForm.videoUrl} onChange={(event) => setProjectForm({ ...projectForm, videoUrl: event.target.value })} placeholder="Video URL (YouTube or .mp4 link)" />
+                <div style={{ background: '#fff', color: '#000', borderRadius: '8px', overflow: 'hidden' }}>
+                  <ReactQuill theme="snow" value={projectForm.description} onChange={(val) => setProjectForm({ ...projectForm, description: val })} placeholder="Project description" />
+                </div>
+                <button type="submit" disabled={isSubmitting} className="btn btn-primary" style={{ marginTop: '10px' }}>{isSubmitting ? 'Saving...' : 'Add Project'}</button>
+              </form>
+              
+              <div className="preview-container">
+                <h4 style={{ color: 'rgba(255,255,255,0.7)', marginBottom: '16px' }}>Live Preview</h4>
+                <article className="project-card" style={{ height: 'fit-content' }}>
+                  <div className="pill-tag">{projectForm.category || 'Category'}</div>
+                  <h4 style={{ marginTop: '12px' }}>{projectForm.title || 'Project Title'}</h4>
+                  <div dangerouslySetInnerHTML={{ __html: projectForm.description || '<p>Project description will appear here...</p>' }} />
+                  <span style={{ color: 'var(--accent)', fontWeight: '600', marginTop: '10px', display: 'inline-block' }}>View details</span>
+                </article>
+              </div>
+            </div>
           </div>
 
           <div className="bento-inner" style={{ padding: '24px' }}>
