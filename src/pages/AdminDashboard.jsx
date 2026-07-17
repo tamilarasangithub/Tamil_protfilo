@@ -274,7 +274,7 @@ function AdminDashboard({ state, setState }) {
         {feedback ? <div className="success-message">{feedback}</div> : null}
         
         <div className="admin-grid">
-          <div className="admin-card">
+          <div className="bento-inner" style={{ padding: '24px' }}>
             <h3>Edit About</h3>
             <form className="stack-form" onSubmit={handleAboutSave}>
               <textarea rows="3" value={adminForms.about1} onChange={(event) => setAdminForms({ ...adminForms, about1: event.target.value })} placeholder="About intro line 1" />
@@ -283,7 +283,7 @@ function AdminDashboard({ state, setState }) {
             </form>
           </div>
           
-          <div className="admin-card">
+          <div className="bento-inner" style={{ padding: '24px' }}>
             <h3>Edit Skills</h3>
             <form className="stack-form" onSubmit={handleSkillsSave}>
               <textarea rows="3" value={adminForms.skills} onChange={(event) => setAdminForms({ ...adminForms, skills: event.target.value })} placeholder="Skills separated by commas" />
@@ -291,7 +291,7 @@ function AdminDashboard({ state, setState }) {
             </form>
           </div>
 
-          <div className="admin-card">
+          <div className="bento-inner" style={{ padding: '24px' }}>
             <h3>Add Education</h3>
             <form className="stack-form" onSubmit={handleEduAdd}>
               <input value={eduForm.title} onChange={(event) => setEduForm({ ...eduForm, title: event.target.value })} placeholder="Degree / Title" required />
@@ -302,7 +302,7 @@ function AdminDashboard({ state, setState }) {
             </form>
           </div>
 
-          <div className="admin-card">
+          <div className="bento-inner" style={{ padding: '24px' }}>
             <h3>Add Experience</h3>
             <form className="stack-form" onSubmit={handleExpAdd}>
               <input value={expForm.title} onChange={(event) => setExpForm({ ...expForm, title: event.target.value })} placeholder="Role / Job Title" required />
@@ -312,7 +312,7 @@ function AdminDashboard({ state, setState }) {
             </form>
           </div>
 
-          <div className="admin-card">
+          <div className="bento-inner" style={{ padding: '24px' }}>
             <h3>Add Project</h3>
             <form className="stack-form" onSubmit={handleProjectAdd}>
               <input value={projectForm.title} onChange={(event) => setProjectForm({ ...projectForm, title: event.target.value })} placeholder="Project title" required />
@@ -324,7 +324,7 @@ function AdminDashboard({ state, setState }) {
             </form>
           </div>
 
-          <div className="admin-card">
+          <div className="bento-inner" style={{ padding: '24px' }}>
             <h3>Add Certification</h3>
             <form className="stack-form" onSubmit={handleCertAdd}>
               <input value={certForm.title} onChange={(event) => setCertForm({ ...certForm, title: event.target.value })} placeholder="Certification title" required />
@@ -341,7 +341,7 @@ function AdminDashboard({ state, setState }) {
             </form>
           </div>
 
-          <div className="admin-card">
+          <div className="bento-inner" style={{ padding: '24px' }}>
             <h3>Add Research Paper</h3>
             <form className="stack-form" onSubmit={handleResearchAdd}>
               <input value={researchForm.title} onChange={(event) => setResearchForm({ ...researchForm, title: event.target.value })} placeholder="Paper title" required />
@@ -431,12 +431,11 @@ function AdminDashboard({ state, setState }) {
           </div>
         </div>
         
-        <div className="section-heading" style={{ marginTop: '60px' }}>
-          <h2>Manual Database Sync</h2>
-          <p>Your changes are saved to the database automatically when you click 'Add' or 'Save'. However, you can click the button below to force a full synchronization of all data across all devices.</p>
-        </div>
-        
-        <div className="card admin-form-card" style={{ border: '2px solid rgba(0, 251, 255, 0.4)', background: 'rgba(0, 251, 255, 0.05)' }}>
+        <div className="bento-inner" style={{ padding: '24px', marginTop: '60px', borderColor: 'rgba(176, 38, 255, 0.4)' }}>
+          <div className="section-heading" style={{ marginBottom: '24px' }}>
+            <h2>Manual Database Sync</h2>
+            <p>Your changes are saved to the database automatically when you click 'Add' or 'Save'. However, you can click the button below to force a full synchronization of all data across all devices.</p>
+          </div>
           <button 
             type="button" 
             className="btn btn-primary" 
