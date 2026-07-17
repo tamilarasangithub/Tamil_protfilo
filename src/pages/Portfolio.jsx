@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import ProjectCarousel from '../components/ProjectCarousel';
+import { FeaturedSection } from '../components/FeaturedSection';
 function Portfolio({ state, setState }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -558,9 +558,8 @@ function Portfolio({ state, setState }) {
             ))}
           </div>
 
-          <div className="portfolio-grid">
-            <ProjectCarousel title="Projects" items={filteredProjects} type="project" />
-            <ProjectCarousel title="Certifications" items={state.certifications} type="cert" />
+          <div className="w-full">
+            <FeaturedSection projects={filteredProjects} certifications={state.certifications} />
           </div>
         </section>
 
