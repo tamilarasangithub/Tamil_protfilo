@@ -67,7 +67,7 @@ h4 { font-size: 1.2rem; font-weight: 500; }
 .top-nav a, .top-nav button { color: #fff; text-decoration: none; padding: 9px 14px; border-radius: 999px; background-color: transparent; border: 0; white-space: nowrap; transition: background-color 200ms ease; margin: 0; }
 .top-nav a:hover, .top-nav button:hover { background-color: rgba(255,255,255,0.1); transform: none !important; }
 .scroll-top-btn { bottom: 30px; right: 30px; }
-.nav-cta { background: linear-gradient(90deg, var(--accent), var(--accent-2)) !important; color: #fff !important; }
+.nav-cta { background: var(--accent) !important; color: #fff !important; }
 .main-stack { display: flex; flex-direction: column; gap: 60px; margin-top: 30px; }
 .section { padding: 32px; }
 .section-heading { margin-bottom: 32px; }
@@ -127,7 +127,7 @@ h4 { font-size: 1.2rem; font-weight: 500; }
 .admin-grid { display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); margin-bottom: 24px; align-items: start; }
 .filter-row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin: 12px 0 24px; }
 .filter-chip { border: 1px solid rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.05); color: #fff; transition: background 200ms ease; }
-.filter-chip.active { background: linear-gradient(90deg, var(--accent), var(--accent-2)); color: #fff; border-color: transparent; }
+.filter-chip.active { background: var(--accent); color: #fff; border-color: transparent; }
 .portfolio-grid { display: flex; flex-direction: column; gap: 40px; margin-top: 24px; }
 .card-list { display: flex; gap: 24px; overflow-x: auto; padding: 16px 8px 32px; margin: -16px -8px -32px; scroll-snap-type: x mandatory; scroll-behavior: smooth; -ms-overflow-style: none; scrollbar-width: none; }
 .card-list::-webkit-scrollbar { height: 8px; background: transparent; }
