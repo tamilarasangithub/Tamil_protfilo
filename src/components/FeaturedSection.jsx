@@ -25,13 +25,13 @@ export const FeaturedSection = ({ projects, certifications }) => {
             <div className="flex gap-2">
               <button 
                 onClick={() => scroll(projectScrollRef, 'left')}
-                className="w-10 h-10 rounded-full border border-purple-500/30 flex items-center justify-center hover:bg-purple-600/20 text-white transition-all duration-300 cursor-pointer z-10"
+                className="w-10 h-10 rounded-full border-2 border-purple-500 flex items-center justify-center hover:bg-purple-500/20 text-white transition-all duration-300 cursor-pointer z-10"
               >
                 ←
               </button>
               <button 
                 onClick={() => scroll(projectScrollRef, 'right')}
-                className="w-10 h-10 rounded-full border border-purple-500/30 flex items-center justify-center hover:bg-purple-600/20 text-white transition-all duration-300 cursor-pointer z-10"
+                className="w-10 h-10 rounded-full border-2 border-purple-500 flex items-center justify-center hover:bg-purple-500/20 text-white transition-all duration-300 cursor-pointer z-10"
               >
                 →
               </button>
@@ -64,13 +64,13 @@ export const FeaturedSection = ({ projects, certifications }) => {
             <div className="flex gap-2">
               <button 
                 onClick={() => scroll(certScrollRef, 'left')}
-                className="w-10 h-10 rounded-full border border-purple-500/30 flex items-center justify-center hover:bg-purple-600/20 text-white transition-all duration-300 cursor-pointer z-10"
+                className="w-10 h-10 rounded-full border-2 border-purple-500 flex items-center justify-center hover:bg-purple-500/20 text-white transition-all duration-300 cursor-pointer z-10"
               >
                 ←
               </button>
               <button 
                 onClick={() => scroll(certScrollRef, 'right')}
-                className="w-10 h-10 rounded-full border border-purple-500/30 flex items-center justify-center hover:bg-purple-600/20 text-white transition-all duration-300 cursor-pointer z-10"
+                className="w-10 h-10 rounded-full border-2 border-purple-500 flex items-center justify-center hover:bg-purple-500/20 text-white transition-all duration-300 cursor-pointer z-10"
               >
                 →
               </button>

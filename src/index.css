@@ -402,6 +402,35 @@ h1:hover, h2:hover { animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) bot
   .custom-cursor { display: block !important; opacity: 1 !important; visibility: visible !important; }
 }
 
+/* Global Custom Scrollbar Style */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #000000;
+}
+::-webkit-scrollbar-thumb {
+  background: #3b1e70; 
+  border-radius: 9999px;
+  border: 2px solid #000000;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #582da8;
+}
+::-webkit-scrollbar-button:single-button:vertical:decrement {
+  background: transparent;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 6px solid #582da8; /* Up Arrow */
+}
+::-webkit-scrollbar-button:single-button:vertical:increment {
+  background: transparent;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 6px solid #582da8; /* Down Arrow */
+}
+
 /* Standard Desktop */
 @media (min-width: 1024px) {
   .page-shell { width: min(1120px, calc(100% - 24px)); margin: 60px auto 48px; }
