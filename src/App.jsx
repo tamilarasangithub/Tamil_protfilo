@@ -4,13 +4,21 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 function CustomCursor() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [isClicking, setIsClicking] = useState(false);
 
   useEffect(() => {
-    const updateMousePosition = e => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
+    const updateMousePosition = e => setMousePosition({ x: e.clientX, y: e.clientY });
+    const handleMouseDown = () => setIsClicking(true);
+    const handleMouseUp = () => setIsClicking(false);
+
     window.addEventListener('mousemove', updateMousePosition);
-    return () => window.removeEventListener('mousemove', updateMousePosition);
+    window.addEventListener('mousedown', handleMouseDown);
+    window.addEventListener('mouseup', handleMouseUp);
+    return () => {
+      window.removeEventListener('mousemove', updateMousePosition);
+      window.removeEventListener('mousedown', handleMouseDown);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
   }, []);
 
   return (
@@ -21,14 +29,18 @@ function CustomCursor() {
           position: 'fixed',
           top: 0, left: 0,
           width: '8px', height: '8px',
-          backgroundColor: '#9900ff',
+          backgroundColor: '#00f0ff',
           borderRadius: '50%',
           pointerEvents: 'none',
           zIndex: 9999,
-          boxShadow: '0 0 10px #9900ff'
+          boxShadow: '0 0 10px #00f0ff'
         }}
-        animate={{ x: mousePosition.x - 4, y: mousePosition.y - 4 }}
-        transition={{ type: 'tween', ease: 'backOut', duration: 0 }}
+        animate={{ 
+          x: mousePosition.x - 4, 
+          y: mousePosition.y - 4,
+          scale: isClicking ? 0.5 : 1
+        }}
+        transition={{ type: 'tween', ease: 'backOut', duration: 0.1 }}
       />
       <motion.div
         className="custom-cursor"
@@ -36,12 +48,16 @@ function CustomCursor() {
           position: 'fixed',
           top: 0, left: 0,
           width: '32px', height: '32px',
-          border: '2px solid rgba(153, 0, 255, 0.4)',
+          border: '1px solid rgba(176, 38, 255, 0.6)',
           borderRadius: '50%',
           pointerEvents: 'none',
           zIndex: 9998,
         }}
-        animate={{ x: mousePosition.x - 16, y: mousePosition.y - 16 }}
+        animate={{ 
+          x: mousePosition.x - 16, 
+          y: mousePosition.y - 16,
+          scale: isClicking ? 1.5 : 1
+        }}
         transition={{ type: 'spring', mass: 0.05, stiffness: 400, damping: 25 }}
       />
     </>
