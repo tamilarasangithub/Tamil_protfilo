@@ -40,6 +40,14 @@ function AdminDashboard({ state, setState }) {
   const [certForm, setCertForm] = useState({ title: '', issuer: '', year: '', category: '', image: '', description: '' });
   const [researchForm, setResearchForm] = useState({ title: '', conference: '', year: '', category: '', link: '', videoUrl: '', description: '' });
   
+  const [editingId, setEditingId] = useState({
+    education: null,
+    experience: null,
+    projects: null,
+    certifications: null,
+    researchPapers: null
+  });
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const docRef = doc(db, 'portfolio', 'main');
@@ -93,69 +101,72 @@ function AdminDashboard({ state, setState }) {
     setIsSubmitting(false);
   };
 
-  const handleEduAdd = async (event) => {
+  const handleEduSubmit = async (event) => {
     event.preventDefault();
     if (!eduForm.title.trim() || !eduForm.school.trim()) return;
     setIsSubmitting(true);
     try {
+      let newList = [...(state.education || [])];
+      if (editingId.education) {
+        newList = newList.map(item => item.id === editingId.education ? { ...item, ...eduForm } : item);
+      } else {
+        newList = [{ id: crypto.randomUUID(), ...eduForm }, ...newList];
+      }
       await setDoc(docRef, {
-        education: [{
-          id: crypto.randomUUID(),
-          title: eduForm.title.trim(),
-          school: eduForm.school.trim(),
-          year: eduForm.year.trim(),
-          description: eduForm.description.trim()
-        }, ...(state.education || [])],
-        lastUpdate: `Education added: ${eduForm.title.trim()}`
+        education: newList,
+        lastUpdate: `Education ${editingId.education ? 'updated' : 'added'}: ${eduForm.title.trim()}`
       }, { merge: true });
       setEduForm({ title: '', school: '', year: '', description: '' });
-      setFeedback('Education added successfully.');
+      setEditingId(prev => ({ ...prev, education: null }));
+      setFeedback(`Education ${editingId.education ? 'updated' : 'added'} successfully.`);
     } catch(e) {
       setFeedback('Error: ' + e.message);
     }
     setIsSubmitting(false);
   };
 
-  const handleExpAdd = async (event) => {
+  const handleExpSubmit = async (event) => {
     event.preventDefault();
     if (!expForm.title.trim() || !expForm.year.trim()) return;
     setIsSubmitting(true);
     try {
+      let newList = [...(state.experience || [])];
+      if (editingId.experience) {
+        newList = newList.map(item => item.id === editingId.experience ? { ...item, ...expForm } : item);
+      } else {
+        newList = [{ id: crypto.randomUUID(), ...expForm }, ...newList];
+      }
       await setDoc(docRef, {
-        experience: [{
-          id: crypto.randomUUID(),
-          title: expForm.title.trim(),
-          year: expForm.year.trim(),
-          description: expForm.description.trim()
-        }, ...(state.experience || [])],
-        lastUpdate: `Experience added: ${expForm.title.trim()}`
+        experience: newList,
+        lastUpdate: `Experience ${editingId.experience ? 'updated' : 'added'}: ${expForm.title.trim()}`
       }, { merge: true });
       setExpForm({ title: '', year: '', description: '' });
-      setFeedback('Experience added successfully.');
+      setEditingId(prev => ({ ...prev, experience: null }));
+      setFeedback(`Experience ${editingId.experience ? 'updated' : 'added'} successfully.`);
     } catch(e) {
       setFeedback('Error: ' + e.message);
     }
     setIsSubmitting(false);
   };
 
-  const handleProjectAdd = async (event) => {
+  const handleProjectSubmit = async (event) => {
     event.preventDefault();
-    if (!projectForm.title.trim() || !projectForm.category.trim() || !projectForm.description.trim()) return;
+    if (!projectForm.title.trim() || !projectForm.category.trim()) return;
     setIsSubmitting(true);
     try {
+      let newList = [...(state.projects || [])];
+      if (editingId.projects) {
+        newList = newList.map(item => item.id === editingId.projects ? { ...item, ...projectForm } : item);
+      } else {
+        newList = [{ id: crypto.randomUUID(), ...projectForm }, ...newList];
+      }
       await setDoc(docRef, {
-        projects: [{
-          id: crypto.randomUUID(),
-          title: projectForm.title.trim(),
-          category: projectForm.category.trim(),
-          link: projectForm.link.trim(),
-          videoUrl: projectForm.videoUrl.trim(),
-          description: projectForm.description.trim()
-        }, ...(state.projects || [])],
-        lastUpdate: `Project added: ${projectForm.title.trim()}`
+        projects: newList,
+        lastUpdate: `Project ${editingId.projects ? 'updated' : 'added'}: ${projectForm.title.trim()}`
       }, { merge: true });
       setProjectForm({ title: '', category: '', link: '', videoUrl: '', description: '' });
-      setFeedback('Project added successfully.');
+      setEditingId(prev => ({ ...prev, projects: null }));
+      setFeedback(`Project ${editingId.projects ? 'updated' : 'added'} successfully.`);
     } catch(e) {
       setFeedback('Error: ' + e.message);
     }
@@ -199,51 +210,48 @@ function AdminDashboard({ state, setState }) {
     };
   };
 
-  const handleCertAdd = async (event) => {
+  const handleCertSubmit = async (event) => {
     event.preventDefault();
     if (!certForm.title.trim() || !certForm.issuer.trim() || !certForm.description.trim()) return;
     setIsSubmitting(true);
     try {
+      let newList = [...(state.certifications || [])];
+      if (editingId.certifications) {
+        newList = newList.map(item => item.id === editingId.certifications ? { ...item, ...certForm } : item);
+      } else {
+        newList = [{ id: crypto.randomUUID(), ...certForm }, ...newList];
+      }
       await setDoc(docRef, {
-        certifications: [{
-          id: crypto.randomUUID(),
-          title: certForm.title.trim(),
-          issuer: certForm.issuer.trim(),
-          year: certForm.year.trim(),
-          category: certForm.category.trim(),
-          image: certForm.image,
-          description: certForm.description.trim()
-        }, ...(state.certifications || [])],
-        lastUpdate: `Certification added: ${certForm.title.trim()}`
+        certifications: newList,
+        lastUpdate: `Certification ${editingId.certifications ? 'updated' : 'added'}: ${certForm.title.trim()}`
       }, { merge: true });
       setCertForm({ title: '', issuer: '', year: '', category: '', image: '', description: '' });
-      setFeedback('Certification added successfully.');
+      setEditingId(prev => ({ ...prev, certifications: null }));
+      setFeedback(`Certification ${editingId.certifications ? 'updated' : 'added'} successfully.`);
     } catch(e) {
       setFeedback('Error: ' + e.message);
     }
     setIsSubmitting(false);
   };
 
-  const handleResearchAdd = async (event) => {
+  const handleResearchSubmit = async (event) => {
     event.preventDefault();
     if (!researchForm.title.trim() || !researchForm.conference.trim()) return;
     setIsSubmitting(true);
     try {
+      let newList = [...(state.researchPapers || [])];
+      if (editingId.researchPapers) {
+        newList = newList.map(item => item.id === editingId.researchPapers ? { ...item, ...researchForm } : item);
+      } else {
+        newList = [{ id: crypto.randomUUID(), ...researchForm }, ...newList];
+      }
       await setDoc(docRef, {
-        researchPapers: [{
-          id: crypto.randomUUID(),
-          title: researchForm.title.trim(),
-          conference: researchForm.conference.trim(),
-          year: researchForm.year.trim(),
-          category: researchForm.category.trim(),
-          link: researchForm.link.trim(),
-          videoUrl: researchForm.videoUrl.trim(),
-          description: researchForm.description.trim()
-        }, ...(state.researchPapers || [])],
-        lastUpdate: `Research paper added: ${researchForm.title.trim()}`
+        researchPapers: newList,
+        lastUpdate: `Research paper ${editingId.researchPapers ? 'updated' : 'added'}: ${researchForm.title.trim()}`
       }, { merge: true });
       setResearchForm({ title: '', conference: '', year: '', category: '', link: '', videoUrl: '', description: '' });
-      setFeedback('Research paper added successfully.');
+      setEditingId(prev => ({ ...prev, researchPapers: null }));
+      setFeedback(`Research paper ${editingId.researchPapers ? 'updated' : 'added'} successfully.`);
     } catch(e) {
       setFeedback('Error: ' + e.message);
     }
@@ -259,6 +267,42 @@ function AdminDashboard({ state, setState }) {
     } catch(e) {
       setFeedback('Error: ' + e.message);
     }
+  };
+
+  const handleReorder = async (key, index, direction) => {
+    const list = [...(state[key] || [])];
+    if (direction === 'up' && index > 0) {
+      [list[index - 1], list[index]] = [list[index], list[index - 1]];
+    } else if (direction === 'down' && index < list.length - 1) {
+      [list[index + 1], list[index]] = [list[index], list[index + 1]];
+    } else {
+      return;
+    }
+    
+    setIsSubmitting(true);
+    try {
+      await setDoc(docRef, { [key]: list }, { merge: true });
+    } catch (e) {
+      setFeedback('Error reordering: ' + e.message);
+    }
+    setIsSubmitting(false);
+  };
+
+  const handleEditItem = (key, item) => {
+    if (key === 'education') { setEduForm(item); setEditingId(prev => ({ ...prev, education: item.id })); }
+    if (key === 'experience') { setExpForm(item); setEditingId(prev => ({ ...prev, experience: item.id })); }
+    if (key === 'projects') { setProjectForm(item); setEditingId(prev => ({ ...prev, projects: item.id })); }
+    if (key === 'certifications') { setCertForm(item); setEditingId(prev => ({ ...prev, certifications: item.id })); }
+    if (key === 'researchPapers') { setResearchForm(item); setEditingId(prev => ({ ...prev, researchPapers: item.id })); }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const cancelEdit = (key) => {
+    if (key === 'education') { setEduForm({ title: '', school: '', year: '', description: '' }); setEditingId(prev => ({ ...prev, education: null })); }
+    if (key === 'experience') { setExpForm({ title: '', year: '', description: '' }); setEditingId(prev => ({ ...prev, experience: null })); }
+    if (key === 'projects') { setProjectForm({ title: '', category: '', link: '', videoUrl: '', description: '' }); setEditingId(prev => ({ ...prev, projects: null })); }
+    if (key === 'certifications') { setCertForm({ title: '', issuer: '', year: '', category: '', image: '', description: '' }); setEditingId(prev => ({ ...prev, certifications: null })); }
+    if (key === 'researchPapers') { setResearchForm({ title: '', conference: '', year: '', category: '', link: '', videoUrl: '', description: '' }); setEditingId(prev => ({ ...prev, researchPapers: null })); }
   };
 
   if (!state.loggedIn) {
@@ -326,30 +370,36 @@ function AdminDashboard({ state, setState }) {
           </div>
 
           <div className="bento-inner" style={{ padding: '24px' }}>
-            <h3>Add Education</h3>
-            <form className="stack-form" onSubmit={handleEduAdd}>
+            <h3>{editingId.education ? 'Edit Education' : 'Add Education'}</h3>
+            <form className="stack-form" onSubmit={handleEduSubmit}>
               <input value={eduForm.title} onChange={(event) => setEduForm({ ...eduForm, title: event.target.value })} placeholder="Degree / Title" required />
               <input value={eduForm.school} onChange={(event) => setEduForm({ ...eduForm, school: event.target.value })} placeholder="School / Institution" required />
               <input value={eduForm.year} onChange={(event) => setEduForm({ ...eduForm, year: event.target.value })} placeholder="Year (e.g., 2022-2026)" />
               <textarea rows="2" value={eduForm.description} onChange={(event) => setEduForm({ ...eduForm, description: event.target.value })} placeholder="Education summary" />
-              <button type="submit" disabled={isSubmitting} className="btn btn-primary">{isSubmitting ? 'Saving...' : 'Add Education'}</button>
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button type="submit" disabled={isSubmitting} className="btn btn-primary" style={{ flex: 1 }}>{isSubmitting ? 'Saving...' : editingId.education ? 'Update Education' : 'Add Education'}</button>
+                {editingId.education && <button type="button" onClick={() => cancelEdit('education')} className="btn btn-secondary">Cancel</button>}
+              </div>
             </form>
           </div>
 
           <div className="bento-inner" style={{ padding: '24px' }}>
-            <h3>Add Experience</h3>
-            <form className="stack-form" onSubmit={handleExpAdd}>
+            <h3>{editingId.experience ? 'Edit Experience' : 'Add Experience'}</h3>
+            <form className="stack-form" onSubmit={handleExpSubmit}>
               <input value={expForm.title} onChange={(event) => setExpForm({ ...expForm, title: event.target.value })} placeholder="Role / Job Title" required />
               <input value={expForm.year} onChange={(event) => setExpForm({ ...expForm, year: event.target.value })} placeholder="Year (e.g., 2024 - Present)" required />
               <textarea rows="2" value={expForm.description} onChange={(event) => setExpForm({ ...expForm, description: event.target.value })} placeholder="Experience summary" />
-              <button type="submit" disabled={isSubmitting} className="btn btn-primary">{isSubmitting ? 'Saving...' : 'Add Experience'}</button>
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button type="submit" disabled={isSubmitting} className="btn btn-primary" style={{ flex: 1 }}>{isSubmitting ? 'Saving...' : editingId.experience ? 'Update Experience' : 'Add Experience'}</button>
+                {editingId.experience && <button type="button" onClick={() => cancelEdit('experience')} className="btn btn-secondary">Cancel</button>}
+              </div>
             </form>
           </div>
 
           <div className="bento-inner" style={{ padding: '24px', gridColumn: '1 / -1' }}>
-            <h3 style={{ marginBottom: '20px' }}>Add New Project</h3>
+            <h3 style={{ marginBottom: '20px' }}>{editingId.projects ? 'Edit Project' : 'Add New Project'}</h3>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px' }}>
-              <form className="stack-form" onSubmit={handleProjectAdd}>
+              <form className="stack-form" onSubmit={handleProjectSubmit}>
                 <input value={projectForm.title} onChange={(event) => setProjectForm({ ...projectForm, title: event.target.value })} placeholder="Project title" required />
                 <input value={projectForm.category} onChange={(event) => setProjectForm({ ...projectForm, category: event.target.value })} placeholder="Category" required />
                 <input value={projectForm.link} onChange={(event) => setProjectForm({ ...projectForm, link: event.target.value })} placeholder="Project URL (e.g., GitHub, Live Site)" />
@@ -357,7 +407,10 @@ function AdminDashboard({ state, setState }) {
                 <div style={{ background: '#fff', color: '#000', borderRadius: '8px', overflow: 'hidden' }}>
                   <ReactQuill theme="snow" value={projectForm.description} onChange={(val) => setProjectForm({ ...projectForm, description: val })} placeholder="Project description" />
                 </div>
-                <button type="submit" disabled={isSubmitting} className="btn btn-primary" style={{ marginTop: '10px' }}>{isSubmitting ? 'Saving...' : 'Add Project'}</button>
+                <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                  <button type="submit" disabled={isSubmitting} className="btn btn-primary" style={{ flex: 1 }}>{isSubmitting ? 'Saving...' : editingId.projects ? 'Update Project' : 'Add Project'}</button>
+                  {editingId.projects && <button type="button" onClick={() => cancelEdit('projects')} className="btn btn-secondary">Cancel</button>}
+                </div>
               </form>
               
               <div className="preview-container">
@@ -365,7 +418,7 @@ function AdminDashboard({ state, setState }) {
                 <article className="project-card" style={{ height: 'fit-content' }}>
                   <div className="pill-tag">{projectForm.category || 'Category'}</div>
                   <h4 style={{ marginTop: '12px' }}>{projectForm.title || 'Project Title'}</h4>
-                  <div dangerouslySetInnerHTML={{ __html: projectForm.description || '<p>Project description will appear here...</p>' }} />
+                  <div dangerouslySetInnerHTML={{ __html: (!projectForm.description || projectForm.description === '<p><br></p>') ? '<p>Project description will appear here...</p>' : projectForm.description }} />
                   <span style={{ color: 'var(--accent)', fontWeight: '600', marginTop: '10px', display: 'inline-block' }}>View details</span>
                 </article>
               </div>
@@ -373,8 +426,8 @@ function AdminDashboard({ state, setState }) {
           </div>
 
           <div className="bento-inner" style={{ padding: '24px' }}>
-            <h3>Add Certification</h3>
-            <form className="stack-form" onSubmit={handleCertAdd}>
+            <h3>{editingId.certifications ? 'Edit Certification' : 'Add Certification'}</h3>
+            <form className="stack-form" onSubmit={handleCertSubmit}>
               <input value={certForm.title} onChange={(event) => setCertForm({ ...certForm, title: event.target.value })} placeholder="Certification title" required />
               <input value={certForm.issuer} onChange={(event) => setCertForm({ ...certForm, issuer: event.target.value })} placeholder="Issuer" required />
               <input value={certForm.year} onChange={(event) => setCertForm({ ...certForm, year: event.target.value })} placeholder="Year" />
@@ -385,13 +438,16 @@ function AdminDashboard({ state, setState }) {
               {certForm.image && <img src={certForm.image} alt="Preview" style={{ width: '100px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.2)' }} />}
 
               <textarea rows="3" value={certForm.description} onChange={(event) => setCertForm({ ...certForm, description: event.target.value })} placeholder="Description" required />
-              <button type="submit" disabled={isSubmitting} className="btn btn-primary">{isSubmitting ? 'Saving...' : 'Add Certification'}</button>
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button type="submit" disabled={isSubmitting} className="btn btn-primary" style={{ flex: 1 }}>{isSubmitting ? 'Saving...' : editingId.certifications ? 'Update Certification' : 'Add Certification'}</button>
+                {editingId.certifications && <button type="button" onClick={() => cancelEdit('certifications')} className="btn btn-secondary">Cancel</button>}
+              </div>
             </form>
           </div>
 
           <div className="bento-inner" style={{ padding: '24px' }}>
-            <h3>Add Research Paper</h3>
-            <form className="stack-form" onSubmit={handleResearchAdd}>
+            <h3>{editingId.researchPapers ? 'Edit Research Paper' : 'Add Research Paper'}</h3>
+            <form className="stack-form" onSubmit={handleResearchSubmit}>
               <input value={researchForm.title} onChange={(event) => setResearchForm({ ...researchForm, title: event.target.value })} placeholder="Paper title" required />
               <input value={researchForm.conference} onChange={(event) => setResearchForm({ ...researchForm, conference: event.target.value })} placeholder="Conference / Journal" required />
               <input value={researchForm.year} onChange={(event) => setResearchForm({ ...researchForm, year: event.target.value })} placeholder="Year" />
@@ -400,7 +456,10 @@ function AdminDashboard({ state, setState }) {
               <input value={researchForm.link} onChange={(event) => setResearchForm({ ...researchForm, link: event.target.value })} placeholder="Document URL (PDF link)" />
               <input value={researchForm.videoUrl} onChange={(event) => setResearchForm({ ...researchForm, videoUrl: event.target.value })} placeholder="Video URL (YouTube or .mp4 link)" />
               <textarea rows="2" value={researchForm.description} onChange={(event) => setResearchForm({ ...researchForm, description: event.target.value })} placeholder="Abstract / Summary" />
-              <button type="submit" disabled={isSubmitting} className="btn btn-primary">{isSubmitting ? 'Saving...' : 'Add Paper'}</button>
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button type="submit" disabled={isSubmitting} className="btn btn-primary" style={{ flex: 1 }}>{isSubmitting ? 'Saving...' : editingId.researchPapers ? 'Update Paper' : 'Add Paper'}</button>
+                {editingId.researchPapers && <button type="button" onClick={() => cancelEdit('researchPapers')} className="btn btn-secondary">Cancel</button>}
+              </div>
             </form>
           </div>
         </div>
@@ -409,12 +468,17 @@ function AdminDashboard({ state, setState }) {
           <div>
             <h3>Manage Education</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              {(state.education || []).map((item) => (
+              {(state.education || []).map((item, index) => (
                 <article key={item.id} className="project-card">
                   <h4>{item.title}</h4>
                   <p className="meta">{item.school} • {item.year}</p>
                   <p>{item.description}</p>
-                  <button type="button" className="btn btn-secondary" onClick={() => handleRemoveItem('education', item.id)} style={{marginTop: '10px'}}>Remove</button>
+                  <div style={{ display: 'flex', gap: '10px', marginTop: '10px', flexWrap: 'wrap' }}>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleEditItem('education', item)}>Edit</button>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleReorder('education', index, 'up')} disabled={index === 0}>↑</button>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleReorder('education', index, 'down')} disabled={index === (state.education || []).length - 1}>↓</button>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleRemoveItem('education', item.id)}>Remove</button>
+                  </div>
                 </article>
               ))}
             </div>
@@ -422,12 +486,17 @@ function AdminDashboard({ state, setState }) {
           <div>
             <h3>Manage Experience</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              {(state.experience || []).map((item) => (
+              {(state.experience || []).map((item, index) => (
                 <article key={item.id} className="project-card">
                   <h4>{item.title}</h4>
                   <p className="meta">{item.year}</p>
                   <p>{item.description}</p>
-                  <button type="button" className="btn btn-secondary" onClick={() => handleRemoveItem('experience', item.id)} style={{marginTop: '10px'}}>Remove</button>
+                  <div style={{ display: 'flex', gap: '10px', marginTop: '10px', flexWrap: 'wrap' }}>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleEditItem('experience', item)}>Edit</button>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleReorder('experience', index, 'up')} disabled={index === 0}>↑</button>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleReorder('experience', index, 'down')} disabled={index === (state.experience || []).length - 1}>↓</button>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleRemoveItem('experience', item.id)}>Remove</button>
+                  </div>
                 </article>
               ))}
             </div>
@@ -438,12 +507,17 @@ function AdminDashboard({ state, setState }) {
           <div>
             <h3>Manage Projects</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              {(state.projects || []).map((project) => (
+              {(state.projects || []).map((project, index) => (
                 <article key={project.id} className="project-card">
                   <div className="pill-tag">{project.category}</div>
                   <h4>{project.title}</h4>
-                  <p>{project.description}</p>
-                  <button type="button" className="btn btn-secondary" onClick={() => handleRemoveItem('projects', project.id)} style={{marginTop: '10px'}}>Remove</button>
+                  <div dangerouslySetInnerHTML={{ __html: project.description }} />
+                  <div style={{ display: 'flex', gap: '10px', marginTop: '10px', flexWrap: 'wrap' }}>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleEditItem('projects', project)}>Edit</button>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleReorder('projects', index, 'up')} disabled={index === 0}>↑</button>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleReorder('projects', index, 'down')} disabled={index === (state.projects || []).length - 1}>↓</button>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleRemoveItem('projects', project.id)}>Remove</button>
+                  </div>
                 </article>
               ))}
             </div>
@@ -451,12 +525,17 @@ function AdminDashboard({ state, setState }) {
           <div>
             <h3>Manage Certifications</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              {(state.certifications || []).map((cert) => (
+              {(state.certifications || []).map((cert, index) => (
                 <article key={cert.id} className="cert-card">
                   <h4>{cert.title}</h4>
                   <p className="meta">{cert.issuer}{cert.year ? ` • ${cert.year}` : ''}</p>
                   <p>{cert.description}</p>
-                  <button type="button" className="btn btn-secondary" onClick={() => handleRemoveItem('certifications', cert.id)} style={{marginTop: '10px'}}>Remove</button>
+                  <div style={{ display: 'flex', gap: '10px', marginTop: '10px', flexWrap: 'wrap' }}>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleEditItem('certifications', cert)}>Edit</button>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleReorder('certifications', index, 'up')} disabled={index === 0}>↑</button>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleReorder('certifications', index, 'down')} disabled={index === (state.certifications || []).length - 1}>↓</button>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleRemoveItem('certifications', cert.id)}>Remove</button>
+                  </div>
                 </article>
               ))}
             </div>
@@ -467,12 +546,17 @@ function AdminDashboard({ state, setState }) {
           <div>
             <h3>Manage Research Papers</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              {(state.researchPapers || []).map((paper) => (
+              {(state.researchPapers || []).map((paper, index) => (
                 <article key={paper.id} className="project-card">
                   <h4>{paper.title}</h4>
                   <p className="meta">{paper.conference}{paper.year ? ` • ${paper.year}` : ''}</p>
                   <p>{paper.description}</p>
-                  <button type="button" className="btn btn-secondary" onClick={() => handleRemoveItem('researchPapers', paper.id)} style={{marginTop: '10px'}}>Remove</button>
+                  <div style={{ display: 'flex', gap: '10px', marginTop: '10px', flexWrap: 'wrap' }}>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleEditItem('researchPapers', paper)}>Edit</button>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleReorder('researchPapers', index, 'up')} disabled={index === 0}>↑</button>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleReorder('researchPapers', index, 'down')} disabled={index === (state.researchPapers || []).length - 1}>↓</button>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleRemoveItem('researchPapers', paper.id)}>Remove</button>
+                  </div>
                 </article>
               ))}
             </div>
