@@ -112,7 +112,10 @@ function Details({ type, state }) {
 
         {/* Description */}
         <div style={{ marginTop: '30px', fontSize: '1.1rem', lineHeight: '1.8', color: 'rgba(255,255,255,0.85)' }}>
-          <p style={{ whiteSpace: 'pre-wrap' }}>{item.description}</p>
+          <div 
+            style={{ whiteSpace: 'pre-wrap' }} 
+            dangerouslySetInnerHTML={{ __html: item.description }} 
+          />
         </div>
 
         {/* External Links */}
