@@ -1,14 +1,32 @@
 import React, { useMemo, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Home, Briefcase, BarChart2, User, Mail } from 'lucide-react';
 import { FeaturedSection } from '../components/FeaturedSection';
 function Portfolio({ state, setState }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('about');
 
   React.useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
+
+      // Section tracking for bottom nav
+      const sections = ['about', 'portfolio', 'insights', 'contact'];
+      let currentSection = 'about';
+      
+      for (const section of sections) {
+        const element = document.getElementById(section);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          if (rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2) {
+            currentSection = section;
+            break;
+          }
+        }
+      }
+      setActiveSection(currentSection);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -169,7 +187,7 @@ function Portfolio({ state, setState }) {
     >
 
 
-      <nav className={`top-nav ${isScrolled ? 'scrolled' : ''}`}>
+      <nav className={`top-nav hide-on-mobile ${isScrolled ? 'scrolled' : ''}`}>
         <div className="mobile-menu-icon" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} style={{ cursor: 'pointer' }}>
           {isMobileMenuOpen ? (
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
@@ -617,6 +635,49 @@ function Portfolio({ state, setState }) {
           </div>
         </section>
       </main>
+
+      {/* Mobile Bottom Navigation */}
+      <div className="mobile-bottom-nav">
+        <a 
+          href="#about" 
+          onClick={() => setActiveSection('about')} 
+          className={`mobile-nav-item ${activeSection === 'about' ? 'active' : ''}`}
+        >
+          <Home size={20} />
+          <span>Home</span>
+        </a>
+        <a 
+          href="#portfolio" 
+          onClick={() => setActiveSection('portfolio')} 
+          className={`mobile-nav-item ${activeSection === 'portfolio' ? 'active' : ''}`}
+        >
+          <Briefcase size={20} />
+          <span>Work</span>
+        </a>
+        <a 
+          href="#insights" 
+          onClick={() => setActiveSection('insights')} 
+          className={`mobile-nav-item ${activeSection === 'insights' ? 'active' : ''}`}
+        >
+          <BarChart2 size={20} />
+          <span>Stats</span>
+        </a>
+        <a 
+          href="#contact" 
+          onClick={() => setActiveSection('contact')} 
+          className={`mobile-nav-item ${activeSection === 'contact' ? 'active' : ''}`}
+        >
+          <Mail size={20} />
+          <span>Contact</span>
+        </a>
+        <Link 
+          to={state.loggedIn ? "/admin" : "/login"}
+          className={`mobile-nav-item`}
+        >
+          <User size={20} />
+          <span>{state.loggedIn ? "Admin" : "Profile"}</span>
+        </Link>
+      </div>
     </motion.div>
   );
 }

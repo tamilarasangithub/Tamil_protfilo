@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import { Link } from 'react-router-dom';
 
 // Master Portfolio Section Container
 export const FeaturedSection = ({ projects, certifications }) => {
@@ -56,6 +57,13 @@ export const FeaturedSection = ({ projects, certifications }) => {
                   </div>
                   
                   <p style={{ flexGrow: 1, marginBottom: 0 }} dangerouslySetInnerHTML={{ __html: project.description }} />
+                  
+                  <Link 
+                    to={`/project/${project.id}`} 
+                    className="mt-6 text-[#a855f7] hover:text-[#b026ff] flex items-center gap-1 font-semibold transition-colors mt-auto pt-4 inline-block group-hover:drop-shadow-[0_0_8px_rgba(168,85,247,0.6)]"
+                  >
+                    View Details <span>→</span>
+                  </Link>
                 </article>
               ))}
             </div>

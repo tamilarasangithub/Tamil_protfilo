@@ -159,6 +159,7 @@ import Portfolio from './pages/Portfolio';
 import Login from './pages/Login';
 import AdminDashboard from './pages/AdminDashboard';
 import Details from './pages/Details';
+import Chatbot from './components/Chatbot';
 
 import defaultState from './data.json';
 import { db, auth } from './firebase';
@@ -235,6 +236,7 @@ function App() {
           (Showing local data instead)
         </div>
       )}
+      <Chatbot state={state} />
       <AnimatedRoutes state={state} setState={setState} />
     </BrowserRouter>
   );
