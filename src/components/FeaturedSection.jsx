@@ -14,7 +14,7 @@ export const FeaturedSection = ({ projects, certifications }) => {
   };
 
   return (
-    <div className="w-full overflow-hidden">
+    <div className="w-full">
       <div className="w-full">
         
         {/* SECTION 1: PROJECTS */}
@@ -39,10 +39,10 @@ export const FeaturedSection = ({ projects, certifications }) => {
           </div>
 
           {/* Bound Viewport Wrapper */}
-          <div className="overflow-hidden -my-4">
+          <div className="-my-6 -mx-2">
             <div 
               ref={projectScrollRef}
-              className="flex flex-row gap-6 w-full overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-none py-4 px-2"
+              className="flex flex-row gap-6 w-full overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-none py-6 px-4"
             >
               {projects.map((project, index) => (
                 <article 
@@ -83,10 +83,10 @@ export const FeaturedSection = ({ projects, certifications }) => {
           </div>
 
           {/* Bound Viewport Wrapper */}
-          <div className="overflow-hidden -my-4">
+          <div className="-my-6 -mx-2">
             <div 
               ref={certScrollRef}
-              className="flex flex-row gap-6 w-full overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-none py-4 px-2"
+              className="flex flex-row gap-6 w-full overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-none py-6 px-4"
             >
               {certifications.map((cert, index) => (
                 <article 
