@@ -317,7 +317,7 @@ function AdminDashboard({ state, setState }) {
       transition={{ duration: 0.4, ease: "easeInOut" }}
       className="page-shell"
     >
-      <nav className="top-nav card" style={{ marginBottom: '2rem' }}>
+      <nav className="top-nav" style={{ marginBottom: '2rem' }}>
         <Link to="/">View Portfolio</Link>
         <button type="button" className="nav-cta" onClick={handleLogout}>Logout</button>
       </nav>
@@ -467,7 +467,7 @@ function AdminDashboard({ state, setState }) {
         <div className="portfolio-grid" style={{ marginTop: '40px' }}>
           <div>
             <h3>Manage Education</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
               {(state.education || []).map((item, index) => (
                 <article key={item.id} className="project-card">
                   <h4>{item.title}</h4>
@@ -485,7 +485,7 @@ function AdminDashboard({ state, setState }) {
           </div>
           <div>
             <h3>Manage Experience</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
               {(state.experience || []).map((item, index) => (
                 <article key={item.id} className="project-card">
                   <h4>{item.title}</h4>
@@ -506,7 +506,7 @@ function AdminDashboard({ state, setState }) {
         <div className="portfolio-grid" style={{ marginTop: '40px' }}>
           <div>
             <h3>Manage Projects</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
               {(state.projects || []).map((project, index) => (
                 <article key={project.id} className="project-card">
                   <div className="pill-tag">{project.category}</div>
@@ -524,7 +524,7 @@ function AdminDashboard({ state, setState }) {
           </div>
           <div>
             <h3>Manage Certifications</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
               {(state.certifications || []).map((cert, index) => (
                 <article key={cert.id} className="cert-card">
                   <h4>{cert.title}</h4>
@@ -545,7 +545,7 @@ function AdminDashboard({ state, setState }) {
         <div className="portfolio-grid" style={{ marginTop: '40px' }}>
           <div>
             <h3>Manage Research Papers</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
               {(state.researchPapers || []).map((paper, index) => (
                 <article key={paper.id} className="project-card">
                   <h4>{paper.title}</h4>

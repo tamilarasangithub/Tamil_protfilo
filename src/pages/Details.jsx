@@ -95,7 +95,7 @@ function Details({ type, state }) {
       transition={{ duration: 0.4, ease: "easeOut" }}
       className="page-shell"
     >
-      <nav className="top-nav card" style={{ marginBottom: '2rem', justifyContent: 'flex-start' }}>
+      <nav className="top-nav" style={{ marginBottom: '2rem', justifyContent: 'flex-start' }}>
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span>←</span> Back to Portfolio
         </Link>
