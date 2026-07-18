@@ -58,12 +58,24 @@ export const FeaturedSection = ({ projects, certifications }) => {
                   
                   <p style={{ flexGrow: 1, marginBottom: 0 }} dangerouslySetInnerHTML={{ __html: project.description }} />
                   
-                  <Link 
-                    to={`/project/${project.id}`} 
-                    className="mt-6 text-[#a855f7] hover:text-[#b026ff] flex items-center gap-1 font-semibold transition-colors mt-auto pt-4 inline-block group-hover:drop-shadow-[0_0_8px_rgba(168,85,247,0.6)]"
-                  >
-                    View Details <span>→</span>
-                  </Link>
+                  <div className="flex gap-4 mt-auto pt-4">
+                    <Link 
+                      to={`/project/${project.id}`} 
+                      className="text-[#a855f7] hover:text-[#b026ff] flex items-center gap-1 font-semibold transition-colors inline-block group-hover:drop-shadow-[0_0_8px_rgba(168,85,247,0.6)]"
+                    >
+                      View Details <span>→</span>
+                    </Link>
+                    {project.link && (
+                      <a 
+                        href={project.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[#00b8a3] hover:text-[#00d2ba] flex items-center gap-1 font-semibold transition-colors inline-block group-hover:drop-shadow-[0_0_8px_rgba(0,184,163,0.6)]"
+                      >
+                        Live Preview <span style={{ fontSize: '1.2em' }}>↗</span>
+                      </a>
+                    )}
+                  </div>
                 </article>
               ))}
             </div>

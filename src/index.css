@@ -152,7 +152,8 @@ h1:hover, h2:hover { animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) bot
 .cert-image-container { overflow: hidden; border-radius: 12px; height: 180px; margin-bottom: 16px; width: 100%; }
 .cert-image-container img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .timeline-track { position: relative; padding-left: 16px; border-left: 2px solid rgba(124, 58, 237, 0.4); margin-left: 6px; margin-top: 14px; }
-.timeline-track .timeline-card { position: relative; margin-bottom: 20px; margin-top: 0; }
+.timeline-track .timeline-card { position: relative; margin-bottom: 20px; margin-top: 0; border: none; }
+.timeline-track .timeline-card:hover { border: none; box-shadow: none; transform: none; }
 .timeline-track .timeline-card:last-child { margin-bottom: 0; }
 .timeline-track .timeline-card::before { content: ''; position: absolute; top: 22px; left: -24px; width: 14px; height: 14px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 12px var(--accent); border: 2px solid #0b0710; }
 
