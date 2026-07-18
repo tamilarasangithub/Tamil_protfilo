@@ -46,16 +46,16 @@ export const FeaturedSection = ({ projects, certifications }) => {
             {projects.map((project, index) => (
               <div 
                 key={index}
-                className="group min-w-[85vw] md:min-w-[45vw] lg:min-w-[calc((100%-3rem)/3)] max-w-[calc((100%-3rem)/3)] flex-shrink-0 snap-start flex flex-col relative font-outfit bg-white text-slate-800 p-6 rounded-xl border border-slate-200 shadow-sm transition-all duration-300 hover:scale-[1.01] hover:shadow-md hover:border-purple-500 hover:outline hover:outline-2 hover:outline-purple-500/50 hover:outline-offset-2"
+                className="group min-w-[85vw] md:min-w-[45vw] lg:min-w-[calc((100%-3rem)/3)] max-w-[calc((100%-3rem)/3)] flex-shrink-0 snap-start flex flex-col relative font-outfit bg-[#040209] text-white p-6 rounded-2xl border border-white/5 transition-all duration-300 hover:scale-[1.01] hover:border-[#a855f7] hover:outline hover:outline-2 hover:outline-[#a855f7]/50 hover:outline-offset-2"
               >
 
-                <h3 className="font-bold text-xl md:text-2xl tracking-tight text-slate-900 mb-2 uppercase font-rajdhani">{project.title}</h3>
+                <h3 className="font-bold text-xl md:text-2xl tracking-wider text-white mb-4 uppercase font-rajdhani leading-snug">{project.title}</h3>
                 
-                <div className="inline-flex bg-purple-50 rounded-full px-4 py-1.5 text-xs text-purple-700 mb-4 w-fit font-outfit border border-purple-200 font-medium">
+                <div className="inline-flex bg-[#130927] rounded-full px-5 py-2 text-sm text-slate-300 mb-6 w-fit font-outfit border border-[#a855f7]/20 shadow-inner shadow-white/5">
                   {project.category}
                 </div>
                 
-                <p className="font-inter text-sm md:text-base leading-relaxed text-slate-600 flex-grow mb-6" dangerouslySetInnerHTML={{ __html: project.description }} />
+                <p className="font-inter text-sm md:text-base leading-relaxed text-slate-400 flex-grow mb-6" dangerouslySetInnerHTML={{ __html: project.description }} />
               </div>
             ))}
           </div>
@@ -89,19 +89,19 @@ export const FeaturedSection = ({ projects, certifications }) => {
             {certifications.map((cert, index) => (
               <div 
                 key={index}
-                className="group min-w-[85vw] md:min-w-[45vw] lg:min-w-[calc((100%-3rem)/3)] max-w-[calc((100%-3rem)/3)] flex-shrink-0 snap-start flex flex-col relative font-outfit bg-white text-slate-800 p-6 rounded-xl border border-slate-200 shadow-sm transition-all duration-300 hover:scale-[1.01] hover:shadow-md hover:border-purple-500 hover:outline hover:outline-2 hover:outline-purple-500/50 hover:outline-offset-2"
+                className="group min-w-[85vw] md:min-w-[45vw] lg:min-w-[calc((100%-3rem)/3)] max-w-[calc((100%-3rem)/3)] flex-shrink-0 snap-start flex flex-col relative font-outfit bg-[#040209] text-white p-6 rounded-2xl border border-white/5 transition-all duration-300 hover:scale-[1.01] hover:border-[#a855f7] hover:outline hover:outline-2 hover:outline-[#a855f7]/50 hover:outline-offset-2"
               >
-                <div className="w-full h-40 mb-6 overflow-hidden rounded-xl bg-slate-100 flex items-center justify-center relative z-10 border border-slate-200">
+                <div className="w-full h-40 mb-6 overflow-hidden rounded-xl bg-black/40 flex items-center justify-center relative z-10 border border-white/5">
                   <img src={cert.image} alt={cert.title} className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" />
                 </div>
 
-                <h3 className="font-bold text-xl md:text-2xl tracking-tight text-slate-900 mb-2 uppercase font-rajdhani">{cert.title}</h3>
+                <h3 className="font-bold text-xl md:text-2xl tracking-wider text-white mb-4 uppercase font-rajdhani leading-snug">{cert.title}</h3>
                 
-                <div className="inline-flex bg-purple-50 rounded-full px-4 py-1.5 text-xs text-purple-700 mb-4 w-fit font-outfit border border-purple-200 font-medium">
+                <div className="inline-flex bg-[#130927] rounded-full px-5 py-2 text-sm text-slate-300 mb-6 w-fit font-outfit border border-[#a855f7]/20 shadow-inner shadow-white/5">
                   {cert.issuer} • {cert.year}
                 </div>
                 
-                <p className="font-inter text-sm md:text-base leading-relaxed text-slate-600 flex-grow" dangerouslySetInnerHTML={{ __html: cert.description }} />
+                <p className="font-inter text-sm md:text-base leading-relaxed text-slate-400 flex-grow" dangerouslySetInnerHTML={{ __html: cert.description }} />
               </div>
             ))}
           </div>
