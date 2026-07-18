@@ -369,35 +369,39 @@ function Portfolio({ state, setState }) {
               >
                 <motion.div variants={itemVariants} className="bento-inner" style={{ padding: '24px' }}>
                   <h3 style={{ marginBottom: '24px' }}>Education</h3>
-                  <div className="timeline-track">
-                    {state.education.map((item) => (
-                      <motion.article 
-                        key={item.id} 
-                        className="timeline-card card"
-                        whileHover={{ scale: 1.02, x: 5 }}
-                      >
-                        <h4>{item.title}</h4>
-                        <p className="meta">{item.school} • {item.year}</p>
-                        <p>{item.description}</p>
-                      </motion.article>
-                    ))}
+                  <div className="resume-scroll-container">
+                    <div className="timeline-track">
+                      {state.education.map((item) => (
+                        <motion.article 
+                          key={item.id} 
+                          className="timeline-card card"
+                          whileHover={{ scale: 1.02, x: 5 }}
+                        >
+                          <h4>{item.title}</h4>
+                          <p className="meta">{item.school} • {item.year}</p>
+                          <p>{item.description}</p>
+                        </motion.article>
+                      ))}
+                    </div>
                   </div>
                 </motion.div>
                 
                 <motion.div variants={itemVariants} className="bento-inner" style={{ padding: '24px' }}>
                   <h3 style={{ marginBottom: '24px' }}>Experience</h3>
-                  <div className="timeline-track">
-                    {state.experience.map((item) => (
-                      <motion.article 
-                        key={item.id} 
-                        className="timeline-card card"
-                        whileHover={{ scale: 1.02, x: 5 }}
-                      >
-                        <h4>{item.title}</h4>
-                        <p className="meta">{item.year}</p>
-                        <p>{item.description}</p>
-                      </motion.article>
-                    ))}
+                  <div className="resume-scroll-container">
+                    <div className="timeline-track">
+                      {state.experience.map((item) => (
+                        <motion.article 
+                          key={item.id} 
+                          className="timeline-card card"
+                          whileHover={{ scale: 1.02, x: 5 }}
+                        >
+                          <h4>{item.title}</h4>
+                          <p className="meta">{item.year}</p>
+                          <p>{item.description}</p>
+                        </motion.article>
+                      ))}
+                    </div>
                   </div>
                 </motion.div>
               </motion.div>
