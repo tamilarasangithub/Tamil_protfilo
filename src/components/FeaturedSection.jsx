@@ -43,12 +43,13 @@ export const FeaturedSection = ({ projects, certifications }) => {
           <div className="-my-6 -mx-2">
             <div 
               ref={projectScrollRef}
-              className="flex flex-row gap-6 w-full overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-none py-6 px-4"
+              className="flex flex-row gap-6 w-full overflow-x-auto snap-x snap-mandatory scroll-smooth cyber-scrollbar-x py-6 px-4"
             >
               {projects.map((project, index) => (
                 <article 
                   key={index}
-                  className="project-card group min-w-[85vw] md:min-w-[45vw] lg:min-w-[calc((100%-3rem)/3)] max-w-[calc((100%-3rem)/3)] flex-shrink-0 snap-start flex flex-col relative"
+                  className="project-card bento-inner group min-w-[85vw] md:min-w-[45vw] lg:min-w-[calc((100%-3rem)/3)] max-w-[calc((100%-3rem)/3)] flex-shrink-0 snap-start flex flex-col relative"
+                  style={{ background: 'transparent' }}
                 >
                   {(() => {
                     let previewContent = null;
@@ -149,15 +150,16 @@ export const FeaturedSection = ({ projects, certifications }) => {
           <div className="-my-6 -mx-2">
             <div 
               ref={certScrollRef}
-              className="flex flex-row gap-6 w-full overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-none py-6 px-4"
+              className="flex flex-row gap-6 w-full overflow-x-auto snap-x snap-mandatory scroll-smooth cyber-scrollbar-x py-6 px-4"
             >
               {certifications.map((cert, index) => (
                 <article 
                   key={index}
-                  className="cert-card group min-w-[85vw] md:min-w-[45vw] lg:min-w-[calc((100%-3rem)/3)] max-w-[calc((100%-3rem)/3)] flex-shrink-0 snap-start flex flex-col relative"
+                  className="cert-card bento-inner group min-w-[85vw] md:min-w-[45vw] lg:min-w-[calc((100%-3rem)/3)] max-w-[calc((100%-3rem)/3)] flex-shrink-0 snap-start flex flex-col relative"
+                  style={{ background: 'transparent' }}
                 >
-                  <div className="cert-image-container relative z-10" style={{ background: 'rgba(0,0,0,0.4)' }}>
-                    <img src={cert.image} alt={cert.title} style={{ objectFit: 'contain' }} className="group-hover:scale-105 transition-transform duration-500" />
+                  <div className="cert-image-container relative z-10 w-full h-48 mb-4 rounded-lg overflow-hidden border border-[#a855f7]/30 bg-black/20">
+                    <img src={cert.image} alt={cert.title} style={{ objectFit: 'contain' }} className="w-full h-full group-hover:scale-105 transition-transform duration-500" />
                   </div>
 
                   <h4>{cert.title}</h4>

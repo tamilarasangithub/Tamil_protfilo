@@ -1,13 +1,28 @@
-import React, { useState, useEffect } from 'react';
+const fs = require('fs');
+const path = require('path');
+
+const targetPath = path.join(__dirname, 'src', 'pages', 'AdminDashboard.jsx');
+
+const newContent = `import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Home, LogOut, Edit, X, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Home, LogOut, Edit, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { db, auth } from '../firebase';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 import { signOut } from 'firebase/auth';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+
+const mockAnalyticsData = [
+  { name: 'Mon', visitors: 400 },
+  { name: 'Tue', visitors: 300 },
+  { name: 'Wed', visitors: 550 },
+  { name: 'Thu', visitors: 450 },
+  { name: 'Fri', visitors: 700 },
+  { name: 'Sat', visitors: 850 },
+  { name: 'Sun', visitors: 1100 }
+];
 
 function AdminDashboard({ state, setState }) {
   const navigate = useNavigate();
@@ -26,48 +41,6 @@ function AdminDashboard({ state, setState }) {
   }, [state.loggedIn, navigate]);
 
   const [feedback, setFeedback] = useState('');
-  const [analyticsData, setAnalyticsData] = useState([
-    { name: 'Mon', visitors: 0 },
-    { name: 'Tue', visitors: 0 },
-    { name: 'Wed', visitors: 0 },
-    { name: 'Thu', visitors: 0 },
-    { name: 'Fri', visitors: 0 },
-    { name: 'Sat', visitors: 0 },
-    { name: 'Sun', visitors: 0 }
-  ]);
-
-  useEffect(() => {
-    if (!state.loggedIn) return;
-    
-    const fetchAnalytics = async () => {
-      try {
-        const analyticsDoc = await getDoc(doc(db, 'portfolio', 'analytics'));
-        const data = analyticsDoc.exists() ? analyticsDoc.data() : {};
-        
-        const dates = Array.from({length: 7}).map((_, i) => {
-          const d = new Date();
-          d.setDate(d.getDate() - (6 - i));
-          return d.toISOString().split('T')[0];
-        });
-        
-        const chartData = dates.map(dateStr => {
-          const dateObj = new Date(dateStr);
-          const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'short' });
-          return {
-            name: dayName,
-            visitors: data[dateStr] || 0
-          };
-        });
-        
-        setAnalyticsData(chartData);
-      } catch (error) {
-        console.error("Error fetching analytics:", error);
-      }
-    };
-    
-    fetchAnalytics();
-  }, [state.loggedIn]);
-
   const [adminForms, setAdminForms] = useState({
     about1: state.aboutIntro1 || '',
     about2: state.aboutIntro2 || '',
@@ -154,12 +127,12 @@ function AdminDashboard({ state, setState }) {
       }
       await setDoc(docRef, {
         education: newList,
-        lastUpdate: `Education ${editingId.education ? 'updated' : 'added'}: ${eduForm.title.trim()}`
+        lastUpdate: \`Education \${editingId.education ? 'updated' : 'added'}: \${eduForm.title.trim()}\`
       }, { merge: true });
       setEduForm({ title: '', school: '', year: '', description: '' });
       setEditingId(prev => ({ ...prev, education: null }));
       setActiveModal(null);
-      setFeedback(`Education ${editingId.education ? 'updated' : 'added'} successfully.`);
+      setFeedback(\`Education \${editingId.education ? 'updated' : 'added'} successfully.\`);
     } catch(e) {
       setFeedback('Error: ' + e.message);
     }
@@ -179,12 +152,12 @@ function AdminDashboard({ state, setState }) {
       }
       await setDoc(docRef, {
         experience: newList,
-        lastUpdate: `Experience ${editingId.experience ? 'updated' : 'added'}: ${expForm.title.trim()}`
+        lastUpdate: \`Experience \${editingId.experience ? 'updated' : 'added'}: \${expForm.title.trim()}\`
       }, { merge: true });
       setExpForm({ title: '', year: '', description: '' });
       setEditingId(prev => ({ ...prev, experience: null }));
       setActiveModal(null);
-      setFeedback(`Experience ${editingId.experience ? 'updated' : 'added'} successfully.`);
+      setFeedback(\`Experience \${editingId.experience ? 'updated' : 'added'} successfully.\`);
     } catch(e) {
       setFeedback('Error: ' + e.message);
     }
@@ -204,12 +177,12 @@ function AdminDashboard({ state, setState }) {
       }
       await setDoc(docRef, {
         projects: newList,
-        lastUpdate: `Project ${editingId.projects ? 'updated' : 'added'}: ${projectForm.title.trim()}`
+        lastUpdate: \`Project \${editingId.projects ? 'updated' : 'added'}: \${projectForm.title.trim()}\`
       }, { merge: true });
       setProjectForm({ title: '', category: '', link: '', videoUrl: '', description: '', livePreviewUrl: '', image: '', cardDescription: '' });
       setEditingId(prev => ({ ...prev, projects: null }));
       setActiveModal(null);
-      setFeedback(`Project ${editingId.projects ? 'updated' : 'added'} successfully.`);
+      setFeedback(\`Project \${editingId.projects ? 'updated' : 'added'} successfully.\`);
     } catch(e) {
       setFeedback('Error: ' + e.message);
     }
@@ -266,12 +239,12 @@ function AdminDashboard({ state, setState }) {
       }
       await setDoc(docRef, {
         certifications: newList,
-        lastUpdate: `Certification ${editingId.certifications ? 'updated' : 'added'}: ${certForm.title.trim()}`
+        lastUpdate: \`Certification \${editingId.certifications ? 'updated' : 'added'}: \${certForm.title.trim()}\`
       }, { merge: true });
       setCertForm({ title: '', issuer: '', year: '', category: '', image: '', description: '' });
       setEditingId(prev => ({ ...prev, certifications: null }));
       setActiveModal(null);
-      setFeedback(`Certification ${editingId.certifications ? 'updated' : 'added'} successfully.`);
+      setFeedback(\`Certification \${editingId.certifications ? 'updated' : 'added'} successfully.\`);
     } catch(e) {
       setFeedback('Error: ' + e.message);
     }
@@ -291,12 +264,12 @@ function AdminDashboard({ state, setState }) {
       }
       await setDoc(docRef, {
         researchPapers: newList,
-        lastUpdate: `Research paper ${editingId.researchPapers ? 'updated' : 'added'}: ${researchForm.title.trim()}`
+        lastUpdate: \`Research paper \${editingId.researchPapers ? 'updated' : 'added'}: \${researchForm.title.trim()}\`
       }, { merge: true });
       setResearchForm({ title: '', conference: '', year: '', category: '', link: '', videoUrl: '', description: '' });
       setEditingId(prev => ({ ...prev, researchPapers: null }));
       setActiveModal(null);
-      setFeedback(`Research paper ${editingId.researchPapers ? 'updated' : 'added'} successfully.`);
+      setFeedback(\`Research paper \${editingId.researchPapers ? 'updated' : 'added'} successfully.\`);
     } catch(e) {
       setFeedback('Error: ' + e.message);
     }
@@ -308,7 +281,7 @@ function AdminDashboard({ state, setState }) {
       await setDoc(docRef, {
         [key]: state[key].filter((item) => item.id !== id)
       }, { merge: true });
-      setFeedback(`Item removed from ${key}.`);
+      setFeedback(\`Item removed from \${key}.\`);
     } catch(e) {
       setFeedback('Error: ' + e.message);
     }
@@ -340,14 +313,6 @@ function AdminDashboard({ state, setState }) {
     if (key === 'certifications') { setCertForm(item); setEditingId(prev => ({ ...prev, certifications: item.id })); }
     if (key === 'researchPapers') { setResearchForm(item); setEditingId(prev => ({ ...prev, researchPapers: item.id })); }
     setActiveModal(key);
-    
-    setTimeout(() => {
-       const editHeader = document.getElementById(`edit-${key}`);
-       if (editHeader) {
-         const y = editHeader.getBoundingClientRect().top + window.scrollY - 100;
-         window.scrollTo({ top: y, behavior: 'smooth' });
-       }
-    }, 50);
   };
 
   const cancelEdit = (key) => {
@@ -366,59 +331,33 @@ function AdminDashboard({ state, setState }) {
   const renderFormWrapper = (key, title, isLarge, formContent) => {
     if (editingId[key] && activeModal === key) {
       return (
-        <div id={`edit-${key}`} style={{ position: 'relative', zIndex: 1000 }}>
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ position: 'fixed', inset: 0, background: 'rgba(0, 0, 0, 0.6)', backdropFilter: 'blur(12px)', zIndex: -1 }} onClick={() => cancelEdit(key)} />
-          <button
-            type="button"
-            onClick={() => cancelEdit(key)}
-            style={{ 
-              position: 'absolute', 
-              bottom: -80, 
-              left: '50%', 
-              transform: 'translateX(-50%)', 
-              width: 56, 
-              height: 56, 
-              borderRadius: '50%', 
-              background: 'rgba(10, 10, 10, 0.6)', 
-              backdropFilter: 'blur(10px)', 
-              border: '1px solid rgba(255, 255, 255, 0.1)', 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center', 
-              color: '#fff', 
-              cursor: 'pointer', 
-              zIndex: 10, 
-              transition: 'all 0.3s ease',
-              boxShadow: '0 4px 24px rgba(0,0,0,0.4)'
-            }}
-            onMouseOver={e => { e.currentTarget.style.background='rgba(255,255,255,0.1)'; e.currentTarget.style.transform='translateX(-50%) scale(1.1)'; }}
-            onMouseOut={e => { e.currentTarget.style.background='rgba(10, 10, 10, 0.6)'; e.currentTarget.style.transform='translateX(-50%) scale(1)'; }}
-          >
-            <X size={24} />
-          </button>
-          <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="bento-inner" style={{ padding: '24px', marginBottom: '24px', borderColor: 'rgba(176, 38, 255, 0.5)', boxShadow: '0 0 40px rgba(176, 38, 255, 0.2)' }}>
-            <div style={{ marginBottom: '20px' }}>
-              <h3 style={{ margin: 0 }}>Edit {title}</h3>
-            </div>
-            {formContent}
+        <AnimatePresence>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="modal-overlay" onClick={() => cancelEdit(key)}>
+            <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }} className={\`modal-content \${isLarge ? 'large' : ''}\`} onClick={e => e.stopPropagation()}>
+              <button type="button" className="modal-close" onClick={() => cancelEdit(key)}><X size={18} /></button>
+              <h3 style={{ marginBottom: '20px' }}>Edit {title}</h3>
+              {formContent}
+            </motion.div>
           </motion.div>
+        </AnimatePresence>
+      );
+    }
+    
+    if (!editingId[key]) {
+      return (
+        <div className="bento-inner" style={{ padding: '24px', gridColumn: '1 / -1' }}>
+          <h3 style={{ marginBottom: '20px' }}>Add {title}</h3>
+          {formContent}
         </div>
       );
     }
     
-    return (
-      <div id={`edit-${key}`} className="bento-inner" style={{ padding: '24px', marginBottom: '24px' }}>
-        <h3 style={{ marginBottom: '20px' }}>Add {title}</h3>
-        {formContent}
-      </div>
-    );
+    return null;
   };
-
-  const sectionStyle = { position: 'relative', marginBottom: '40px', padding: '20px', background: 'rgba(255,255,255,0.02)', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.05)' };
 
   return (
     <>
-      <nav className={`top-nav hide-on-mobile ${isScrolled ? 'scrolled' : ''}`} style={{ marginBottom: '2rem' }}>
+      <nav className={\`top-nav hide-on-mobile \${isScrolled ? 'scrolled' : ''}\`} style={{ marginBottom: '2rem' }}>
         <Link to="/" style={{ padding: '8px 16px', borderRadius: '999px', color: '#fff', textDecoration: 'none' }}>View Portfolio</Link>
         <button type="button" className="nav-cta" onClick={handleLogout} style={{ marginLeft: '12px' }}>Logout</button>
       </nav>
@@ -440,7 +379,7 @@ function AdminDashboard({ state, setState }) {
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
       transition={{ duration: 0.4, ease: "easeInOut" }}
-      className="page-shell admin-shell"
+      className="page-shell"
     >
 
       <section className="card section">
@@ -449,11 +388,11 @@ function AdminDashboard({ state, setState }) {
           <h2>Manage your portfolio content</h2>
         </div>
 
-        <div className="bento-inner" style={{ padding: '24px', marginBottom: '40px' }}>
+        <div className="bento-inner" style={{ padding: '24px', marginBottom: '24px' }}>
           <h3 style={{ marginBottom: '16px' }}>Visitor Analytics (Last 7 Days)</h3>
           <div style={{ width: '100%', height: 300 }}>
             <ResponsiveContainer>
-              <AreaChart data={analyticsData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+              <AreaChart data={mockAnalyticsData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorVisitors" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#b026ff" stopOpacity={0.8}/>
@@ -472,30 +411,24 @@ function AdminDashboard({ state, setState }) {
 
         {feedback ? <div className="success-message">{feedback}</div> : null}
         
-        <div style={sectionStyle}>
-          <h2 style={{ marginBottom: '24px', fontSize: '1.8rem' }}>About & Skills</h2>
-          <div className="admin-grid">
-            <div className="bento-inner" style={{ padding: '24px' }}>
-              <h3>Edit About</h3>
-              <form className="stack-form" onSubmit={handleAboutSave}>
-                <textarea rows="3" value={adminForms.about1} onChange={(event) => setAdminForms({ ...adminForms, about1: event.target.value })} placeholder="About intro line 1" />
-                <textarea rows="3" value={adminForms.about2} onChange={(event) => setAdminForms({ ...adminForms, about2: event.target.value })} placeholder="About intro line 2" />
-                <button type="submit" disabled={isSubmitting} className="btn btn-primary">{isSubmitting ? 'Saving...' : 'Save About'}</button>
-              </form>
-            </div>
-            
-            <div className="bento-inner" style={{ padding: '24px' }}>
-              <h3>Edit Skills</h3>
-              <form className="stack-form" onSubmit={handleSkillsSave}>
-                <textarea rows="3" value={adminForms.skills} onChange={(event) => setAdminForms({ ...adminForms, skills: event.target.value })} placeholder="Skills separated by commas" />
-                <button type="submit" disabled={isSubmitting} className="btn btn-primary">{isSubmitting ? 'Saving...' : 'Save Skills'}</button>
-              </form>
-            </div>
+        <div className="admin-grid">
+          <div className="bento-inner" style={{ padding: '24px' }}>
+            <h3>Edit About</h3>
+            <form className="stack-form" onSubmit={handleAboutSave}>
+              <textarea rows="3" value={adminForms.about1} onChange={(event) => setAdminForms({ ...adminForms, about1: event.target.value })} placeholder="About intro line 1" />
+              <textarea rows="3" value={adminForms.about2} onChange={(event) => setAdminForms({ ...adminForms, about2: event.target.value })} placeholder="About intro line 2" />
+              <button type="submit" disabled={isSubmitting} className="btn btn-primary">{isSubmitting ? 'Saving...' : 'Save About'}</button>
+            </form>
           </div>
-        </div>
+          
+          <div className="bento-inner" style={{ padding: '24px' }}>
+            <h3>Edit Skills</h3>
+            <form className="stack-form" onSubmit={handleSkillsSave}>
+              <textarea rows="3" value={adminForms.skills} onChange={(event) => setAdminForms({ ...adminForms, skills: event.target.value })} placeholder="Skills separated by commas" />
+              <button type="submit" disabled={isSubmitting} className="btn btn-primary">{isSubmitting ? 'Saving...' : 'Save Skills'}</button>
+            </form>
+          </div>
 
-        <div style={sectionStyle}>
-          <h2 style={{ marginBottom: '24px', fontSize: '1.8rem' }}>Education</h2>
           {renderFormWrapper('education', 'Education', false, (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '40px' }}>
               <form className="stack-form" onSubmit={handleEduSubmit}>
@@ -504,50 +437,22 @@ function AdminDashboard({ state, setState }) {
                 <input value={eduForm.year} onChange={(event) => setEduForm({ ...eduForm, year: event.target.value })} placeholder="Year (e.g., 2022-2026)" />
                 <textarea rows="2" value={eduForm.description} onChange={(event) => setEduForm({ ...eduForm, description: event.target.value })} placeholder="Education summary" />
                 <div style={{ display: 'flex', gap: '10px' }}>
-                  <button type="submit" disabled={isSubmitting} className="btn btn-primary" style={{ flex: 1 }}>{isSubmitting ? 'Saving...' : editingId.education ? 'Update' : 'Add Education'}</button>
-                  
+                  <button type="submit" disabled={isSubmitting} className="btn btn-primary" style={{ flex: 1 }}>{isSubmitting ? 'Saving...' : editingId.education ? 'Update Education' : 'Add Education'}</button>
+                  {editingId.education && <button type="button" onClick={() => cancelEdit('education')} className="btn btn-secondary">Cancel</button>}
                 </div>
               </form>
               
               <div className="preview-container">
                 <h4 style={{ color: 'rgba(255,255,255,0.7)', marginBottom: '16px' }}>Live Preview</h4>
-                <article className="project-card bento-inner" style={{ height: 'fit-content', background: 'transparent' }}>
+                <article className="project-card" style={{ height: 'fit-content' }}>
                   <h4>{eduForm.title || 'Degree / Title'}</h4>
-                  <p className="meta">{eduForm.school || 'School / Institution'}{eduForm.year ? ` • ${eduForm.year}` : ''}</p>
+                  <p className="meta">{eduForm.school || 'School / Institution'}{eduForm.year ? \` • \${eduForm.year}\` : ''}</p>
                   <p>{eduForm.description || 'Education summary will appear here...'}</p>
                 </article>
               </div>
             </div>
           ))}
 
-          <div className="portfolio-grid">
-            <div>
-              <h3>Manage Education</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
-                {(state.education || []).map((item, index) => (
-                  <article key={item.id} className="project-card bento-inner" style={{ background: 'transparent' }}>
-                    <h4>{item.title}</h4>
-                    <p className="meta">{item.school} • {item.year}</p>
-                    <p>{item.description}</p>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', marginTop: '16px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                      <div style={{ display: 'flex', gap: '8px' }}>
-                        <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleEditItem('education', item)}><Edit size={16} /> Edit</button>
-                        <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleRemoveItem('education', item.id)}>Remove</button>
-                      </div>
-                      <div style={{ display: 'flex', gap: '12px' }}>
-                        <button type="button" className="slide-btn" onClick={() => handleReorder('education', index, 'left')} disabled={index === 0}><ArrowLeft size={20} /></button>
-                        <button type="button" className="slide-btn" onClick={() => handleReorder('education', index, 'right')} disabled={index === (state.education || []).length - 1}><ArrowRight size={20} /></button>
-                      </div>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div style={sectionStyle}>
-          <h2 style={{ marginBottom: '24px', fontSize: '1.8rem' }}>Experience</h2>
           {renderFormWrapper('experience', 'Experience', false, (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '40px' }}>
               <form className="stack-form" onSubmit={handleExpSubmit}>
@@ -555,14 +460,14 @@ function AdminDashboard({ state, setState }) {
                 <input value={expForm.year} onChange={(event) => setExpForm({ ...expForm, year: event.target.value })} placeholder="Year (e.g., 2024 - Present)" required />
                 <textarea rows="2" value={expForm.description} onChange={(event) => setExpForm({ ...expForm, description: event.target.value })} placeholder="Experience summary" />
                 <div style={{ display: 'flex', gap: '10px' }}>
-                  <button type="submit" disabled={isSubmitting} className="btn btn-primary" style={{ flex: 1 }}>{isSubmitting ? 'Saving...' : editingId.experience ? 'Update' : 'Add Experience'}</button>
-                  
+                  <button type="submit" disabled={isSubmitting} className="btn btn-primary" style={{ flex: 1 }}>{isSubmitting ? 'Saving...' : editingId.experience ? 'Update Experience' : 'Add Experience'}</button>
+                  {editingId.experience && <button type="button" onClick={() => cancelEdit('experience')} className="btn btn-secondary">Cancel</button>}
                 </div>
               </form>
               
               <div className="preview-container">
                 <h4 style={{ color: 'rgba(255,255,255,0.7)', marginBottom: '16px' }}>Live Preview</h4>
-                <article className="project-card bento-inner" style={{ height: 'fit-content', background: 'transparent' }}>
+                <article className="project-card" style={{ height: 'fit-content' }}>
                   <h4>{expForm.title || 'Role / Job Title'}</h4>
                   <p className="meta">{expForm.year || 'Year'}</p>
                   <p>{expForm.description || 'Experience summary will appear here...'}</p>
@@ -571,34 +476,6 @@ function AdminDashboard({ state, setState }) {
             </div>
           ))}
 
-          <div className="portfolio-grid">
-            <div>
-              <h3>Manage Experience</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
-                {(state.experience || []).map((item, index) => (
-                  <article key={item.id} className="project-card bento-inner" style={{ background: 'transparent' }}>
-                    <h4>{item.title}</h4>
-                    <p className="meta">{item.year}</p>
-                    <p>{item.description}</p>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', marginTop: '16px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                      <div style={{ display: 'flex', gap: '8px' }}>
-                        <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleEditItem('experience', item)}><Edit size={16} /> Edit</button>
-                        <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleRemoveItem('experience', item.id)}>Remove</button>
-                      </div>
-                      <div style={{ display: 'flex', gap: '12px' }}>
-                        <button type="button" className="slide-btn" onClick={() => handleReorder('experience', index, 'left')} disabled={index === 0}><ArrowLeft size={20} /></button>
-                        <button type="button" className="slide-btn" onClick={() => handleReorder('experience', index, 'right')} disabled={index === (state.experience || []).length - 1}><ArrowRight size={20} /></button>
-                      </div>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div style={sectionStyle}>
-          <h2 style={{ marginBottom: '24px', fontSize: '1.8rem' }}>Projects</h2>
           {renderFormWrapper('projects', 'Project', true, (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '40px' }}>
               <form className="stack-form" onSubmit={handleProjectSubmit}>
@@ -617,14 +494,14 @@ function AdminDashboard({ state, setState }) {
                   <ReactQuill theme="snow" value={projectForm.description} onChange={(val) => setProjectForm({ ...projectForm, description: val })} placeholder="Detailed project description (for Details page)" />
                 </div>
                 <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-                  <button type="submit" disabled={isSubmitting} className="btn btn-primary" style={{ flex: 1 }}>{isSubmitting ? 'Saving...' : editingId.projects ? 'Update' : 'Add Project'}</button>
-                  
+                  <button type="submit" disabled={isSubmitting} className="btn btn-primary" style={{ flex: 1 }}>{isSubmitting ? 'Saving...' : editingId.projects ? 'Update Project' : 'Add Project'}</button>
+                  {editingId.projects && <button type="button" onClick={() => cancelEdit('projects')} className="btn btn-secondary">Cancel</button>}
                 </div>
               </form>
               
               <div className="preview-container">
                 <h4 style={{ color: 'rgba(255,255,255,0.7)', marginBottom: '16px' }}>Live Preview</h4>
-                <article className="project-card bento-inner" style={{ height: 'fit-content', background: 'transparent' }}>
+                <article className="project-card" style={{ height: 'fit-content' }}>
                   {(() => {
                     let previewContent = null;
                     if (projectForm.image) {
@@ -635,7 +512,7 @@ function AdminDashboard({ state, setState }) {
                         let videoId = '';
                         if (videoSrc.includes('youtu.be/')) videoId = videoSrc.split('youtu.be/')[1].split('?')[0];
                         else if (videoSrc.includes('watch?v=')) videoId = videoSrc.split('watch?v=')[1].split('&')[0];
-                        if (videoId) videoSrc = `https://www.youtube.com/embed/${videoId}?autoplay=0&controls=0&showinfo=0&rel=0`;
+                        if (videoId) videoSrc = \`https://www.youtube.com/embed/\${videoId}?autoplay=0&controls=0&showinfo=0&rel=0\`;
                       }
                       previewContent = <iframe src={videoSrc} style={{ width: '100%', height: '100%', border: 'none', pointerEvents: 'none', filter: 'blur(4px)' }} title="Video Preview" tabIndex="-1" />;
                     } else if (projectForm.livePreviewUrl) {
@@ -667,34 +544,6 @@ function AdminDashboard({ state, setState }) {
             </div>
           ))}
 
-          <div className="portfolio-grid">
-            <div>
-              <h3>Manage Projects</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
-                {(state.projects || []).map((project, index) => (
-                  <article key={project.id} className="project-card bento-inner" style={{ background: 'transparent' }}>
-                    <div className="pill-tag">{project.category}</div>
-                    <h4>{project.title}</h4>
-                    <div dangerouslySetInnerHTML={{ __html: project.description }} />
-                    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', marginTop: '16px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                      <div style={{ display: 'flex', gap: '8px' }}>
-                        <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleEditItem('projects', project)}><Edit size={16} /> Edit</button>
-                        <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleRemoveItem('projects', project.id)}>Remove</button>
-                      </div>
-                      <div style={{ display: 'flex', gap: '12px' }}>
-                        <button type="button" className="slide-btn" onClick={() => handleReorder('projects', index, 'left')} disabled={index === 0}><ArrowLeft size={20} /></button>
-                        <button type="button" className="slide-btn" onClick={() => handleReorder('projects', index, 'right')} disabled={index === (state.projects || []).length - 1}><ArrowRight size={20} /></button>
-                      </div>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div style={sectionStyle}>
-          <h2 style={{ marginBottom: '24px', fontSize: '1.8rem' }}>Certifications</h2>
           {renderFormWrapper('certifications', 'Certification', false, (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '40px' }}>
               <form className="stack-form" onSubmit={handleCertSubmit}>
@@ -709,55 +558,27 @@ function AdminDashboard({ state, setState }) {
 
                 <textarea rows="3" value={certForm.description} onChange={(event) => setCertForm({ ...certForm, description: event.target.value })} placeholder="Description" required />
                 <div style={{ display: 'flex', gap: '10px' }}>
-                  <button type="submit" disabled={isSubmitting} className="btn btn-primary" style={{ flex: 1 }}>{isSubmitting ? 'Saving...' : editingId.certifications ? 'Update' : 'Add Certification'}</button>
-                  
+                  <button type="submit" disabled={isSubmitting} className="btn btn-primary" style={{ flex: 1 }}>{isSubmitting ? 'Saving...' : editingId.certifications ? 'Update Certification' : 'Add Certification'}</button>
+                  {editingId.certifications && <button type="button" onClick={() => cancelEdit('certifications')} className="btn btn-secondary">Cancel</button>}
                 </div>
               </form>
               
               <div className="preview-container">
                 <h4 style={{ color: 'rgba(255,255,255,0.7)', marginBottom: '16px' }}>Live Preview</h4>
-                <article className="cert-card bento-inner" style={{ height: 'fit-content', background: 'transparent' }}>
+                <article className="cert-card" style={{ height: 'fit-content' }}>
                   {certForm.image && (
                     <div style={{ width: '100%', height: '150px', marginBottom: '16px', borderRadius: '8px', overflow: 'hidden', border: '1px solid rgba(176, 38, 255, 0.3)' }}>
                       <img src={certForm.image} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     </div>
                   )}
                   <h4>{certForm.title || 'Certification title'}</h4>
-                  <p className="meta">{certForm.issuer || 'Issuer'}{certForm.year ? ` • ${certForm.year}` : ''}</p>
+                  <p className="meta">{certForm.issuer || 'Issuer'}{certForm.year ? \` • \${certForm.year}\` : ''}</p>
                   <p>{certForm.description || 'Description will appear here...'}</p>
                 </article>
               </div>
             </div>
           ))}
 
-          <div className="portfolio-grid">
-            <div>
-              <h3>Manage Certifications</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
-                {(state.certifications || []).map((cert, index) => (
-                  <article key={cert.id} className="cert-card bento-inner" style={{ background: 'transparent' }}>
-                    <h4>{cert.title}</h4>
-                    <p className="meta">{cert.issuer}{cert.year ? ` • ${cert.year}` : ''}</p>
-                    <p>{cert.description}</p>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', marginTop: '16px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                      <div style={{ display: 'flex', gap: '8px' }}>
-                        <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleEditItem('certifications', cert)}><Edit size={16} /> Edit</button>
-                        <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleRemoveItem('certifications', cert.id)}>Remove</button>
-                      </div>
-                      <div style={{ display: 'flex', gap: '12px' }}>
-                        <button type="button" className="slide-btn" onClick={() => handleReorder('certifications', index, 'left')} disabled={index === 0}><ArrowLeft size={20} /></button>
-                        <button type="button" className="slide-btn" onClick={() => handleReorder('certifications', index, 'right')} disabled={index === (state.certifications || []).length - 1}><ArrowRight size={20} /></button>
-                      </div>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div style={sectionStyle}>
-          <h2 style={{ marginBottom: '24px', fontSize: '1.8rem' }}>Research Papers</h2>
           {renderFormWrapper('researchPapers', 'Research Paper', false, (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '40px' }}>
               <form className="stack-form" onSubmit={handleResearchSubmit}>
@@ -770,46 +591,120 @@ function AdminDashboard({ state, setState }) {
                 <input value={researchForm.videoUrl} onChange={(event) => setResearchForm({ ...researchForm, videoUrl: event.target.value })} placeholder="Video URL (YouTube or .mp4 link)" />
                 <textarea rows="2" value={researchForm.description} onChange={(event) => setResearchForm({ ...researchForm, description: event.target.value })} placeholder="Abstract / Summary" />
                 <div style={{ display: 'flex', gap: '10px' }}>
-                  <button type="submit" disabled={isSubmitting} className="btn btn-primary" style={{ flex: 1 }}>{isSubmitting ? 'Saving...' : editingId.researchPapers ? 'Update' : 'Add Paper'}</button>
-                  
+                  <button type="submit" disabled={isSubmitting} className="btn btn-primary" style={{ flex: 1 }}>{isSubmitting ? 'Saving...' : editingId.researchPapers ? 'Update Paper' : 'Add Paper'}</button>
+                  {editingId.researchPapers && <button type="button" onClick={() => cancelEdit('researchPapers')} className="btn btn-secondary">Cancel</button>}
                 </div>
               </form>
               
               <div className="preview-container">
                 <h4 style={{ color: 'rgba(255,255,255,0.7)', marginBottom: '16px' }}>Live Preview</h4>
-                <article className="project-card bento-inner" style={{ height: 'fit-content', background: 'transparent' }}>
+                <article className="project-card" style={{ height: 'fit-content' }}>
                   {researchForm.category && <div className="pill-tag">{researchForm.category}</div>}
                   <h4>{researchForm.title || 'Paper title'}</h4>
-                  <p className="meta">{researchForm.conference || 'Conference / Journal'}{researchForm.year ? ` • ${researchForm.year}` : ''}</p>
+                  <p className="meta">{researchForm.conference || 'Conference / Journal'}{researchForm.year ? \` • \${researchForm.year}\` : ''}</p>
                   <p>{researchForm.description || 'Abstract / Summary will appear here...'}</p>
                   <span style={{ color: 'var(--accent)', fontWeight: '600', marginTop: '10px', display: 'inline-block' }}>View details</span>
                 </article>
               </div>
             </div>
           ))}
+        </div>
 
-          <div className="portfolio-grid">
-            <div>
-              <h3>Manage Research Papers</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
-                {(state.researchPapers || []).map((paper, index) => (
-                  <article key={paper.id} className="project-card bento-inner" style={{ background: 'transparent' }}>
-                    <h4>{paper.title}</h4>
-                    <p className="meta">{paper.conference}{paper.year ? ` • ${paper.year}` : ''}</p>
-                    <p>{paper.description}</p>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', marginTop: '16px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                      <div style={{ display: 'flex', gap: '8px' }}>
-                        <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleEditItem('researchPapers', paper)}><Edit size={16} /> Edit</button>
-                        <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleRemoveItem('researchPapers', paper.id)}>Remove</button>
-                      </div>
-                      <div style={{ display: 'flex', gap: '12px' }}>
-                        <button type="button" className="slide-btn" onClick={() => handleReorder('researchPapers', index, 'left')} disabled={index === 0}><ArrowLeft size={20} /></button>
-                        <button type="button" className="slide-btn" onClick={() => handleReorder('researchPapers', index, 'right')} disabled={index === (state.researchPapers || []).length - 1}><ArrowRight size={20} /></button>
-                      </div>
-                    </div>
-                  </article>
-                ))}
-              </div>
+        <div className="portfolio-grid" style={{ marginTop: '40px' }}>
+          <div>
+            <h3>Manage Education</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
+              {(state.education || []).map((item, index) => (
+                <article key={item.id} className="project-card">
+                  <h4>{item.title}</h4>
+                  <p className="meta">{item.school} • {item.year}</p>
+                  <p>{item.description}</p>
+                  <div style={{ display: 'flex', gap: '10px', marginTop: '10px', flexWrap: 'wrap' }}>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleEditItem('education', item)}><Edit size={16} /></button>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleReorder('education', index, 'left')} disabled={index === 0}>←</button>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleReorder('education', index, 'right')} disabled={index === (state.education || []).length - 1}>→</button>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleRemoveItem('education', item.id)}>Remove</button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+          <div>
+            <h3>Manage Experience</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
+              {(state.experience || []).map((item, index) => (
+                <article key={item.id} className="project-card">
+                  <h4>{item.title}</h4>
+                  <p className="meta">{item.year}</p>
+                  <p>{item.description}</p>
+                  <div style={{ display: 'flex', gap: '10px', marginTop: '10px', flexWrap: 'wrap' }}>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleEditItem('experience', item)}><Edit size={16} /></button>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleReorder('experience', index, 'left')} disabled={index === 0}>←</button>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleReorder('experience', index, 'right')} disabled={index === (state.experience || []).length - 1}>→</button>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleRemoveItem('experience', item.id)}>Remove</button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="portfolio-grid" style={{ marginTop: '40px' }}>
+          <div>
+            <h3>Manage Projects</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
+              {(state.projects || []).map((project, index) => (
+                <article key={project.id} className="project-card">
+                  <div className="pill-tag">{project.category}</div>
+                  <h4>{project.title}</h4>
+                  <div dangerouslySetInnerHTML={{ __html: project.description }} />
+                  <div style={{ display: 'flex', gap: '10px', marginTop: '10px', flexWrap: 'wrap' }}>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleEditItem('projects', project)}><Edit size={16} /></button>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleReorder('projects', index, 'left')} disabled={index === 0}>←</button>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleReorder('projects', index, 'right')} disabled={index === (state.projects || []).length - 1}>→</button>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleRemoveItem('projects', project.id)}>Remove</button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+          <div>
+            <h3>Manage Certifications</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
+              {(state.certifications || []).map((cert, index) => (
+                <article key={cert.id} className="cert-card">
+                  <h4>{cert.title}</h4>
+                  <p className="meta">{cert.issuer}{cert.year ? \` • \${cert.year}\` : ''}</p>
+                  <p>{cert.description}</p>
+                  <div style={{ display: 'flex', gap: '10px', marginTop: '10px', flexWrap: 'wrap' }}>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleEditItem('certifications', cert)}><Edit size={16} /></button>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleReorder('certifications', index, 'left')} disabled={index === 0}>←</button>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleReorder('certifications', index, 'right')} disabled={index === (state.certifications || []).length - 1}>→</button>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleRemoveItem('certifications', cert.id)}>Remove</button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </div>
+        
+        <div className="portfolio-grid" style={{ marginTop: '40px' }}>
+          <div>
+            <h3>Manage Research Papers</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
+              {(state.researchPapers || []).map((paper, index) => (
+                <article key={paper.id} className="project-card">
+                  <h4>{paper.title}</h4>
+                  <p className="meta">{paper.conference}{paper.year ? \` • \${paper.year}\` : ''}</p>
+                  <p>{paper.description}</p>
+                  <div style={{ display: 'flex', gap: '10px', marginTop: '10px', flexWrap: 'wrap' }}>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleEditItem('researchPapers', paper)}><Edit size={16} /></button>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleReorder('researchPapers', index, 'left')} disabled={index === 0}>←</button>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleReorder('researchPapers', index, 'right')} disabled={index === (state.researchPapers || []).length - 1}>→</button>
+                    <button type="button" className="btn btn-secondary ghost-btn" onClick={() => handleRemoveItem('researchPapers', paper.id)}>Remove</button>
+                  </div>
+                </article>
+              ))}
             </div>
           </div>
         </div>
@@ -835,7 +730,7 @@ function AdminDashboard({ state, setState }) {
               setIsSubmitting(false);
             }} 
             disabled={isSubmitting}
-            style={{ width: '100%' }}
+            style={{ width: '100%', background: 'linear-gradient(135deg, #00fbff, #9900ff)' }}
           >
             {isSubmitting ? 'Syncing...' : 'Force Save All Changes to Database'}
           </button>
@@ -847,3 +742,7 @@ function AdminDashboard({ state, setState }) {
 }
 
 export default AdminDashboard;
+`;
+
+fs.writeFileSync(targetPath, newContent, 'utf8');
+console.log('Successfully rewrote AdminDashboard.jsx with refactored modal components');

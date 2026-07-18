@@ -89,10 +89,10 @@ const Chatbot = ({ state }) => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="mb-4 w-[340px] h-[480px] bg-[rgba(20,10,30,0.4)] border border-[rgba(176,38,255,0.4)] rounded-[20px] shadow-[0_8px_32px_0_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(176,38,255,0.2)] flex flex-col overflow-hidden backdrop-blur-[20px] backdrop-saturate-[180%]"
+            className="mb-4 w-[340px] h-[480px] liquid-glass rounded-[24px] flex flex-col overflow-hidden"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-4 bg-transparent border-b border-white/10">
+            <div className="flex items-center justify-between p-4 border-b border-white/20">
               <div className="flex items-center gap-2 text-white">
                 <Bot size={20} />
                 <h3 className="font-semibold">Xova AI</h3>
@@ -187,7 +187,7 @@ const Chatbot = ({ state }) => {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="w-14 h-14 rounded-full bg-[rgba(20,10,30,0.4)] backdrop-blur-[20px] backdrop-saturate-[180%] border border-[rgba(176,38,255,0.4)] text-white flex items-center justify-center shadow-[0_8px_32px_0_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(176,38,255,0.2)] cursor-pointer hover:shadow-[0_8px_32px_0_rgba(176,38,255,0.3),inset_0_1px_1px_rgba(176,38,255,0.4)] transition-all"
+        className="w-14 h-14 rounded-full liquid-glass text-white flex items-center justify-center cursor-pointer transition-all"
       >
         {isOpen ? <X size={24} /> : <MessageSquare size={24} />}
       </motion.div>

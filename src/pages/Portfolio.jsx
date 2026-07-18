@@ -1,14 +1,50 @@
-import React, { useMemo, useState, useRef } from 'react';
+import React, { useMemo, useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useInView, animate } from 'framer-motion';
 import { Home, Briefcase, BarChart2, User, Mail, FileText, Layers } from 'lucide-react';
 import { FeaturedSection } from '../components/FeaturedSection';
+
+
+const AnimatedCounter = ({ from, to, duration = 2, prefix = "", suffix = "" }) => {
+  const nodeRef = React.useRef(null);
+  const isInView = useInView(nodeRef, { once: true, margin: "-10px" });
+
+  React.useEffect(() => {
+    if (isInView) {
+      const controls = animate(from, to, {
+        duration: duration,
+        ease: "easeOut",
+        onUpdate(value) {
+          if (nodeRef.current) {
+            nodeRef.current.textContent = `${prefix}${Math.round(value)}${suffix}`;
+          }
+        }
+      });
+      return () => controls.stop();
+    }
+  }, [from, to, duration, isInView, prefix, suffix]);
+
+  return <span ref={nodeRef} style={{ fontSize: 'inherit', fontWeight: 'inherit', color: 'inherit' }}>{prefix}{from}{suffix}</span>;
+};
+
 function Portfolio({ state, setState }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('about');
+  const [activeFilter, setActiveFilter] = useState('all');
 
-  React.useEffect(() => {
+  const eduScrollRef = useRef(null);
+  const expScrollRef = useRef(null);
+  
+  const scrollVertical = (ref, direction) => {
+    if (ref.current) {
+      const scrollAmount = 190;
+      const scrollTo = direction === 'up' ? ref.current.scrollTop - scrollAmount : ref.current.scrollTop + scrollAmount;
+      ref.current.scrollTo({ top: scrollTo, behavior: 'smooth' });
+    }
+  };
+
+  useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
 
@@ -31,8 +67,6 @@ function Portfolio({ state, setState }) {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  const [activeFilter, setActiveFilter] = useState('all');
 
   const filteredProjects = useMemo(() => {
     if (activeFilter === 'all') return state.projects;
@@ -222,7 +256,7 @@ function Portfolio({ state, setState }) {
         animate={{ opacity: 1, filter: 'blur(0px)' }}
         exit={{ opacity: 0, filter: 'blur(10px)' }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="page-shell"
+        className="page-shell admin-shell"
       >
       <header className="hero" style={{ position: 'relative' }}>
         <div className="hero-content">
@@ -276,19 +310,19 @@ function Portfolio({ state, setState }) {
           </div>
 
           <div className="hero-highlights">
-            <div className="hero-highlight-card">
+            <div className="hero-highlight-card bento-inner" style={{ background: 'transparent' }}>
               <div className="highlight-icon">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
               </div>
               <div><strong>Ethical Hacking:</strong> <span style={{color: 'rgba(255,255,255,0.7)'}}>Penetration testing & vulnerability assessment</span></div>
             </div>
-            <div className="hero-highlight-card">
+            <div className="hero-highlight-card bento-inner" style={{ background: 'transparent' }}>
               <div className="highlight-icon">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline><polyline points="8 13 6 15 8 17"></polyline><polyline points="16 17 18 15 16 13"></polyline><line x1="10" y1="18" x2="14" y2="12"></line></svg>
               </div>
               <div><strong>Web Development:</strong> <span style={{color: 'rgba(255,255,255,0.7)'}}>Secure, modern full-stack web applications</span></div>
             </div>
-            <div className="hero-highlight-card">
+            <div className="hero-highlight-card bento-inner" style={{ background: 'transparent' }}>
               <div className="highlight-icon">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
               </div>
@@ -324,14 +358,14 @@ function Portfolio({ state, setState }) {
               whileInView="show"
               viewport={{ once: true, margin: "-100px" }}
             >
-              <motion.div variants={itemVariants} className="bento-inner" style={{ padding: '32px' }}>
-                <h3 style={{ marginBottom: '16px', color: 'var(--accent)' }}>Who I Am</h3>
-                <p>{state.aboutIntro1}</p>
-                <p>{state.aboutIntro2}</p>
+              <motion.div variants={itemVariants} className="bento-inner" style={{ padding: '40px', minHeight: '550px' }}>
+                <h3 style={{ marginBottom: '16px', color: 'var(--accent)', fontSize: '2rem' }}>Who I Am</h3>
+                <p style={{ fontSize: '1.5rem', lineHeight: '1.8', marginBottom: '16px' }}>{state.aboutIntro1}</p>
+                <p style={{ fontSize: '1.5rem', lineHeight: '1.8' }}>{state.aboutIntro2}</p>
                 
-                <div style={{ marginTop: '24px' }}>
-                  <h4 style={{ marginBottom: '12px', fontSize: '1rem', color: 'rgba(255,255,255,0.6)' }}>Core Technologies</h4>
-                  <div className="skill-tags">
+                <div style={{ marginTop: '48px' }}>
+                  <h4 style={{ marginBottom: '12px', fontSize: '1.2rem', color: 'var(--accent)' }}>Core Technologies</h4>
+                  <div className="skill-tags" style={{ fontSize: '1.1rem' }}>
                     {state.skills.map((skill, index) => (
                       <motion.span 
                         key={index}
@@ -343,13 +377,13 @@ function Portfolio({ state, setState }) {
                 </div>
               </motion.div>
               
-              <motion.div variants={itemVariants} className="bento-inner" style={{ padding: '32px', display: 'flex', flexDirection: 'column' }}>
-                <h3 style={{ marginBottom: '24px' }}>Expertise</h3>
+              <motion.div variants={itemVariants} className="bento-inner" style={{ padding: '40px', display: 'flex', flexDirection: 'column', minHeight: '550px', background: 'transparent' }}>
+                <h3 style={{ marginBottom: '24px', fontSize: '2rem', color: 'var(--accent)' }}>Expertise</h3>
                 <div className="stats-grid">
-                  <div className="stat-card"><strong>4+</strong><span>years of learning and building</span></div>
-                  <div className="stat-card"><strong>10+</strong><span>security and web projects</span></div>
-                  <div className="stat-card"><strong>AI</strong><span>automation + model workflows</span></div>
-                  <div className="stat-card"><strong>IoT</strong><span>embedded & real-time systems</span></div>
+                  <div className="stat-card"><strong><AnimatedCounter from={0} to={4} suffix="+" /></strong><span>years of learning and building</span></div>
+                  <div className="stat-card"><strong><AnimatedCounter from={0} to={10} suffix="+" /></strong><span>security and web projects</span></div>
+                  <div className="stat-card bento-inner" style={{ background: 'transparent' }}><strong>AI</strong><span>automation + model workflows</span></div>
+                  <div className="stat-card bento-inner" style={{ background: 'transparent' }}><strong>IoT</strong><span>embedded & real-time systems</span></div>
                 </div>
               </motion.div>
             </motion.div>
@@ -367,38 +401,44 @@ function Portfolio({ state, setState }) {
                 whileInView="show"
                 viewport={{ once: true, margin: "-50px" }}
               >
-                <motion.div variants={itemVariants} className="resume-box" style={{ padding: '24px' }}>
+                <motion.div variants={itemVariants}>
                   <h3 style={{ marginBottom: '24px' }}>Education</h3>
                   <div className="resume-scroll-container">
                     <div className="timeline-track">
                       {state.education.map((item) => (
                         <motion.article 
                           key={item.id} 
-                          className="timeline-card card"
-                          whileHover={{ scale: 1.02, x: 5 }}
+                          className="timeline-card"
+                          style={{ background: 'transparent', padding: 0, border: 'none', boxShadow: 'none' }}
+                          whileHover={{ scale: 1.01, y: -4 }}
                         >
-                          <h4>{item.title}</h4>
-                          <p className="meta">{item.school} • {item.year}</p>
-                          <p>{item.description}</p>
+                          <div className="bento-inner" style={{ padding: '24px', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
+                            <h4 style={{ fontSize: '1.5rem', marginBottom: '8px', color: 'var(--text)' }}>{item.title}</h4>
+                            <p className="meta" style={{ fontSize: '1.05rem', color: 'var(--accent)', marginBottom: '12px' }}>{item.school} • {item.year}</p>
+                            <p style={{ fontSize: '1.25rem', lineHeight: '1.7' }}>{item.description}</p>
+                          </div>
                         </motion.article>
                       ))}
                     </div>
                   </div>
                 </motion.div>
                 
-                <motion.div variants={itemVariants} className="resume-box" style={{ padding: '24px' }}>
+                <motion.div variants={itemVariants}>
                   <h3 style={{ marginBottom: '24px' }}>Experience</h3>
                   <div className="resume-scroll-container">
                     <div className="timeline-track">
                       {state.experience.map((item) => (
                         <motion.article 
                           key={item.id} 
-                          className="timeline-card card"
-                          whileHover={{ scale: 1.02, x: 5 }}
+                          className="timeline-card"
+                          style={{ background: 'transparent', padding: 0, border: 'none', boxShadow: 'none' }}
+                          whileHover={{ scale: 1.01, y: -4 }}
                         >
-                          <h4>{item.title}</h4>
-                          <p className="meta">{item.year}</p>
-                          <p>{item.description}</p>
+                          <div className="bento-inner" style={{ padding: '24px', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
+                            <h4 style={{ fontSize: '1.5rem', marginBottom: '8px', color: 'var(--text)' }}>{item.title}</h4>
+                            <p className="meta" style={{ fontSize: '1.05rem', color: 'var(--accent)', marginBottom: '12px' }}>{item.year}</p>
+                            <p style={{ fontSize: '1.25rem', lineHeight: '1.7' }}>{item.description}</p>
+                          </div>
                         </motion.article>
                       ))}
                     </div>
@@ -413,163 +453,170 @@ function Portfolio({ state, setState }) {
             <h2>Live Coding Insights</h2>
           </div>
           
-          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '4rem', marginTop: '3rem', marginBottom: '2rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem', marginTop: '3rem' }}>
             
-            {[
-              { label: 'GitHub Projects', count: liveStats.github, color: '#9900ff', max: 50 },
-              { label: 'LeetCode Solved', count: liveStats.leetcode, color: '#FFA116', max: 100 }
-            ].map((stat, index) => {
-              const radius = 60;
-              const circumference = 2 * Math.PI * radius;
-              // Scale the stroke offset based on a nominal max value so the circle fills partially.
-              // If the count exceeds max, cap the visual fill at 100% (or let it stay at max).
-              const percent = Math.min((stat.count / stat.max) * 100, 100);
-              const strokeDashoffset = circumference - (percent / 100) * circumference;
+            {/* GITHUB CARD (Purple & Pink Theme) */}
+            <div className="bento-inner" style={{ background: 'transparent', padding: '32px', display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
+              <h3 style={{ margin: 0, background: 'linear-gradient(90deg, #9900ff, #ff26b9)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', textAlign: 'center', fontSize: '1.8rem' }}>GitHub Analytics</h3>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+                <svg width="150" height="150" viewBox="0 0 150 150">
+                  <defs>
+                    <linearGradient id="githubGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#9900ff" />
+                      <stop offset="100%" stopColor="#ff26b9" />
+                    </linearGradient>
+                  </defs>
+                  <circle cx="75" cy="75" r="60" stroke="rgba(255,255,255,0.05)" strokeWidth="10" fill="none" />
+                  {!liveStats.loading && (
+                    <motion.circle 
+                      cx="75" cy="75" r="60" 
+                      stroke="#9900ff" 
+                      strokeWidth="10" 
+                      fill="none" 
+                      strokeDasharray={2 * Math.PI * 60}
+                      initial={{ strokeDashoffset: 2 * Math.PI * 60 }}
+                      whileInView={{ strokeDashoffset: (2 * Math.PI * 60) - (Math.min((liveStats.github / 50) * 100, 100) / 100) * (2 * Math.PI * 60) }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 2, ease: "easeOut", delay: 0.2 }}
+                      strokeLinecap="round"
+                      transform="rotate(-90 75 75)"
+                      style={{ filter: 'drop-shadow(0 0 12px rgba(153, 0, 255, 0.6))' }}
+                    />
+                  )}
+                  <text x="75" y="85" textAnchor="middle" fill="#fff" fontSize="36" fontWeight="bold">
+                    {liveStats.loading ? '...' : liveStats.github}
+                  </text>
+                </svg>
+                <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Total Projects</span>
+              </div>
 
-              return (
-                <motion.div 
-                  key={stat.label}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ type: "spring", stiffness: 120, damping: 15, delay: index * 0.1 }}
-                  whileHover={{ scale: 1.05 }}
-                  style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem', background: 'rgba(255,255,255,0.02)', padding: '30px', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.05)', width: '250px' }}
-                >
-                  <svg width="150" height="150" viewBox="0 0 150 150">
-                    <circle cx="75" cy="75" r={radius} stroke="rgba(255,255,255,0.05)" strokeWidth="10" fill="none" />
-                    {!liveStats.loading && (
-                      <motion.circle 
-                        cx="75" cy="75" r={radius} 
-                        stroke={stat.color} 
-                        strokeWidth="10" 
-                        fill="none" 
-                        strokeDasharray={circumference}
-                        initial={{ strokeDashoffset: circumference }}
-                        whileInView={{ strokeDashoffset }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 2, ease: "easeOut", delay: 0.2 + (index * 0.15) }}
-                        strokeLinecap="round"
-                        transform="rotate(-90 75 75)"
-                        style={{ filter: `drop-shadow(0 0 10px ${stat.color}80)` }}
-                      />
-                    )}
-                    <text x="75" y="85" textAnchor="middle" fill="#fff" fontSize="36" fontWeight="bold">
-                      {liveStats.loading ? '...' : stat.count}
-                    </text>
-                  </svg>
-                  <h4 style={{ margin: 0, fontSize: '18px', color: 'var(--text)', textAlign: 'center' }}>{stat.label}</h4>
-                </motion.div>
-              );
-            })}
+              {!liveStats.loading && liveStats.topLanguages && liveStats.topLanguages.length > 0 && (
+                <div>
+                  <h4 style={{ marginBottom: '1.5rem', color: '#fff', fontSize: '1.1rem' }}>Top Languages</h4>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+                    {liveStats.topLanguages.map((lang, idx) => {
+                      const maxCount = liveStats.topLanguages[0].count;
+                      const percentage = (lang.count / maxCount) * 100;
+                      return (
+                        <div key={lang.name}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.4rem', fontSize: '0.9rem' }}>
+                            <span style={{ color: 'var(--text)' }}>{lang.name}</span>
+                            <span style={{ color: '#ff26b9' }}>{lang.count}</span>
+                          </div>
+                          <div style={{ width: '100%', height: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', overflow: 'hidden' }}>
+                            <motion.div 
+                              initial={{ width: 0 }}
+                              whileInView={{ width: `${percentage}%` }}
+                              viewport={{ once: true }}
+                              transition={{ duration: 1, delay: 0.2 + idx * 0.1, ease: 'easeOut' }}
+                              style={{ height: '100%', background: 'linear-gradient(90deg, #9900ff, #ff26b9)', borderRadius: '4px' }}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {!liveStats.loading && liveStats.githubDetails && liveStats.githubDetails.length > 0 && (
+                <div style={{ marginTop: '1rem' }}>
+                  <h4 style={{ marginBottom: '1.5rem', color: '#fff', fontSize: '1.1rem' }}>Profile Stats</h4>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+                    {liveStats.githubDetails.map((detail, idx) => {
+                      const maxCount = Math.max(...liveStats.githubDetails.map(d => d.count), 1);
+                      const percentage = (detail.count / maxCount) * 100;
+                      return (
+                        <div key={detail.name}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.4rem', fontSize: '0.9rem' }}>
+                            <span style={{ color: 'var(--text)' }}>{detail.name}</span>
+                            <span style={{ color: '#9900ff' }}>{detail.count}</span>
+                          </div>
+                          <div style={{ width: '100%', height: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', overflow: 'hidden' }}>
+                            <motion.div 
+                              initial={{ width: 0 }}
+                              whileInView={{ width: `${percentage}%` }}
+                              viewport={{ once: true }}
+                              transition={{ duration: 1, delay: 0.2 + idx * 0.1, ease: 'easeOut' }}
+                              style={{ height: '100%', background: 'linear-gradient(90deg, #9900ff, #ff26b9)', borderRadius: '4px' }}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* LEETCODE CARD (Yellow & Orange Theme) */}
+            <div className="bento-inner" style={{ background: 'transparent', padding: '32px', display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
+              <h3 style={{ margin: 0, background: 'linear-gradient(90deg, #FFA116, #FF6B00)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', textAlign: 'center', fontSize: '1.8rem' }}>LeetCode Analytics</h3>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+                <svg width="150" height="150" viewBox="0 0 150 150">
+                  <defs>
+                    <linearGradient id="leetcodeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#FFA116" />
+                      <stop offset="100%" stopColor="#FF6B00" />
+                    </linearGradient>
+                  </defs>
+                  <circle cx="75" cy="75" r="60" stroke="rgba(255,255,255,0.05)" strokeWidth="10" fill="none" />
+                  {!liveStats.loading && (
+                    <motion.circle 
+                      cx="75" cy="75" r="60" 
+                      stroke="url(#leetcodeGradient)" 
+                      strokeWidth="10" 
+                      fill="none" 
+                      strokeDasharray={2 * Math.PI * 60}
+                      initial={{ strokeDashoffset: 2 * Math.PI * 60 }}
+                      whileInView={{ strokeDashoffset: (2 * Math.PI * 60) - (Math.min((liveStats.leetcode / 100) * 100, 100) / 100) * (2 * Math.PI * 60) }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 2, ease: "easeOut", delay: 0.3 }}
+                      strokeLinecap="round"
+                      transform="rotate(-90 75 75)"
+                      style={{ filter: 'drop-shadow(0 0 12px rgba(255, 161, 22, 0.6))' }}
+                    />
+                  )}
+                  <text x="75" y="85" textAnchor="middle" fill="#fff" fontSize="36" fontWeight="bold">
+                    {liveStats.loading ? '...' : liveStats.leetcode}
+                  </text>
+                </svg>
+                <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Problems Solved</span>
+              </div>
+
+              {!liveStats.loading && liveStats.leetcodeDetails && liveStats.leetcodeDetails.length > 0 && (
+                <div>
+                  <h4 style={{ marginBottom: '1.5rem', color: '#fff', fontSize: '1.1rem' }}>Difficulty Breakdown</h4>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+                    {liveStats.leetcodeDetails.map((detail, idx) => {
+                      const maxCount = Math.max(...liveStats.leetcodeDetails.map(d => d.count), 1);
+                      const percentage = (detail.count / maxCount) * 100;
+                      return (
+                        <div key={detail.name}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.4rem', fontSize: '0.9rem' }}>
+                            <span style={{ color: 'var(--text)' }}>{detail.name}</span>
+                            <span style={{ color: '#FFA116' }}>{detail.count}</span>
+                          </div>
+                          <div style={{ width: '100%', height: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', overflow: 'hidden' }}>
+                            <motion.div 
+                              initial={{ width: 0 }}
+                              whileInView={{ width: `${percentage}%` }}
+                              viewport={{ once: true }}
+                              transition={{ duration: 1, delay: 0.2 + idx * 0.1, ease: 'easeOut' }}
+                              style={{ height: '100%', background: 'linear-gradient(90deg, #FFA116, #FF6B00)', borderRadius: '4px' }}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
 
           </div>
-
-          {!liveStats.loading && liveStats.topLanguages && liveStats.topLanguages.length > 0 && (
-            <div style={{ padding: '0 2rem', maxWidth: '800px', margin: '0 auto 2rem auto', width: '100%' }}>
-              <h3 style={{ marginBottom: '2rem', color: '#9900ff', textAlign: 'center' }}>Top Languages by GitHub Projects</h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                {liveStats.topLanguages.map((lang, idx) => {
-                  const maxCount = liveStats.topLanguages[0].count;
-                  const percentage = (lang.count / maxCount) * 100;
-                  return (
-                    <motion.div 
-                      key={lang.name}
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ type: "spring", stiffness: 120, damping: 15, delay: idx * 0.08 }}
-                    >
-                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                        <span style={{ fontWeight: '500', color: 'var(--text)' }}>{lang.name}</span>
-                        <span style={{ color: 'var(--text-muted)' }}>{lang.count} {lang.count === 1 ? 'project' : 'projects'}</span>
-                      </div>
-                      <div style={{ width: '100%', height: '12px', background: 'rgba(255,255,255,0.05)', borderRadius: '6px', overflow: 'hidden' }}>
-                        <motion.div 
-                          initial={{ width: 0 }}
-                          whileInView={{ width: `${percentage}%` }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 1, delay: 0.2 + idx * 0.1, ease: 'easeOut' }}
-                          style={{ height: '100%', background: 'linear-gradient(90deg, #9900ff, #FFA116)', borderRadius: '6px' }}
-                        />
-                      </div>
-                    </motion.div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {!liveStats.loading && liveStats.githubDetails && liveStats.githubDetails.length > 0 && (
-            <div style={{ padding: '0 2rem', maxWidth: '800px', margin: '2rem auto 0 auto', width: '100%' }}>
-              <h3 style={{ marginBottom: '2rem', color: '#00b8a3', textAlign: 'center' }}>GitHub Insights</h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                {liveStats.githubDetails.map((detail, idx) => {
-                  const maxCount = Math.max(...liveStats.githubDetails.map(d => d.count), 1);
-                  const percentage = (detail.count / maxCount) * 100;
-                  return (
-                    <motion.div 
-                      key={detail.name}
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ type: "spring", stiffness: 120, damping: 15, delay: idx * 0.08 }}
-                    >
-                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                        <span style={{ fontWeight: '500', color: 'var(--text)' }}>{detail.name}</span>
-                        <span style={{ color: 'var(--text-muted)' }}>{detail.count}</span>
-                      </div>
-                      <div style={{ width: '100%', height: '12px', background: 'rgba(255,255,255,0.05)', borderRadius: '6px', overflow: 'hidden' }}>
-                        <motion.div 
-                          initial={{ width: 0 }}
-                          whileInView={{ width: `${percentage}%` }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 1, delay: 0.2 + idx * 0.1, ease: 'easeOut' }}
-                          style={{ height: '100%', background: detail.color, borderRadius: '6px' }}
-                        />
-                      </div>
-                    </motion.div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {!liveStats.loading && liveStats.leetcodeDetails && liveStats.leetcodeDetails.length > 0 && (
-            <div style={{ padding: '0 2rem', maxWidth: '800px', margin: '2rem auto 3rem auto', width: '100%' }}>
-              <h3 style={{ marginBottom: '2rem', color: '#FFA116', textAlign: 'center' }}>LeetCode Problems Solved</h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                {liveStats.leetcodeDetails.map((detail, idx) => {
-                  const maxCount = Math.max(...liveStats.leetcodeDetails.map(d => d.count), 1);
-                  const percentage = (detail.count / maxCount) * 100;
-                  return (
-                    <motion.div 
-                      key={detail.name}
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ type: "spring", stiffness: 120, damping: 15, delay: idx * 0.08 }}
-                    >
-                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                        <span style={{ fontWeight: '500', color: 'var(--text)' }}>{detail.name}</span>
-                        <span style={{ color: 'var(--text-muted)' }}>{detail.count} {detail.count === 1 ? 'problem' : 'problems'}</span>
-                      </div>
-                      <div style={{ width: '100%', height: '12px', background: 'rgba(255,255,255,0.05)', borderRadius: '6px', overflow: 'hidden' }}>
-                        <motion.div 
-                          initial={{ width: 0 }}
-                          whileInView={{ width: `${percentage}%` }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 1, delay: 0.2 + idx * 0.1, ease: 'easeOut' }}
-                          style={{ height: '100%', background: detail.color, borderRadius: '6px' }}
-                        />
-                      </div>
-                    </motion.div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
         </section>
 
         <section id="portfolio" className="section bento-inner">
@@ -644,7 +691,7 @@ function Portfolio({ state, setState }) {
         </section>
       </main>
       <footer className="footer section">
-        <p>© 2026 Tamilarasan S. All rights reserved.</p>
+        <p style={{ textAlign: 'center' }}>© 2026 Tamilarasan S. All rights reserved.</p>
       </footer>
     </motion.div>
     <div className="mobile-bottom-nav">

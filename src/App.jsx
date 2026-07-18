@@ -5,21 +5,39 @@ import { AnimatePresence, motion } from 'framer-motion';
 function CustomCursor() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isClicking, setIsClicking] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
-    const updateMousePosition = e => setMousePosition({ x: e.clientX, y: e.clientY });
+    const updateMousePosition = e => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+      if (!isVisible) setIsVisible(true);
+    };
     const handleMouseDown = () => setIsClicking(true);
     const handleMouseUp = () => setIsClicking(false);
+    const handleMouseLeave = () => setIsVisible(false);
+    const handleMouseEnter = () => setIsVisible(true);
 
     window.addEventListener('mousemove', updateMousePosition);
     window.addEventListener('mousedown', handleMouseDown);
     window.addEventListener('mouseup', handleMouseUp);
+    document.addEventListener('mouseleave', handleMouseLeave);
+    document.addEventListener('mouseenter', handleMouseEnter);
+    
+    // Check if iframe was focused
+    window.addEventListener('blur', () => {
+      if (document.activeElement && document.activeElement.tagName === 'IFRAME') {
+        setIsVisible(false);
+      }
+    });
+
     return () => {
       window.removeEventListener('mousemove', updateMousePosition);
       window.removeEventListener('mousedown', handleMouseDown);
       window.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('mouseleave', handleMouseLeave);
+      document.removeEventListener('mouseenter', handleMouseEnter);
     };
-  }, []);
+  }, [isVisible]);
 
   return (
     <>
@@ -33,7 +51,9 @@ function CustomCursor() {
           borderRadius: '50%',
           pointerEvents: 'none',
           zIndex: 9999,
-          boxShadow: '0 0 10px #b026ff'
+          boxShadow: '0 0 10px #b026ff',
+          opacity: isVisible ? 1 : 0,
+          transition: 'opacity 0.15s ease'
         }}
         animate={{ 
           x: mousePosition.x - 4, 
@@ -52,6 +72,8 @@ function CustomCursor() {
           borderRadius: '50%',
           pointerEvents: 'none',
           zIndex: 9998,
+          opacity: isVisible ? 1 : 0,
+          transition: 'opacity 0.15s ease'
         }}
         animate={{ 
           x: mousePosition.x - 16, 
@@ -163,7 +185,7 @@ import Chatbot from './components/Chatbot';
 
 import defaultState from './data.json';
 import { db, auth } from './firebase';
-import { doc, setDoc, onSnapshot } from 'firebase/firestore';
+import { doc, setDoc, onSnapshot, increment } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 
 function AnimatedRoutes({ state, setState }) {
@@ -195,6 +217,14 @@ function App() {
     });
 
     const docRef = doc(db, 'portfolio', 'main');
+
+    // Track daily visit
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      setDoc(doc(db, 'portfolio', 'analytics'), {
+        [today]: increment(1)
+      }, { merge: true }).catch(() => {});
+    } catch(e) {}
 
     const unsubscribeDb = onSnapshot(docRef, async (docSnap) => {
       if (docSnap.exists()) {
