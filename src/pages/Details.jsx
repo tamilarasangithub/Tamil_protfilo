@@ -1,10 +1,18 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 function Details({ type, state }) {
   const { id } = useParams();
+  const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Find the item based on type
   const collection = type === 'project' ? state.projects : state.researchPapers;
@@ -95,11 +103,19 @@ function Details({ type, state }) {
       transition={{ duration: 0.4, ease: "easeOut" }}
       className="page-shell"
     >
-      <nav className="top-nav" style={{ marginBottom: '2rem', justifyContent: 'flex-start' }}>
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+      <nav className={`top-nav hide-on-mobile ${isScrolled ? 'scrolled' : ''}`} style={{ marginBottom: '2rem', justifyContent: 'flex-start' }}>
+        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', borderRadius: '999px', color: '#fff', textDecoration: 'none' }}>
           <span>←</span> Back to Portfolio
         </Link>
       </nav>
+
+      {/* Mobile Bottom Navigation */}
+      <div className="mobile-bottom-nav">
+        <Link to="/" className="mobile-nav-item">
+          <ArrowLeft size={20} />
+          <span>Back</span>
+        </Link>
+      </div>
 
       <section className="card section">
         <div className="section-heading">

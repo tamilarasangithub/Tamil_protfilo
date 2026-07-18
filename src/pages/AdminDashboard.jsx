@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { Home, LogOut } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { db, auth } from '../firebase';
 import { doc, setDoc } from 'firebase/firestore';
@@ -20,6 +21,13 @@ const mockAnalyticsData = [
 
 function AdminDashboard({ state, setState }) {
   const navigate = useNavigate();
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     if (!state.loggedIn) {
@@ -317,10 +325,22 @@ function AdminDashboard({ state, setState }) {
       transition={{ duration: 0.4, ease: "easeInOut" }}
       className="page-shell"
     >
-      <nav className="top-nav" style={{ marginBottom: '2rem' }}>
-        <Link to="/">View Portfolio</Link>
-        <button type="button" className="nav-cta" onClick={handleLogout}>Logout</button>
+      <nav className={`top-nav hide-on-mobile ${isScrolled ? 'scrolled' : ''}`} style={{ marginBottom: '2rem' }}>
+        <Link to="/" style={{ padding: '8px 16px', borderRadius: '999px', color: '#fff', textDecoration: 'none' }}>View Portfolio</Link>
+        <button type="button" className="nav-cta" onClick={handleLogout} style={{ marginLeft: '12px' }}>Logout</button>
       </nav>
+
+      {/* Mobile Bottom Navigation */}
+      <div className="mobile-bottom-nav">
+        <Link to="/" className="mobile-nav-item">
+          <Home size={20} />
+          <span>Portfolio</span>
+        </Link>
+        <button onClick={handleLogout} className="mobile-nav-item" style={{ background: 'transparent', border: 'none', cursor: 'pointer' }}>
+          <LogOut size={20} />
+          <span>Logout</span>
+        </button>
+      </div>
 
       <section className="card section">
         <div className="section-heading">
