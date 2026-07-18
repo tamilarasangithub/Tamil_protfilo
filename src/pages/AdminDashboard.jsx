@@ -44,7 +44,7 @@ function AdminDashboard({ state, setState }) {
   
   const [eduForm, setEduForm] = useState({ title: '', school: '', year: '', description: '' });
   const [expForm, setExpForm] = useState({ title: '', year: '', description: '' });
-  const [projectForm, setProjectForm] = useState({ title: '', category: '', link: '', videoUrl: '', description: '' });
+  const [projectForm, setProjectForm] = useState({ title: '', category: '', link: '', videoUrl: '', description: '', livePreviewUrl: '', image: '', cardDescription: '' });
   const [certForm, setCertForm] = useState({ title: '', issuer: '', year: '', category: '', image: '', description: '' });
   const [researchForm, setResearchForm] = useState({ title: '', conference: '', year: '', category: '', link: '', videoUrl: '', description: '' });
   
@@ -172,7 +172,7 @@ function AdminDashboard({ state, setState }) {
         projects: newList,
         lastUpdate: `Project ${editingId.projects ? 'updated' : 'added'}: ${projectForm.title.trim()}`
       }, { merge: true });
-      setProjectForm({ title: '', category: '', link: '', videoUrl: '', description: '' });
+      setProjectForm({ title: '', category: '', link: '', videoUrl: '', description: '', livePreviewUrl: '', image: '', cardDescription: '' });
       setEditingId(prev => ({ ...prev, projects: null }));
       setFeedback(`Project ${editingId.projects ? 'updated' : 'added'} successfully.`);
     } catch(e) {
@@ -308,7 +308,7 @@ function AdminDashboard({ state, setState }) {
   const cancelEdit = (key) => {
     if (key === 'education') { setEduForm({ title: '', school: '', year: '', description: '' }); setEditingId(prev => ({ ...prev, education: null })); }
     if (key === 'experience') { setExpForm({ title: '', year: '', description: '' }); setEditingId(prev => ({ ...prev, experience: null })); }
-    if (key === 'projects') { setProjectForm({ title: '', category: '', link: '', videoUrl: '', description: '' }); setEditingId(prev => ({ ...prev, projects: null })); }
+    if (key === 'projects') { setProjectForm({ title: '', category: '', link: '', videoUrl: '', description: '', livePreviewUrl: '', image: '', cardDescription: '' }); setEditingId(prev => ({ ...prev, projects: null })); }
     if (key === 'certifications') { setCertForm({ title: '', issuer: '', year: '', category: '', image: '', description: '' }); setEditingId(prev => ({ ...prev, certifications: null })); }
     if (key === 'researchPapers') { setResearchForm({ title: '', conference: '', year: '', category: '', link: '', videoUrl: '', description: '' }); setEditingId(prev => ({ ...prev, researchPapers: null })); }
   };
@@ -424,10 +424,17 @@ function AdminDashboard({ state, setState }) {
               <form className="stack-form" onSubmit={handleProjectSubmit}>
                 <input value={projectForm.title} onChange={(event) => setProjectForm({ ...projectForm, title: event.target.value })} placeholder="Project title" required />
                 <input value={projectForm.category} onChange={(event) => setProjectForm({ ...projectForm, category: event.target.value })} placeholder="Category" required />
-                <input value={projectForm.link} onChange={(event) => setProjectForm({ ...projectForm, link: event.target.value })} placeholder="Project URL (e.g., GitHub, Live Site)" />
+                <input value={projectForm.link} onChange={(event) => setProjectForm({ ...projectForm, link: event.target.value })} placeholder="Project URL (e.g., GitHub Repo)" />
+                <input value={projectForm.livePreviewUrl || ''} onChange={(event) => setProjectForm({ ...projectForm, livePreviewUrl: event.target.value })} placeholder="Live Preview URL (Website Link)" />
                 <input value={projectForm.videoUrl} onChange={(event) => setProjectForm({ ...projectForm, videoUrl: event.target.value })} placeholder="Video URL (YouTube or .mp4 link)" />
-                <div style={{ background: '#fff', color: '#000', borderRadius: '8px', overflow: 'hidden' }}>
-                  <ReactQuill theme="snow" value={projectForm.description} onChange={(val) => setProjectForm({ ...projectForm, description: val })} placeholder="Project description" />
+                <label style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)', marginBottom: '-5px' }}>Upload Project Image (Auto-compressed):</label>
+                <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, setProjectForm, 'image')} style={{ padding: '8px', background: 'rgba(255,255,255,0.05)' }} />
+                {projectForm.image && <img src={projectForm.image} alt="Preview" style={{ width: '100px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.2)' }} />}
+                
+                <textarea rows="2" value={projectForm.cardDescription || ''} onChange={(event) => setProjectForm({ ...projectForm, cardDescription: event.target.value })} placeholder="Short description for the project card" />
+
+                <div style={{ background: '#fff', color: '#000', borderRadius: '8px', overflow: 'hidden', marginTop: '10px' }}>
+                  <ReactQuill theme="snow" value={projectForm.description} onChange={(val) => setProjectForm({ ...projectForm, description: val })} placeholder="Detailed project description (for Details page)" />
                 </div>
                 <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
                   <button type="submit" disabled={isSubmitting} className="btn btn-primary" style={{ flex: 1 }}>{isSubmitting ? 'Saving...' : editingId.projects ? 'Update Project' : 'Add Project'}</button>
@@ -438,9 +445,42 @@ function AdminDashboard({ state, setState }) {
               <div className="preview-container">
                 <h4 style={{ color: 'rgba(255,255,255,0.7)', marginBottom: '16px' }}>Live Preview</h4>
                 <article className="project-card" style={{ height: 'fit-content' }}>
+                  {(() => {
+                    let previewContent = null;
+                    if (projectForm.image) {
+                      previewContent = <img src={projectForm.image} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'blur(4px)' }} />;
+                    } else if (projectForm.videoUrl) {
+                      let videoSrc = projectForm.videoUrl;
+                      if (videoSrc.includes('youtube.com') || videoSrc.includes('youtu.be')) {
+                        let videoId = '';
+                        if (videoSrc.includes('youtu.be/')) videoId = videoSrc.split('youtu.be/')[1].split('?')[0];
+                        else if (videoSrc.includes('watch?v=')) videoId = videoSrc.split('watch?v=')[1].split('&')[0];
+                        if (videoId) videoSrc = `https://www.youtube.com/embed/${videoId}?autoplay=0&controls=0&showinfo=0&rel=0`;
+                      }
+                      previewContent = <iframe src={videoSrc} style={{ width: '100%', height: '100%', border: 'none', pointerEvents: 'none', filter: 'blur(4px)' }} title="Video Preview" tabIndex="-1" />;
+                    } else if (projectForm.livePreviewUrl) {
+                      previewContent = <iframe src={projectForm.livePreviewUrl} style={{ width: '100%', height: '100%', border: 'none', pointerEvents: 'none', filter: 'blur(4px)' }} title="Live Preview" tabIndex="-1" />;
+                    }
+
+                    if (!previewContent) return null;
+                    return (
+                      <div style={{ width: '100%', height: '150px', marginBottom: '16px', borderRadius: '8px', overflow: 'hidden', border: '1px solid rgba(176, 38, 255, 0.3)', position: 'relative' }}>
+                        {previewContent}
+                        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.3)' }}>
+                          <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'rgba(168, 85, 247, 0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', boxShadow: '0 0 15px rgba(168,85,247,0.6)' }}>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })()}
                   <div className="pill-tag">{projectForm.category || 'Category'}</div>
                   <h4 style={{ marginTop: '12px' }}>{projectForm.title || 'Project Title'}</h4>
-                  <div dangerouslySetInnerHTML={{ __html: (!projectForm.description || projectForm.description === '<p><br></p>') ? '<p>Project description will appear here...</p>' : projectForm.description }} />
+                  {projectForm.cardDescription ? (
+                    <p style={{ flexGrow: 1, marginBottom: 0, fontSize: '0.95rem', color: 'rgba(255,255,255,0.8)' }}>{projectForm.cardDescription}</p>
+                  ) : (
+                    <div dangerouslySetInnerHTML={{ __html: (!projectForm.description || projectForm.description === '<p><br></p>') ? '<p>Project description will appear here...</p>' : projectForm.description }} />
+                  )}
                   <span style={{ color: 'var(--accent)', fontWeight: '600', marginTop: '10px', display: 'inline-block' }}>View details</span>
                 </article>
               </div>
