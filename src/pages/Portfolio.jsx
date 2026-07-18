@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Briefcase, BarChart2, User, Mail } from 'lucide-react';
+import { Home, Briefcase, BarChart2, User, Mail, FileText, Layers } from 'lucide-react';
 import { FeaturedSection } from '../components/FeaturedSection';
 function Portfolio({ state, setState }) {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -13,7 +13,7 @@ function Portfolio({ state, setState }) {
       setIsScrolled(window.scrollY > 50);
 
       // Section tracking for bottom nav
-      const sections = ['about', 'portfolio', 'insights', 'contact'];
+      const sections = ['about', 'resume', 'portfolio', 'insights', 'contact'];
       let currentSection = 'about';
       
       for (const section of sections) {
@@ -177,12 +177,25 @@ function Portfolio({ state, setState }) {
     }
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1, delayChildren: 0.2 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30, scale: 0.95 },
+    show: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 100, damping: 15 } }
+  };
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 15 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -15 }}
-      transition={{ type: "spring", stiffness: 80, damping: 15 }}
+    <motion.div 
+      initial={{ opacity: 0, filter: 'blur(10px)' }}
+      animate={{ opacity: 1, filter: 'blur(0px)' }}
+      exit={{ opacity: 0, filter: 'blur(10px)' }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       className="page-shell"
     >
 
@@ -305,61 +318,42 @@ function Portfolio({ state, setState }) {
             <p className="eyebrow">About me</p>
             <h2>A hardcore Ethical Hacker with a passion for secure Web & IoT systems.</h2>
           </div>
-          <div className="about-grid">
-            <div>
-              <p>{state.aboutIntro1}</p>
-              <p>{state.aboutIntro2}</p>
-            </div>
-            <div className="stats-grid">
-              <div className="stat-card"><strong>4+</strong><span>years of learning and building</span></div>
-              <div className="stat-card"><strong>10+</strong><span>security and web projects</span></div>
-              <div className="stat-card"><strong>AI</strong><span>automation + model workflows</span></div>
-              <div className="stat-card"><strong>IoT</strong><span>embedded & real-time systems</span></div>
-            </div>
-          </div>
-          <div className="skills-wrap" style={{ marginTop: '3rem' }}>
-            <h3 style={{ marginBottom: '1.5rem', color: '#fff' }}>Core skills</h3>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', justifyContent: 'center', padding: '20px' }}>
-              {state.skills.map((skill, index) => {
-                const duration = 3 + (index % 3);
-                const delay = (index % 5) * 0.2;
-                return (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    animate={{ y: [0, -15, 0], x: [0, index % 2 === 0 ? 10 : -10, 0] }}
-                    transition={{
-                      opacity: { duration: 0.5 },
-                      scale: { duration: 0.5 },
-                      y: { duration: duration, repeat: Infinity, ease: "easeInOut", delay: delay },
-                      x: { duration: duration, repeat: Infinity, ease: "easeInOut", delay: delay }
-                    }}
-                    whileHover={{ scale: 1.15, zIndex: 10, boxShadow: '0 0 25px rgba(176,38,255,0.6)', borderColor: 'rgba(176,38,255,1)' }}
-                    style={{
-                      color: '#fff', 
-                      background: 'rgba(124, 58, 237, 0.2)', 
-                      padding: '12px 24px', 
-                      borderRadius: '50px', 
-                      fontSize: '1.1rem',
-                      fontWeight: '600',
-                      boxShadow: '0 4px 15px rgba(124, 58, 237, 0.1)',
-                      backdropFilter: 'blur(8px)',
-                      border: '1px solid rgba(176, 38, 255, 0.3)',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      position: 'relative'
-                    }}
-                  >
-                    {skill}
-                  </motion.div>
-                );
-              })}
-            </div>
-          </div>
+          <motion.div 
+              className="about-grid"
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, margin: "-100px" }}
+            >
+              <motion.div variants={itemVariants} className="bento-inner" style={{ padding: '32px' }}>
+                <h3 style={{ marginBottom: '16px', color: 'var(--accent)' }}>Who I Am</h3>
+                <p>{state.aboutIntro1}</p>
+                <p>{state.aboutIntro2}</p>
+                
+                <div style={{ marginTop: '24px' }}>
+                  <h4 style={{ marginBottom: '12px', fontSize: '1rem', color: 'rgba(255,255,255,0.6)' }}>Core Technologies</h4>
+                  <div className="skill-tags">
+                    {state.skills.map((skill, index) => (
+                      <motion.span 
+                        key={index}
+                        whileHover={{ scale: 1.1, y: -2, backgroundColor: 'rgba(217, 70, 239, 0.2)' }}
+                        transition={{ type: 'spring', stiffness: 400, damping: 10 }}
+                      >{skill}</motion.span>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+              
+              <motion.div variants={itemVariants} className="bento-inner" style={{ padding: '32px', display: 'flex', flexDirection: 'column' }}>
+                <h3 style={{ marginBottom: '24px' }}>Expertise</h3>
+                <div className="stats-grid">
+                  <div className="stat-card"><strong>4+</strong><span>years of learning and building</span></div>
+                  <div className="stat-card"><strong>10+</strong><span>security and web projects</span></div>
+                  <div className="stat-card"><strong>AI</strong><span>automation + model workflows</span></div>
+                  <div className="stat-card"><strong>IoT</strong><span>embedded & real-time systems</span></div>
+                </div>
+              </motion.div>
+            </motion.div>
         </section>
 
         <section id="resume" className="section bento-inner">
@@ -367,36 +361,47 @@ function Portfolio({ state, setState }) {
             <p className="eyebrow">Resume</p>
             <h2>Education, experience, and technical strengths.</h2>
           </div>
-          <div className="resume-grid">
-            <div>
-              <h3>Education</h3>
-              <div className="resume-scroll-container">
-                <div className="timeline-track">
-                  {(state.education || []).map((edu) => (
-                    <div key={edu.id} className="timeline-card">
-                      <h4>{edu.title}</h4>
-                      <p className="meta">{edu.school} {edu.year ? `• ${edu.year}` : ''}</p>
-                      <p>{edu.description}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-            <div>
-              <h3>Experience</h3>
-              <div className="resume-scroll-container">
-                <div className="timeline-track">
-                  {(state.experience || []).map((exp) => (
-                    <div key={exp.id} className="timeline-card">
-                      <h4>{exp.title}</h4>
-                      <p className="meta">{exp.year}</p>
-                      <p>{exp.description}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
+          <motion.div 
+                className="resume-grid"
+                variants={containerVariants}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true, margin: "-50px" }}
+              >
+                <motion.div variants={itemVariants} className="bento-inner" style={{ padding: '24px' }}>
+                  <h3 style={{ marginBottom: '24px' }}>Education</h3>
+                  <div className="timeline-track">
+                    {state.education.map((item) => (
+                      <motion.article 
+                        key={item.id} 
+                        className="timeline-card card"
+                        whileHover={{ scale: 1.02, x: 5 }}
+                      >
+                        <h4>{item.title}</h4>
+                        <p className="meta">{item.school} • {item.year}</p>
+                        <p>{item.description}</p>
+                      </motion.article>
+                    ))}
+                  </div>
+                </motion.div>
+                
+                <motion.div variants={itemVariants} className="bento-inner" style={{ padding: '24px' }}>
+                  <h3 style={{ marginBottom: '24px' }}>Experience</h3>
+                  <div className="timeline-track">
+                    {state.experience.map((item) => (
+                      <motion.article 
+                        key={item.id} 
+                        className="timeline-card card"
+                        whileHover={{ scale: 1.02, x: 5 }}
+                      >
+                        <h4>{item.title}</h4>
+                        <p className="meta">{item.year}</p>
+                        <p>{item.description}</p>
+                      </motion.article>
+                    ))}
+                  </div>
+                </motion.div>
+              </motion.div>
         </section>
 
         <section id="insights" className="section bento-inner">
@@ -647,6 +652,14 @@ function Portfolio({ state, setState }) {
           <span>Home</span>
         </a>
         <a 
+          href="#resume" 
+          onClick={() => setActiveSection('resume')} 
+          className={`mobile-nav-item ${activeSection === 'resume' ? 'active' : ''}`}
+        >
+          <FileText size={20} />
+          <span>Work</span>
+        </a>
+        <a 
           href="#insights" 
           onClick={() => setActiveSection('insights')} 
           className={`mobile-nav-item ${activeSection === 'insights' ? 'active' : ''}`}
@@ -659,16 +672,8 @@ function Portfolio({ state, setState }) {
           onClick={() => setActiveSection('portfolio')} 
           className={`mobile-nav-item ${activeSection === 'portfolio' ? 'active' : ''}`}
         >
-          <Briefcase size={20} />
-          <span>Work</span>
-        </a>
-        <a 
-          href="#contact" 
-          onClick={() => setActiveSection('contact')} 
-          className={`mobile-nav-item ${activeSection === 'contact' ? 'active' : ''}`}
-        >
-          <Mail size={20} />
-          <span>Contact</span>
+          <Layers size={20} />
+          <span>Portfolio</span>
         </a>
         <Link 
           to={state.loggedIn ? "/admin" : "/login"}
