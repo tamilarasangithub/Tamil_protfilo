@@ -516,3 +516,6 @@ h1:hover, h2:hover { animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) bot
   from { opacity: 0; transform: translateX(-5px); }
   to { opacity: 1; transform: translateX(0); }
 }
+
+.expertise-card { display: flex; flex-direction: column; justify-content: center; }
+

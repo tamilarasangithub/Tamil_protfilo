@@ -318,13 +318,7 @@ function AdminDashboard({ state, setState }) {
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -20 }}
-      transition={{ duration: 0.4, ease: "easeInOut" }}
-      className="page-shell"
-    >
+    <>
       <nav className={`top-nav hide-on-mobile ${isScrolled ? 'scrolled' : ''}`} style={{ marginBottom: '2rem' }}>
         <Link to="/" style={{ padding: '8px 16px', borderRadius: '999px', color: '#fff', textDecoration: 'none' }}>View Portfolio</Link>
         <button type="button" className="nav-cta" onClick={handleLogout} style={{ marginLeft: '12px' }}>Logout</button>
@@ -341,6 +335,14 @@ function AdminDashboard({ state, setState }) {
           <span>Logout</span>
         </button>
       </div>
+
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -20 }}
+      transition={{ duration: 0.4, ease: "easeInOut" }}
+      className="page-shell"
+    >
 
       <section className="card section">
         <div className="section-heading">
@@ -611,6 +613,7 @@ function AdminDashboard({ state, setState }) {
         </div>
       </section>
     </motion.div>
+    </>
   );
 }
 

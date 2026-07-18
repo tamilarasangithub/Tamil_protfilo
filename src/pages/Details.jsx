@@ -96,13 +96,7 @@ function Details({ type, state }) {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
-      className="page-shell"
-    >
+    <>
       <nav className={`top-nav hide-on-mobile ${isScrolled ? 'scrolled' : ''}`} style={{ marginBottom: '2rem', justifyContent: 'flex-start' }}>
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', borderRadius: '999px', color: '#fff', textDecoration: 'none' }}>
           <span>←</span> Back to Portfolio
@@ -116,6 +110,14 @@ function Details({ type, state }) {
           <span>Back</span>
         </Link>
       </div>
+
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      className="page-shell"
+    >
 
       <section className="card section">
         <div className="section-heading">
@@ -144,6 +146,7 @@ function Details({ type, state }) {
         )}
       </section>
     </motion.div>
+    </>
   );
 }
 

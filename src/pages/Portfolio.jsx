@@ -191,15 +191,7 @@ function Portfolio({ state, setState }) {
   };
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, filter: 'blur(10px)' }}
-      animate={{ opacity: 1, filter: 'blur(0px)' }}
-      exit={{ opacity: 0, filter: 'blur(10px)' }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className="page-shell"
-    >
-
-
+    <>
       <nav className={`top-nav hide-on-mobile ${isScrolled ? 'scrolled' : ''}`}>
         <div className="mobile-menu-icon" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} style={{ cursor: 'pointer' }}>
           {isMobileMenuOpen ? (
@@ -225,6 +217,13 @@ function Portfolio({ state, setState }) {
         </div>
       </nav>
 
+      <motion.div 
+        initial={{ opacity: 0, filter: 'blur(10px)' }}
+        animate={{ opacity: 1, filter: 'blur(0px)' }}
+        exit={{ opacity: 0, filter: 'blur(10px)' }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        className="page-shell"
+      >
       <header className="hero" style={{ position: 'relative' }}>
         <div className="hero-content">
 
@@ -640,9 +639,11 @@ function Portfolio({ state, setState }) {
           </div>
         </section>
       </main>
-
-      {/* Mobile Bottom Navigation */}
-      <div className="mobile-bottom-nav">
+      <footer className="footer section">
+        <p>© 2026 Tamilarasan S. All rights reserved.</p>
+      </footer>
+    </motion.div>
+    <div className="mobile-bottom-nav">
         <a 
           href="#about" 
           onClick={() => setActiveSection('about')} 
@@ -683,7 +684,7 @@ function Portfolio({ state, setState }) {
           <span>{state.loggedIn ? "Admin" : "Profile"}</span>
         </Link>
       </div>
-    </motion.div>
+    </>
   );
 }
 
