@@ -367,7 +367,7 @@ function Portfolio({ state, setState }) {
                 whileInView="show"
                 viewport={{ once: true, margin: "-50px" }}
               >
-                <motion.div variants={itemVariants} className="bento-inner" style={{ padding: '24px' }}>
+                <motion.div variants={itemVariants} className="resume-box" style={{ padding: '24px' }}>
                   <h3 style={{ marginBottom: '24px' }}>Education</h3>
                   <div className="resume-scroll-container">
                     <div className="timeline-track">
@@ -386,7 +386,7 @@ function Portfolio({ state, setState }) {
                   </div>
                 </motion.div>
                 
-                <motion.div variants={itemVariants} className="bento-inner" style={{ padding: '24px' }}>
+                <motion.div variants={itemVariants} className="resume-box" style={{ padding: '24px' }}>
                   <h3 style={{ marginBottom: '24px' }}>Experience</h3>
                   <div className="resume-scroll-container">
                     <div className="timeline-track">

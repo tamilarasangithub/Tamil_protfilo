@@ -519,3 +519,6 @@ h1:hover, h2:hover { animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) bot
 
 .expertise-card { display: flex; flex-direction: column; justify-content: center; }
 
+
+.resume-box { background: rgba(11, 7, 16, 0.4); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 16px; }
+
