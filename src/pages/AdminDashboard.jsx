@@ -408,7 +408,7 @@ function AdminDashboard({ state, setState }) {
         <div className="portfolio-grid" style={{ marginTop: '40px' }}>
           <div>
             <h3>Manage Education</h3>
-            <div className="card-list">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {(state.education || []).map((item) => (
                 <article key={item.id} className="project-card">
                   <h4>{item.title}</h4>
@@ -421,7 +421,7 @@ function AdminDashboard({ state, setState }) {
           </div>
           <div>
             <h3>Manage Experience</h3>
-            <div className="card-list">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {(state.experience || []).map((item) => (
                 <article key={item.id} className="project-card">
                   <h4>{item.title}</h4>
@@ -437,7 +437,7 @@ function AdminDashboard({ state, setState }) {
         <div className="portfolio-grid" style={{ marginTop: '40px' }}>
           <div>
             <h3>Manage Projects</h3>
-            <div className="card-list">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {(state.projects || []).map((project) => (
                 <article key={project.id} className="project-card">
                   <div className="pill-tag">{project.category}</div>
@@ -450,7 +450,7 @@ function AdminDashboard({ state, setState }) {
           </div>
           <div>
             <h3>Manage Certifications</h3>
-            <div className="card-list">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {(state.certifications || []).map((cert) => (
                 <article key={cert.id} className="cert-card">
                   <h4>{cert.title}</h4>
@@ -466,7 +466,7 @@ function AdminDashboard({ state, setState }) {
         <div className="portfolio-grid" style={{ marginTop: '40px' }}>
           <div>
             <h3>Manage Research Papers</h3>
-            <div className="card-list">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {(state.researchPapers || []).map((paper) => (
                 <article key={paper.id} className="project-card">
                   <h4>{paper.title}</h4>
