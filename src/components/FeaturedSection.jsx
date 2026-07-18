@@ -39,10 +39,10 @@ export const FeaturedSection = ({ projects, certifications }) => {
           </div>
 
           {/* Bound Viewport Wrapper */}
-          <div className="overflow-hidden p-3 -m-3">
+          <div className="overflow-hidden -my-4">
             <div 
               ref={projectScrollRef}
-              className="flex flex-row gap-6 w-full overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-none pb-4"
+              className="flex flex-row gap-6 w-full overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-none py-4 px-2"
             >
               {projects.map((project, index) => (
                 <article 
@@ -83,10 +83,10 @@ export const FeaturedSection = ({ projects, certifications }) => {
           </div>
 
           {/* Bound Viewport Wrapper */}
-          <div className="overflow-hidden p-3 -m-3">
+          <div className="overflow-hidden -my-4">
             <div 
               ref={certScrollRef}
-              className="flex flex-row gap-6 w-full overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-none pb-4"
+              className="flex flex-row gap-6 w-full overflow-x-auto snap-x snap-mandatory scroll-smooth scrollbar-none py-4 px-2"
             >
               {certifications.map((cert, index) => (
                 <article 
