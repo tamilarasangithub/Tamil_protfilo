@@ -366,7 +366,7 @@ h1:hover, h2:hover { animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) bot
   .page-shell { max-width: 1400px; margin: 120px auto 80px auto; padding: 0 40px; width: 100%; }
   .hero { grid-template-columns: 1.3fr 0.9fr; padding: clamp(60px, 8vw, 80px) 0 clamp(20px, 4vw, 30px) 0; }
   .about-grid, .resume-grid, .login-shell { grid-template-columns: 1.2fr 0.8fr; }
-  .contact-grid { grid-template-columns: 1fr 1fr; }
+  .contact-grid, .admin-grid { grid-template-columns: 1fr 1fr; }
   .portfolio-grid { grid-template-columns: 1fr; gap: 60px; }
   
   .filter-row { flex-wrap: wrap; justify-content: center; width: 100%; }
