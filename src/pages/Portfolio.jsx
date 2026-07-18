@@ -647,20 +647,20 @@ function Portfolio({ state, setState }) {
           <span>Home</span>
         </a>
         <a 
-          href="#portfolio" 
-          onClick={() => setActiveSection('portfolio')} 
-          className={`mobile-nav-item ${activeSection === 'portfolio' ? 'active' : ''}`}
-        >
-          <Briefcase size={20} />
-          <span>Work</span>
-        </a>
-        <a 
           href="#insights" 
           onClick={() => setActiveSection('insights')} 
           className={`mobile-nav-item ${activeSection === 'insights' ? 'active' : ''}`}
         >
           <BarChart2 size={20} />
           <span>Stats</span>
+        </a>
+        <a 
+          href="#portfolio" 
+          onClick={() => setActiveSection('portfolio')} 
+          className={`mobile-nav-item ${activeSection === 'portfolio' ? 'active' : ''}`}
+        >
+          <Briefcase size={20} />
+          <span>Work</span>
         </a>
         <a 
           href="#contact" 
