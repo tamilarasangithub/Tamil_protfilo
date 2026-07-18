@@ -297,7 +297,7 @@ function Portfolio({ state, setState }) {
           </div>
         </div>
 
-        <aside className="hero-card">
+        <aside className="hero-card bento-inner">
           <div className="pill">Hacking • Web Dev • IoT</div>
           <h2>Building systems, writing code, and mastering hardware security.</h2>
           <div className="contact-mini">
