@@ -7,7 +7,13 @@ export default {
     preflight: false,
   },
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        outfit: ['Outfit', 'sans-serif'],
+        inter: ['Inter', 'sans-serif'],
+        rajdhani: ['Rajdhani', 'sans-serif'],
+      }
+    },
   },
   plugins: [],
 }
