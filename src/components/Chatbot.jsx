@@ -98,26 +98,20 @@ const Chatbot = ({ state }) => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="mb-4 w-[340px] h-[480px] liquid-glass-card rounded-[24px] flex flex-col overflow-hidden"
+            className="mb-4 w-[340px] h-[480px] liquid-glass-card rounded-[24px] flex flex-col overflow-hidden border border-[#a855f7]/30 shadow-[0_0_30px_rgba(176,38,255,0.2)]"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-white/20">
-              <div className="flex items-center gap-2 text-white">
-                <Bot size={20} />
-                <h3 className="font-semibold">Xova AI</h3>
-              </div>
-              <div 
-                onClick={() => setIsOpen(false)}
-                className="text-white/80 hover:text-white transition-colors cursor-pointer p-1"
-              >
-                <X size={20} />
+            <div className="flex items-center justify-between p-4 border-b border-[#a855f7]/30">
+              <div className="flex flex-row items-center gap-2 text-[#b026ff] drop-shadow-[0_0_8px_rgba(176,38,255,0.8)]">
+                <Bot size={22} />
+                <h3 className="font-semibold m-0 leading-none" style={{ margin: 0, padding: 0 }}>Xova AI</h3>
               </div>
             </div>
 
             {/* Chat Area */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 cyber-scrollbar-y">
               {messages.length === 0 && (
-                <div className="text-center text-gray-400 text-sm mt-4">
+                <div className="text-center text-[#b026ff] drop-shadow-[0_0_5px_rgba(176,38,255,0.6)] text-sm mt-4">
                   Hi! I'm Xova AI. Ask me anything about Tamil's skills, projects, or experience!
                 </div>
               )}
@@ -136,8 +130,8 @@ const Chatbot = ({ state }) => {
                   <div 
                     className={`px-4 py-2 rounded-2xl max-w-[80%] text-sm ${
                       msg.role === 'user' 
-                        ? 'bg-gradient-to-r from-[#7c3aed] to-[#b026ff] text-white rounded-br-none shadow-[0_4px_12px_rgba(176,38,255,0.3)]' 
-                        : 'bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.08)] backdrop-blur-md text-gray-100 rounded-bl-none shadow-sm'
+                        ? 'bg-[rgba(176,38,255,0.15)] border border-[rgba(176,38,255,0.3)] backdrop-blur-md text-[#b026ff] drop-shadow-[0_0_5px_rgba(176,38,255,0.8)] rounded-br-none shadow-[0_4px_12px_rgba(176,38,255,0.2)]' 
+                        : 'bg-[rgba(176,38,255,0.05)] border border-[rgba(176,38,255,0.2)] backdrop-blur-md text-[#b026ff] drop-shadow-[0_0_5px_rgba(176,38,255,0.6)] rounded-bl-none shadow-sm'
                     }`}
                   >
                     {msg.text}
@@ -167,7 +161,7 @@ const Chatbot = ({ state }) => {
             </div>
 
             {/* Input Area */}
-            <div className="p-3 border-t border-white/10 bg-transparent">
+            <div className="p-3 border-t border-[#a855f7]/30 bg-transparent">
               <form 
                 onSubmit={(e) => { e.preventDefault(); handleSend(); }}
                 className="flex items-center gap-2 relative"
@@ -177,7 +171,7 @@ const Chatbot = ({ state }) => {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="Ask a question..."
-                  className="flex-1 bg-[rgba(0,0,0,0.3)] border border-[rgba(255,255,255,0.05)] shadow-[inset_0_2px_6px_rgba(0,0,0,0.4)] rounded-full px-4 py-2.5 text-sm text-white focus:outline-none focus:border-[rgba(176,38,255,0.5)] focus:bg-[rgba(20,10,30,0.5)] transition-all placeholder:text-gray-400"
+                  className="flex-1 bg-[rgba(176,38,255,0.05)] border border-[rgba(176,38,255,0.2)] shadow-[inset_0_2px_6px_rgba(176,38,255,0.1)] rounded-full px-4 py-2.5 text-sm text-[#b026ff] drop-shadow-[0_0_5px_rgba(176,38,255,0.6)] focus:outline-none focus:border-[rgba(176,38,255,0.5)] focus:bg-[rgba(176,38,255,0.1)] transition-all placeholder:text-[#b026ff]/50"
                 />
                 <button
                   type="submit"

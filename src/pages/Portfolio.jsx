@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence, useInView, animate } from 'framer-motion';
 import { Home, Briefcase, BarChart2, User, Mail, FileText, Layers } from 'lucide-react';
 import { FeaturedSection } from '../components/FeaturedSection';
+import HeroGame from '../components/HeroGame';
 
 
 const AnimatedCounter = ({ from, to, duration = 2, prefix = "", suffix = "" }) => {
@@ -16,7 +17,16 @@ const AnimatedCounter = ({ from, to, duration = 2, prefix = "", suffix = "" }) =
         ease: "easeOut",
         onUpdate(value) {
           if (nodeRef.current) {
-            nodeRef.current.textContent = `${prefix}${Math.round(value)}${suffix}`;
+            const progress = to === 0 ? 1 : value / to;
+            let displayValue = Math.round(value).toString();
+            // Cyber scrambling effect
+            if (progress < 0.95 && Math.random() > 0.3) {
+              const chars = '01';
+              displayValue = displayValue.split('').map(() => chars.charAt(Math.floor(Math.random() * chars.length))).join('');
+            } else if (progress >= 0.95) {
+              displayValue = Math.round(to).toString();
+            }
+            nodeRef.current.textContent = `${prefix}${displayValue}${suffix}`;
           }
         }
       });
@@ -32,6 +42,7 @@ function Portfolio({ state, setState }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('about');
   const [activeFilter, setActiveFilter] = useState('all');
+  const [isHeroHovered, setIsHeroHovered] = useState(false);
 
   const eduScrollRef = useRef(null);
   const expScrollRef = useRef(null);
@@ -279,35 +290,7 @@ function Portfolio({ state, setState }) {
             <a className="btn btn-secondary" href="#portfolio">See projects</a>
           </div>
           
-          <div className="social-links" style={{ display: 'flex', gap: '20px', marginTop: '25px' }}>
-            <motion.a 
-              href={socialLinks.github} 
-              target="_blank" 
-              rel="noreferrer"
-              whileHover={{ scale: 1.15, color: '#9900ff', filter: 'drop-shadow(0px 0px 8px #9900ff80)' }}
-              style={{ color: 'var(--text)', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'color 0.3s ease' }}
-            >
-              <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-            </motion.a>
-            <motion.a 
-              href={socialLinks.linkedin} 
-              target="_blank" 
-              rel="noreferrer"
-              whileHover={{ scale: 1.15, color: '#9900ff', filter: 'drop-shadow(0px 0px 8px #9900ff80)' }}
-              style={{ color: 'var(--text)', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'color 0.3s ease' }}
-            >
-              <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-            </motion.a>
-            <motion.a 
-              href={socialLinks.leetcode} 
-              target="_blank" 
-              rel="noreferrer"
-              whileHover={{ scale: 1.15, color: '#9900ff', filter: 'drop-shadow(0px 0px 8px #9900ff80)' }}
-              style={{ color: 'var(--text)', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'color 0.3s ease' }}
-            >
-              <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M13.483 0a1.374 1.374 0 0 0-.961.438L7.116 6.226l-3.854 4.126a5.266 5.266 0 0 0-1.209 2.104 5.35 5.35 0 0 0-.125.513 5.527 5.527 0 0 0 .062 2.362 5.83 5.83 0 0 0 .349 1.017 5.938 5.938 0 0 0 1.271 1.818l4.277 4.193.039.038c2.248 2.165 5.852 2.133 8.063-.074l2.396-2.392c.54-.54.54-1.414.003-1.955a1.378 1.378 0 0 0-1.951-.003l-2.396 2.392a3.021 3.021 0 0 1-4.205.038l-.02-.019-4.276-4.193c-.652-.64-.972-1.469-.948-2.263a2.68 2.68 0 0 1 .066-.523 2.545 2.545 0 0 1 .619-1.164L9.13 8.114l4.282-4.587c.278-.298.665-.453 1.06-.453.395 0 .782.155 1.06.453l8.033 8.604a1.383 1.383 0 0 0 1.951.013 1.378 1.378 0 0 0-.013-1.951L14.453.454A1.374 1.374 0 0 0 13.483 0zM21.5 13.9c-.773 0-1.4.627-1.4 1.4 0 .773.627 1.4 1.4 1.4.773 0 1.4-.627 1.4-1.4 0-.773-.627-1.4-1.4-1.4z"/></svg>
-            </motion.a>
-          </div>
+
 
           <div className="hero-highlights">
             <div className="hero-highlight-card bento-inner" style={{ background: 'transparent' }}>
@@ -331,14 +314,75 @@ function Portfolio({ state, setState }) {
           </div>
         </div>
 
-        <aside className="hero-card bento-inner">
-          <div className="pill">Hacking • Web Dev • IoT</div>
-          <h2>Building systems, writing code, and mastering hardware security.</h2>
-          <div className="contact-mini">
-            <p><strong>Email:</strong> tamilarasanss.dev@gmail.com</p>
-            <p><strong>Location:</strong> Namakkal, Tamil Nadu, India</p>
-            <p><strong>Focus:</strong> Pen Testing, Web Apps, IoT Hacking</p>
-          </div>
+        <aside 
+          className="hero-card bento-inner"
+          style={{ padding: isHeroHovered ? 0 : '24px', overflow: 'hidden', transition: 'padding 0.3s ease' }}
+        >
+          <AnimatePresence mode="wait">
+            {!isHeroHovered ? (
+              <motion.div
+                key="content"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.2 }}
+                style={{ display: 'flex', flexDirection: 'column', gap: '16px', height: '100%', justifyContent: 'center' }}
+              >
+                <div><div className="pill">Hacking • Web Dev • IoT</div></div>
+                <h2 style={{ marginBottom: 0 }}>Building systems, writing code, and mastering hardware security.</h2>
+                
+                <div className="social-links" style={{ display: 'flex', gap: '20px', marginTop: '10px', marginBottom: '5px' }}>
+                  <motion.a href={socialLinks.github} target="_blank" rel="noreferrer" whileHover={{ scale: 1.15, color: '#9900ff', filter: 'drop-shadow(0px 0px 8px #9900ff80)' }} style={{ color: 'var(--text)', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'color 0.3s ease' }}>
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                  </motion.a>
+                  <motion.a href={socialLinks.linkedin} target="_blank" rel="noreferrer" whileHover={{ scale: 1.15, color: '#9900ff', filter: 'drop-shadow(0px 0px 8px #9900ff80)' }} style={{ color: 'var(--text)', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'color 0.3s ease' }}>
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                  </motion.a>
+                  <motion.a href={socialLinks.leetcode} target="_blank" rel="noreferrer" whileHover={{ scale: 1.15, color: '#9900ff', filter: 'drop-shadow(0px 0px 8px #9900ff80)' }} style={{ color: 'var(--text)', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'color 0.3s ease' }}>
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M13.483 0a1.374 1.374 0 0 0-.961.438L7.116 6.226l-3.854 4.126a5.266 5.266 0 0 0-1.209 2.104 5.35 5.35 0 0 0-.125.513 5.527 5.527 0 0 0 .062 2.362 5.83 5.83 0 0 0 .349 1.017 5.938 5.938 0 0 0 1.271 1.818l4.277 4.193.039.038c2.248 2.165 5.852 2.133 8.063-.074l2.396-2.392c.54-.54.54-1.414.003-1.955a1.378 1.378 0 0 0-1.951-.003l-2.396 2.392a3.021 3.021 0 0 1-4.205.038l-.02-.019-4.276-4.193c-.652-.64-.972-1.469-.948-2.263a2.68 2.68 0 0 1 .066-.523 2.545 2.545 0 0 1 .619-1.164L9.13 8.114l4.282-4.587c.278-.298.665-.453 1.06-.453.395 0 .782.155 1.06.453l8.033 8.604a1.383 1.383 0 0 0 1.951.013 1.378 1.378 0 0 0-.013-1.951L14.453.454A1.374 1.374 0 0 0 13.483 0zM21.5 13.9c-.773 0-1.4.627-1.4 1.4 0 .773.627 1.4 1.4 1.4.773 0 1.4-.627 1.4-1.4 0-.773-.627-1.4-1.4-1.4z"/></svg>
+                  </motion.a>
+                </div>
+
+                <div className="contact-mini" style={{ marginTop: 'auto' }}>
+                  <p><strong>Email:</strong> tamilarasanss.dev@gmail.com</p>
+                  <p><strong>Location:</strong> Namakkal, Tamil Nadu, India</p>
+                  <p><strong>Focus:</strong> Pen Testing, Web Apps, IoT Hacking</p>
+                </div>
+                <div 
+                  onMouseEnter={() => setIsHeroHovered(true)}
+                  style={{
+                    marginTop: '10px',
+                    padding: '12px',
+                    textAlign: 'center',
+                    background: 'rgba(176, 38, 255, 0.1)',
+                    border: '1px dashed rgba(176, 38, 255, 0.5)',
+                    borderRadius: '12px',
+                    color: '#b026ff',
+                    fontWeight: 'bold',
+                    textTransform: 'uppercase',
+                    letterSpacing: '1px',
+                    cursor: 'crosshair',
+                    transition: 'all 0.3s'
+                  }}
+                  onMouseOver={(e) => { e.currentTarget.style.background = 'rgba(176, 38, 255, 0.2)'; e.currentTarget.style.boxShadow = '0 0 15px rgba(176,38,255,0.4)'; }}
+                  onMouseOut={(e) => { e.currentTarget.style.background = 'rgba(176, 38, 255, 0.1)'; e.currentTarget.style.boxShadow = 'none'; }}
+                >
+                  Play Games
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="game"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                style={{ width: '100%', height: '100%', minHeight: '300px' }}
+              >
+                <HeroGame onClose={() => setIsHeroHovered(false)} />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </aside>
       </header>
 
@@ -369,8 +413,17 @@ function Portfolio({ state, setState }) {
                     {state.skills.map((skill, index) => (
                       <motion.span 
                         key={index}
-                        whileHover={{ scale: 1.1, y: -2, backgroundColor: 'rgba(217, 70, 239, 0.2)' }}
-                        transition={{ type: 'spring', stiffness: 400, damping: 10 }}
+                        initial={{ opacity: 0, scale: 0.8, y: 10 }}
+                        whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ 
+                          delay: index * 0.08, 
+                          type: 'spring', 
+                          stiffness: 300, 
+                          damping: 15 
+                        }}
+                        whileHover={{ scale: 1.1, y: -2, backgroundColor: 'rgba(217, 70, 239, 0.4)' }}
+                        style={{ color: '#ffffff' }}
                       >{skill}</motion.span>
                     ))}
                   </div>

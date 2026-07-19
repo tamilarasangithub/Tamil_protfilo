@@ -26,13 +26,13 @@ export const FeaturedSection = ({ projects, certifications }) => {
             <div className="flex gap-2">
               <button 
                 onClick={() => scroll(projectScrollRef, 'left')}
-                className="w-10 h-10 rounded-full border border-[#a855f7]/30 bg-transparent text-white flex items-center justify-center transition-all duration-300 ease-out cursor-pointer z-10 hover:border-[#a855f7] hover:bg-[#a855f7]/10 hover:shadow-[0_0_12px_rgba(168,85,247,0.3)]"
+                className="w-10 h-10 rounded-full border border-[#a855f7]/30 bg-transparent text-white flex items-center justify-center transition-all duration-300 ease-out cursor-pointer z-10 hover:border-[#a855f7] hover:bg-[#a855f7]/10 hover:shadow-[0_0_0_2px_#a855f7]"
               >
                 ←
               </button>
               <button 
                 onClick={() => scroll(projectScrollRef, 'right')}
-                className="w-10 h-10 rounded-full border border-[#a855f7]/30 bg-transparent text-white flex items-center justify-center transition-all duration-300 ease-out cursor-pointer z-10 hover:border-[#a855f7] hover:bg-[#a855f7]/10 hover:shadow-[0_0_12px_rgba(168,85,247,0.3)]"
+                className="w-10 h-10 rounded-full border border-[#a855f7]/30 bg-transparent text-white flex items-center justify-center transition-all duration-300 ease-out cursor-pointer z-10 hover:border-[#a855f7] hover:bg-[#a855f7]/10 hover:shadow-[0_0_0_2px_#a855f7]"
               >
                 →
               </button>
@@ -79,7 +79,7 @@ export const FeaturedSection = ({ projects, certifications }) => {
                         href={targetLink} 
                         target={targetLink.startsWith('/') ? "_self" : "_blank"} 
                         rel={targetLink.startsWith('/') ? "" : "noopener noreferrer"} 
-                        className="block w-full h-40 mb-4 rounded-lg overflow-hidden border border-[#a855f7]/30 bg-black/20 relative group/preview cursor-pointer flex-shrink-0"
+                        className="block w-full aspect-video mb-4 rounded-lg overflow-hidden border border-[#a855f7]/30 bg-black/20 relative group/preview cursor-pointer flex-shrink-0"
                       >
                         {previewContent}
                         <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover/preview:bg-black/10 transition-all duration-300">
@@ -109,16 +109,6 @@ export const FeaturedSection = ({ projects, certifications }) => {
                     >
                       View Details <span>→</span>
                     </Link>
-                    {project.livePreviewUrl && (
-                      <a 
-                        href={project.livePreviewUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-[#00b8a3] hover:text-[#00d2ba] flex items-center gap-1 font-semibold transition-colors inline-block group-hover:drop-shadow-[0_0_8px_rgba(0,184,163,0.6)]"
-                      >
-                        Live Preview <span style={{ fontSize: '1.2em' }}>↗</span>
-                      </a>
-                    )}
                   </div>
                 </article>
               ))}
@@ -133,20 +123,19 @@ export const FeaturedSection = ({ projects, certifications }) => {
             <div className="flex gap-2">
               <button 
                 onClick={() => scroll(certScrollRef, 'left')}
-                className="w-10 h-10 rounded-full border border-[#a855f7]/30 bg-transparent text-white flex items-center justify-center transition-all duration-300 ease-out cursor-pointer z-10 hover:border-[#a855f7] hover:bg-[#a855f7]/10 hover:shadow-[0_0_12px_rgba(168,85,247,0.3)]"
+                className="w-10 h-10 rounded-full border border-[#a855f7]/30 bg-transparent text-white flex items-center justify-center transition-all duration-300 ease-out cursor-pointer z-10 hover:border-[#a855f7] hover:bg-[#a855f7]/10 hover:shadow-[0_0_0_2px_#a855f7]"
               >
                 ←
               </button>
               <button 
                 onClick={() => scroll(certScrollRef, 'right')}
-                className="w-10 h-10 rounded-full border border-[#a855f7]/30 bg-transparent text-white flex items-center justify-center transition-all duration-300 ease-out cursor-pointer z-10 hover:border-[#a855f7] hover:bg-[#a855f7]/10 hover:shadow-[0_0_12px_rgba(168,85,247,0.3)]"
+                className="w-10 h-10 rounded-full border border-[#a855f7]/30 bg-transparent text-white flex items-center justify-center transition-all duration-300 ease-out cursor-pointer z-10 hover:border-[#a855f7] hover:bg-[#a855f7]/10 hover:shadow-[0_0_0_2px_#a855f7]"
               >
                 →
               </button>
             </div>
           </div>
-
-          {/* Bound Viewport Wrapper */}
+          
           <div className="-my-6 -mx-2">
             <div 
               ref={certScrollRef}
@@ -155,20 +144,33 @@ export const FeaturedSection = ({ projects, certifications }) => {
               {certifications.map((cert, index) => (
                 <article 
                   key={index}
-                  className="cert-card bento-inner group min-w-[85vw] md:min-w-[45vw] lg:min-w-[calc((100%-3rem)/3)] max-w-[calc((100%-3rem)/3)] flex-shrink-0 snap-start flex flex-col relative"
+                  className={`bento-inner group min-w-[85vw] md:min-w-[45vw] lg:min-w-[calc((100%-3rem)/3)] max-w-[calc((100%-3rem)/3)] flex-shrink-0 snap-start flex flex-col relative ${cert.isActive ? 'border-[#a855f7] shadow-[0_0_15px_rgba(168,85,247,0.2)]' : ''}`}
                   style={{ background: 'transparent' }}
                 >
-                  <div className="cert-image-container relative z-10 w-full h-48 mb-4 rounded-lg overflow-hidden border border-[#a855f7]/30 bg-black/20">
-                    <img src={cert.image} alt={cert.title} style={{ objectFit: 'contain' }} className="w-full h-full group-hover:scale-105 transition-transform duration-500" />
+                  {/* Image Container */}
+                  <div className="w-full mb-4 flex justify-center items-center rounded-lg overflow-hidden border border-[#a855f7]/30 bg-black/20 p-2">
+                    <img 
+                      src={cert.image} 
+                      alt={cert.title}
+                      className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-500"
+                      style={{ aspectRatio: '11 / 8.5' }}
+                    />
                   </div>
 
-                  <h4>{cert.title}</h4>
-                  
-                  <div className="pill-tag" style={{ width: 'fit-content', marginBottom: '16px' }}>
-                    {cert.issuer} • {cert.year}
+                  {/* Content Details */}
+                  <div className="flex flex-col flex-grow">
+                    <h4 style={{ marginBottom: '16px' }}>{cert.title}</h4>
+                    
+                    <div className="pill-tag" style={{ width: 'fit-content', marginBottom: '16px' }}>
+                      {cert.badge || `${cert.issuer} • ${cert.year}`}
+                    </div>
+                    
+                    {cert.description && typeof cert.description === 'string' && cert.description.includes('<') ? (
+                      <p style={{ flexGrow: 1, marginBottom: 0 }} dangerouslySetInnerHTML={{ __html: cert.description }} />
+                    ) : (
+                      <p style={{ flexGrow: 1, marginBottom: 0 }}>{cert.description}</p>
+                    )}
                   </div>
-                  
-                  <p style={{ flexGrow: 1, marginBottom: 0 }} dangerouslySetInnerHTML={{ __html: cert.description }} />
                 </article>
               ))}
             </div>
