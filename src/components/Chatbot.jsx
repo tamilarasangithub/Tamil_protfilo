@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, X, Send, Bot, User } from 'lucide-react';
-const apiKey = import.meta.env.VITE_DEEPSEEK_API_KEY || '';
+const apiKey = import.meta.env.VITE_OPENROUTER_API_KEY || '';
 
 const Chatbot = ({ state }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -55,14 +55,16 @@ const Chatbot = ({ state }) => {
         content: msg.text,
       }));
 
-      const response = await fetch('https://api.deepseek.com/chat/completions', {
+      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
+          'Authorization': `Bearer ${apiKey}`,
+          'HTTP-Referer': window.location.href,
+          'X-Title': 'Xova AI Portfolio Bot'
         },
         body: JSON.stringify({
-          model: 'deepseek-chat',
+          model: 'deepseek/deepseek-chat',
           messages: [
             { role: 'system', content: getContextString() },
             ...chatHistory,
@@ -80,7 +82,7 @@ const Chatbot = ({ state }) => {
       
       setMessages(prev => [...prev, { role: 'model', text }]);
     } catch (error) {
-      console.error("Error communicating with DeepSeek API:", error);
+      console.error("Error communicating with OpenRouter API:", error);
       setMessages(prev => [...prev, { role: 'model', text: "Sorry, I'm having trouble connecting right now." }]);
     } finally {
       setIsLoading(false);
