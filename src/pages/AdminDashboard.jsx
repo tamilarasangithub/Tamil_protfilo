@@ -497,7 +497,7 @@ function AdminDashboard({ state, setState }) {
         <div style={sectionStyle}>
           <h2 style={{ marginBottom: '24px', fontSize: '1.8rem' }}>Education</h2>
           {renderFormWrapper('education', 'Education', false, (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '40px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: '40px' }}>
               <form className="stack-form" onSubmit={handleEduSubmit}>
                 <input value={eduForm.title} onChange={(event) => setEduForm({ ...eduForm, title: event.target.value })} placeholder="Degree / Title" required />
                 <input value={eduForm.school} onChange={(event) => setEduForm({ ...eduForm, school: event.target.value })} placeholder="School / Institution" required />
@@ -523,7 +523,7 @@ function AdminDashboard({ state, setState }) {
           <div className="portfolio-grid">
             <div>
               <h3>Manage Education</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 320px), 1fr))', gap: '24px' }}>
                 {(state.education || []).map((item, index) => (
                   <article key={item.id} className="project-card bento-inner" style={{ background: 'transparent' }}>
                     <h4>{item.title}</h4>
@@ -549,7 +549,7 @@ function AdminDashboard({ state, setState }) {
         <div style={sectionStyle}>
           <h2 style={{ marginBottom: '24px', fontSize: '1.8rem' }}>Experience</h2>
           {renderFormWrapper('experience', 'Experience', false, (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '40px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: '40px' }}>
               <form className="stack-form" onSubmit={handleExpSubmit}>
                 <input value={expForm.title} onChange={(event) => setExpForm({ ...expForm, title: event.target.value })} placeholder="Role / Job Title" required />
                 <input value={expForm.year} onChange={(event) => setExpForm({ ...expForm, year: event.target.value })} placeholder="Year (e.g., 2024 - Present)" required />
@@ -574,7 +574,7 @@ function AdminDashboard({ state, setState }) {
           <div className="portfolio-grid">
             <div>
               <h3>Manage Experience</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 320px), 1fr))', gap: '24px' }}>
                 {(state.experience || []).map((item, index) => (
                   <article key={item.id} className="project-card bento-inner" style={{ background: 'transparent' }}>
                     <h4>{item.title}</h4>
@@ -600,7 +600,7 @@ function AdminDashboard({ state, setState }) {
         <div style={sectionStyle}>
           <h2 style={{ marginBottom: '24px', fontSize: '1.8rem' }}>Projects</h2>
           {renderFormWrapper('projects', 'Project', true, (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '40px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: '40px' }}>
               <form className="stack-form" onSubmit={handleProjectSubmit}>
                 <input value={projectForm.title} onChange={(event) => setProjectForm({ ...projectForm, title: event.target.value })} placeholder="Project title" required />
                 <input value={projectForm.category} onChange={(event) => setProjectForm({ ...projectForm, category: event.target.value })} placeholder="Category" required />
@@ -670,7 +670,7 @@ function AdminDashboard({ state, setState }) {
           <div className="portfolio-grid">
             <div>
               <h3>Manage Projects</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 320px), 1fr))', gap: '24px' }}>
                 {(state.projects || []).map((project, index) => (
                   <article key={project.id} className="project-card bento-inner" style={{ background: 'transparent' }}>
                     <div className="pill-tag">{project.category}</div>
@@ -696,7 +696,7 @@ function AdminDashboard({ state, setState }) {
         <div style={sectionStyle}>
           <h2 style={{ marginBottom: '24px', fontSize: '1.8rem' }}>Certifications</h2>
           {renderFormWrapper('certifications', 'Certification', false, (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '40px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: '40px' }}>
               <form className="stack-form" onSubmit={handleCertSubmit}>
                 <input value={certForm.title} onChange={(event) => setCertForm({ ...certForm, title: event.target.value })} placeholder="Certification title" required />
                 <input value={certForm.issuer} onChange={(event) => setCertForm({ ...certForm, issuer: event.target.value })} placeholder="Issuer" required />
@@ -733,7 +733,7 @@ function AdminDashboard({ state, setState }) {
           <div className="portfolio-grid">
             <div>
               <h3>Manage Certifications</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 320px), 1fr))', gap: '24px' }}>
                 {(state.certifications || []).map((cert, index) => (
                   <article key={cert.id} className="cert-card bento-inner" style={{ background: 'transparent' }}>
                     <h4>{cert.title}</h4>
@@ -759,7 +759,7 @@ function AdminDashboard({ state, setState }) {
         <div style={sectionStyle}>
           <h2 style={{ marginBottom: '24px', fontSize: '1.8rem' }}>Research Papers</h2>
           {renderFormWrapper('researchPapers', 'Research Paper', false, (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '40px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))', gap: '40px' }}>
               <form className="stack-form" onSubmit={handleResearchSubmit}>
                 <input value={researchForm.title} onChange={(event) => setResearchForm({ ...researchForm, title: event.target.value })} placeholder="Paper title" required />
                 <input value={researchForm.conference} onChange={(event) => setResearchForm({ ...researchForm, conference: event.target.value })} placeholder="Conference / Journal" required />
@@ -791,7 +791,7 @@ function AdminDashboard({ state, setState }) {
           <div className="portfolio-grid">
             <div>
               <h3>Manage Research Papers</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 320px), 1fr))', gap: '24px' }}>
                 {(state.researchPapers || []).map((paper, index) => (
                   <article key={paper.id} className="project-card bento-inner" style={{ background: 'transparent' }}>
                     <h4>{paper.title}</h4>
