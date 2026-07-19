@@ -1,10 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, X, Send, Bot, User } from 'lucide-react';
-import { GoogleGenerativeAI } from '@google/generative-ai';
-
-const apiKey = import.meta.env.VITE_GEMINI_API_KEY || '';
-const genAI = new GoogleGenerativeAI(apiKey || 'dummy_key');
+const apiKey = import.meta.env.VITE_DEEPSEEK_API_KEY || '';
 
 const Chatbot = ({ state }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -53,27 +50,37 @@ const Chatbot = ({ state }) => {
         return;
       }
 
-      const model = genAI.getGenerativeModel({
-        model: "gemini-1.5-flash",
-        systemInstruction: getContextString(),
-      });
-      
       const chatHistory = messages.map(msg => ({
-        role: msg.role === 'user' ? 'user' : 'model',
-        parts: [{ text: msg.text }],
+        role: msg.role === 'user' ? 'user' : 'assistant',
+        content: msg.text,
       }));
 
-      const chat = model.startChat({
-        history: chatHistory,
+      const response = await fetch('https://api.deepseek.com/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          model: 'deepseek-chat',
+          messages: [
+            { role: 'system', content: getContextString() },
+            ...chatHistory,
+            { role: 'user', content: userMessage }
+          ]
+        })
       });
 
-      const result = await chat.sendMessage(userMessage);
-      const response = await result.response;
-      const text = response.text();
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      const text = data.choices[0].message.content;
       
       setMessages(prev => [...prev, { role: 'model', text }]);
     } catch (error) {
-      console.error("Error communicating with Gemini API:", error);
+      console.error("Error communicating with DeepSeek API:", error);
       setMessages(prev => [...prev, { role: 'model', text: "Sorry, I'm having trouble connecting right now." }]);
     } finally {
       setIsLoading(false);
