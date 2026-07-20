@@ -160,6 +160,13 @@ app.post(['/api/chat', '/chat', '/'], chatLimiter, async (req, res) => {
   }
 });
 
+// Global error handler to catch any unhandled errors (e.g., from middleware)
+// This ensures Vercel never returns an HTML 500 page
+app.use((err, req, res, next) => {
+  console.error('Unhandled Express Error:', err);
+  res.status(err.status || 500).json({ error: err.message || 'Internal Server Error' });
+});
+
 // Export the app for Vercel Serverless Functions and Testing
 
 export default app;

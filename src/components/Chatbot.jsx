@@ -59,7 +59,10 @@ const Chatbot = ({ state }) => {
         body: JSON.stringify({
           messages: [
             { role: 'system', content: getContextString() },
-            ...chatHistory,
+            ...chatHistory.map(msg => ({
+              role: msg.role === 'model' ? 'assistant' : msg.role,
+              content: msg.text
+            })),
             { role: 'user', content: userMessage }
           ]
         })
