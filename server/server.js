@@ -4,7 +4,6 @@ import dotenv from 'dotenv';
 import rateLimit from 'express-rate-limit';
 import { z } from 'zod';
 import crypto from 'crypto';
-import { auth } from './firebaseAdmin.js';
 
 // Load environment variables from the root .env file
 dotenv.config({ path: '../.env' });
@@ -73,6 +72,7 @@ export const verifyAuth = async (req, res, next) => {
 
   const idToken = authHeader.split('Bearer ')[1];
   try {
+    const { auth } = await import('./firebaseAdmin.js');
     const decodedToken = await auth.verifyIdToken(idToken);
     req.user = decodedToken;
     next();
