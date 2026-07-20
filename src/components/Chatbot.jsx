@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, X, Send, Bot, User } from 'lucide-react';
-const apiKey = import.meta.env.VITE_OPENROUTER_API_KEY || '';
+
+// The API Key is no longer needed on the client, it is secured in the backend.
 
 const Chatbot = ({ state }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -44,27 +45,19 @@ const Chatbot = ({ state }) => {
     setIsLoading(true);
 
     try {
-      if (!apiKey) {
-        setMessages(prev => [...prev, { role: 'model', text: "API Key is missing! Please add it to your .env file." }]);
-        setIsLoading(false);
-        return;
-      }
-
+      // Remove the direct OpenRouter call. The API Key check is no longer needed here.
       const chatHistory = messages.map(msg => ({
         role: msg.role === 'user' ? 'user' : 'assistant',
         content: msg.text,
       }));
 
-      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      // Call our secure local backend API instead
+      const response = await fetch('http://localhost:3000/api/chat', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`,
-          'HTTP-Referer': window.location.href,
-          'X-Title': 'Xova AI Portfolio Bot'
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          model: 'deepseek/deepseek-chat',
           messages: [
             { role: 'system', content: getContextString() },
             ...chatHistory,
