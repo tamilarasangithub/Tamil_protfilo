@@ -43,9 +43,9 @@ const chatRequestSchema = z.object({
   messages: z.array(
     z.object({
       role: z.enum(['user', 'assistant', 'system']),
-      content: z.string().min(1).max(2000), // Prevent massive payload injection
+      content: z.string().max(15000), // Allow large system prompts
     })
-  ).max(20), // Max 20 messages in history
+  ).max(50), // Allow longer chat history
 });
 
 // ---------------------------------------------------------
