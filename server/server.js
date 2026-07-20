@@ -98,7 +98,7 @@ app.get('/api/admin/data', verifyAuth, (req, res) => {
 });
 
 // Chat endpoint with caching, rate limiting, and validation
-app.post('/api/chat', chatLimiter, async (req, res) => {
+app.post(['/api/chat', '/chat', '/'], chatLimiter, async (req, res) => {
   try {
     // 1. Validate Input (Injection protection)
     const parsedBody = chatRequestSchema.parse(req.body);
