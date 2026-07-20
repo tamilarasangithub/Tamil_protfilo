@@ -66,7 +66,7 @@ const Chatbot = ({ state }) => {
       });
 
       if (!response.ok) {
-        let errorMsg = response.statusText;
+        let errorMsg = response.statusText || `HTTP ${response.status}`;
         try {
           const errData = await response.json();
           if (errData.error) errorMsg = errData.error;
