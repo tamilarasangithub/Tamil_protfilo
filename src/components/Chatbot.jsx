@@ -51,7 +51,6 @@ const Chatbot = ({ state }) => {
         content: msg.text,
       }));
 
-      // Call our secure local backend API instead
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
@@ -67,7 +66,12 @@ const Chatbot = ({ state }) => {
       });
 
       if (!response.ok) {
-        throw new Error(`API Error: ${response.statusText}`);
+        let errorMsg = response.statusText;
+        try {
+          const errData = await response.json();
+          if (errData.error) errorMsg = errData.error;
+        } catch(e) {}
+        throw new Error(errorMsg);
       }
 
       const data = await response.json();
@@ -75,8 +79,8 @@ const Chatbot = ({ state }) => {
       
       setMessages(prev => [...prev, { role: 'model', text }]);
     } catch (error) {
-      console.error("Error communicating with OpenRouter API:", error);
-      setMessages(prev => [...prev, { role: 'model', text: "Sorry, I'm having trouble connecting right now." }]);
+      console.error("Error communicating with Backend API:", error);
+      setMessages(prev => [...prev, { role: 'model', text: `Connection Error: ${error.message}` }]);
     } finally {
       setIsLoading(false);
     }
