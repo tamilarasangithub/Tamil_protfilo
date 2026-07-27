@@ -61,7 +61,7 @@ function Login({ setState }) {
       <section className="card section login-card" style={{ maxWidth: '450px', width: '100%', margin: 'auto' }}>
         <div className="section-heading" style={{ textAlign: 'center' }}>
           <p className="eyebrow">Admin access</p>
-          <h2>Secure login for the admin dashboard</h2>
+          <h2>Welcome back</h2>
         </div>
         <div className="login-shell" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <div className="login-panel" style={{ width: '100%' }}>

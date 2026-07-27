@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { TiltCard } from './TiltCard';
 
 // Master Portfolio Section Container
 export const FeaturedSection = ({ projects, certifications }) => {
@@ -19,6 +20,7 @@ export const FeaturedSection = ({ projects, certifications }) => {
       <div className="w-full">
         
         {/* SECTION 1: PROJECTS */}
+        {projects && projects.length > 0 && (
         <div className="mb-12">
           <div className="flex justify-between items-center w-full mb-6">
             <h3 style={{ margin: 0 }}>Projects</h3>
@@ -43,10 +45,10 @@ export const FeaturedSection = ({ projects, certifications }) => {
           <div className="-my-6 -mx-2">
             <div 
               ref={projectScrollRef}
-              className="flex flex-row gap-6 w-full overflow-x-auto snap-x snap-mandatory scroll-smooth cyber-scrollbar-x py-6 px-4"
+              className="flex flex-row gap-6 w-full overflow-x-auto snap-x snap-mandatory scroll-smooth cyber-scrollbar-x py-4 px-2"
             >
               {projects.map((project, index) => (
-                <article 
+                <TiltCard 
                   key={index}
                   className="project-card bento-inner group min-w-[85vw] md:min-w-[45vw] lg:min-w-[calc((100%-3rem)/3)] max-w-[calc((100%-3rem)/3)] flex-shrink-0 snap-start flex flex-col relative"
                   style={{ background: 'transparent' }}
@@ -90,9 +92,9 @@ export const FeaturedSection = ({ projects, certifications }) => {
                       </a>
                     );
                   })()}
-                  <h4>{project.title}</h4>
+                  <h4 style={{ marginBottom: '8px', fontSize: '1.15rem' }}>{project.title}</h4>
                   
-                  <div className="pill-tag" style={{ width: 'fit-content', marginBottom: '16px' }}>
+                  <div className="pill-tag" style={{ width: 'fit-content', marginBottom: '8px' }}>
                     {project.category}
                   </div>
                   
@@ -110,13 +112,15 @@ export const FeaturedSection = ({ projects, certifications }) => {
                       View Details <span>→</span>
                     </Link>
                   </div>
-                </article>
+                </TiltCard>
               ))}
             </div>
           </div>
         </div>
+        )}
 
         {/* SECTION 2: CERTIFICATIONS */}
+        {certifications && certifications.length > 0 && (
         <div>
           <div className="flex justify-between items-center w-full mb-6">
             <h3 style={{ margin: 0 }}>Certifications</h3>
@@ -139,10 +143,10 @@ export const FeaturedSection = ({ projects, certifications }) => {
           <div className="-my-6 -mx-2">
             <div 
               ref={certScrollRef}
-              className="flex flex-row gap-6 w-full overflow-x-auto snap-x snap-mandatory scroll-smooth cyber-scrollbar-x py-6 px-4"
+              className="flex flex-row gap-6 w-full overflow-x-auto snap-x snap-mandatory scroll-smooth cyber-scrollbar-x py-4 px-2"
             >
               {certifications.map((cert, index) => (
-                <article 
+                <TiltCard 
                   key={index}
                   className={`bento-inner group min-w-[85vw] md:min-w-[45vw] lg:min-w-[calc((100%-3rem)/3)] max-w-[calc((100%-3rem)/3)] flex-shrink-0 snap-start flex flex-col relative ${cert.isActive ? 'border-[#a855f7] shadow-[0_0_15px_rgba(168,85,247,0.2)]' : ''}`}
                   style={{ background: 'transparent' }}
@@ -153,15 +157,15 @@ export const FeaturedSection = ({ projects, certifications }) => {
                       src={cert.image} 
                       alt={cert.title}
                       className="w-full h-auto object-contain group-hover:scale-105 transition-transform duration-500"
-                      style={{ aspectRatio: '11 / 8.5' }}
+                      style={{ aspectRatio: '16 / 9' }}
                     />
                   </div>
 
                   {/* Content Details */}
                   <div className="flex flex-col flex-grow">
-                    <h4 style={{ marginBottom: '16px' }}>{cert.title}</h4>
+                    <h4 style={{ marginBottom: '8px', fontSize: '1.15rem' }}>{cert.title}</h4>
                     
-                    <div className="pill-tag" style={{ width: 'fit-content', marginBottom: '16px' }}>
+                    <div className="pill-tag" style={{ width: 'fit-content', marginBottom: '8px' }}>
                       {cert.badge || `${cert.issuer} • ${cert.year}`}
                     </div>
                     
@@ -171,11 +175,12 @@ export const FeaturedSection = ({ projects, certifications }) => {
                       <p style={{ flexGrow: 1, marginBottom: 0 }}>{cert.description}</p>
                     )}
                   </div>
-                </article>
+                </TiltCard>
               ))}
             </div>
           </div>
         </div>
+        )}
 
       </div>
     </div>

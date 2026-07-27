@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence, useInView, animate } from 'framer-motion';
+import { motion, AnimatePresence, useInView, animate, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
 import { Home, Briefcase, BarChart2, User, Mail, FileText, Layers } from 'lucide-react';
 import { FeaturedSection } from '../components/FeaturedSection';
 import HeroGame from '../components/HeroGame';
@@ -37,11 +37,124 @@ const AnimatedCounter = ({ from, to, duration = 2, prefix = "", suffix = "" }) =
   return <span ref={nodeRef} style={{ fontSize: 'inherit', fontWeight: 'inherit', color: 'inherit' }}>{prefix}{from}{suffix}</span>;
 };
 
+const CustomCursor = () => {
+  const cursorX = useMotionValue(-100);
+  const cursorY = useMotionValue(-100);
+  const springConfig = { damping: 30, stiffness: 1000, mass: 0.2 };
+  const cursorXSpring = useSpring(cursorX, springConfig);
+  const cursorYSpring = useSpring(cursorY, springConfig);
+
+  useEffect(() => {
+    const moveCursor = (e) => {
+      cursorX.set(e.clientX - 16);
+      cursorY.set(e.clientY - 16);
+    };
+    window.addEventListener('mousemove', moveCursor);
+    return () => window.removeEventListener('mousemove', moveCursor);
+  }, [cursorX, cursorY]);
+
+  return (
+    <motion.div
+      style={{
+        position: 'fixed', left: 0, top: 0, width: 32, height: 32, borderRadius: '50%',
+        backgroundColor: 'rgba(176, 38, 255, 0.4)', boxShadow: '0 0 20px rgba(176, 38, 255, 0.8)',
+        pointerEvents: 'none', zIndex: 9999, x: cursorXSpring, y: cursorYSpring,
+      }}
+    />
+  );
+};
+
+const TiltCard = ({ children, className, style }) => {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  const mouseXSpring = useSpring(x, { stiffness: 300, damping: 20 });
+  const mouseYSpring = useSpring(y, { stiffness: 300, damping: 20 });
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["10deg", "-10deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-10deg", "10deg"]);
+
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    const xPct = mouseX / width - 0.5;
+    const yPct = mouseY / height - 0.5;
+    x.set(xPct);
+    y.set(yPct);
+  };
+
+  const handleMouseLeave = () => { x.set(0); y.set(0); };
+
+  return (
+    <motion.div
+      onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}
+      style={{ perspective: 1000, transformStyle: "preserve-3d", ...style }} className={className}
+    >
+      <motion.div style={{ rotateX, rotateY, width: "100%", height: "100%" }}>
+        {children}
+      </motion.div>
+    </motion.div>
+  );
+};
+
+const ParallaxBackground = () => {
+  const { scrollYProgress } = useScroll();
+  const y1 = useTransform(scrollYProgress, [0, 1], [0, -500]);
+  const y2 = useTransform(scrollYProgress, [0, 1], [0, -300]);
+  const y3 = useTransform(scrollYProgress, [0, 1], [0, -800]);
+
+  return (
+    <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: -1, overflow: 'hidden', pointerEvents: 'none' }}>
+      <motion.div style={{ position: 'absolute', top: '10%', left: '20%', width: '400px', height: '400px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(176, 38, 255, 0.15) 0%, rgba(0,0,0,0) 70%)', filter: 'blur(40px)', y: y1 }} />
+      <motion.div style={{ position: 'absolute', top: '60%', right: '10%', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(0, 240, 255, 0.1) 0%, rgba(0,0,0,0) 70%)', filter: 'blur(60px)', y: y2 }} />
+      <motion.div style={{ position: 'absolute', top: '80%', left: '-10%', width: '600px', height: '600px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(176, 38, 255, 0.1) 0%, rgba(0,0,0,0) 70%)', filter: 'blur(50px)', y: y3 }} />
+    </div>
+  );
+};
+
+const StaggeredText = ({ text, className }) => {
+  const words = text.split(" ");
+  return (
+    <motion.span className={className} initial="hidden" animate="visible" variants={{ visible: { transition: { staggerChildren: 0.1 } } }}>
+      {words.map((word, i) => (
+        <motion.span key={i} style={{ display: 'inline-block', marginRight: '0.25em' }} variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { type: 'spring', damping: 12, stiffness: 100 } } }}>
+          {word}
+        </motion.span>
+      ))}
+    </motion.span>
+  );
+};
+
+const ScrollSection = ({ children, id, className }) => {
+  const ref = React.useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "center center", "end start"]
+  });
+
+  const opacity = useTransform(scrollYProgress, [0, 0.15, 0.85, 1], [0.3, 1, 1, 0.3]);
+  const scale = useTransform(scrollYProgress, [0, 0.15, 0.85, 1], [0.98, 1, 1, 0.98]);
+  const blur = useTransform(scrollYProgress, [0, 0.15, 0.85, 1], ["blur(5px)", "blur(0px)", "blur(0px)", "blur(5px)"]);
+
+  return (
+    <motion.section
+      ref={ref}
+      id={id}
+      className={className}
+      style={{ opacity, scale, filter: blur }}
+    >
+      {children}
+    </motion.section>
+  );
+};
+
 function Portfolio({ state, setState }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('about');
   const [activeFilter, setActiveFilter] = useState('all');
+  const [activeCertFilter, setActiveCertFilter] = useState('all');
   const [isHeroHovered, setIsHeroHovered] = useState(false);
 
   const eduScrollRef = useRef(null);
@@ -81,8 +194,17 @@ function Portfolio({ state, setState }) {
 
   const filteredProjects = useMemo(() => {
     if (activeFilter === 'all') return state.projects;
-    return state.projects.filter((project) => project.category === activeFilter);
+    return state.projects.filter((project) => 
+      (project.category || '').toLowerCase() === activeFilter.toLowerCase()
+    );
   }, [activeFilter, state.projects]);
+
+  const filteredCertifications = useMemo(() => {
+    if (activeCertFilter === 'all') return state.certifications;
+    return state.certifications.filter((cert) => 
+      (cert.category || '').toLowerCase() === activeCertFilter.toLowerCase()
+    );
+  }, [activeCertFilter, state.certifications]);
 
   const handleLogout = () => {
     setState((prev) => ({ ...prev, loggedIn: false }));
@@ -231,12 +353,14 @@ function Portfolio({ state, setState }) {
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 30, scale: 0.95 },
-    show: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 100, damping: 15 } }
+    hidden: { opacity: 0, y: 20, scale: 0.98 },
+    show: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 250, damping: 25 } }
   };
 
   return (
     <>
+      <CustomCursor />
+      <ParallaxBackground />
       <nav className={`top-nav hide-on-mobile ${isScrolled ? 'scrolled' : ''}`}>
         <div className="mobile-menu-icon" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} style={{ cursor: 'pointer' }}>
           {isMobileMenuOpen ? (
@@ -280,10 +404,10 @@ function Portfolio({ state, setState }) {
             />
             <span style={{ color: '#b026ff', fontSize: '0.75rem', fontWeight: '600', letterSpacing: '2px', textShadow: '0 0 5px rgba(176, 38, 255, 0.5)' }}>SYSTEM STATUS: ONLINE</span>
           </div>
-          <p className="eyebrow">Ethical Hacker • IoT Engineer • Web Developer</p>
+          <p className="eyebrow">Cybersecurity & IoT Specialist • Freelance Developer</p>
           <h1 style={{ background: 'linear-gradient(135deg, #fff 0%, #d8b4fe 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', display: 'inline-block' }}>Hi, I’m Tamilarasan S.</h1>
           <p className="hero-text">
-            I am a dedicated Penetration Tester, a Full-Stack Web Developer, and an IoT Engineer—bridging the gap between building systems and breaking them.
+            My primary focus is on Cybersecurity, Ethical Hacking, and IoT-Embedded Systems. As a freelancer, I also deliver Full-Stack Web Apps, Figma Designs, WordPress sites, and n8n Automations.
           </p>
           <div className="hero-actions">
             <a className="btn btn-primary" href="#contact">Let’s connect</a>
@@ -291,25 +415,24 @@ function Portfolio({ state, setState }) {
           </div>
           
 
-
           <div className="hero-highlights">
             <div className="hero-highlight-card bento-inner" style={{ background: 'transparent' }}>
               <div className="highlight-icon">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
               </div>
-              <div><strong>Ethical Hacking:</strong> <span style={{color: 'rgba(255,255,255,0.7)'}}>Penetration testing & vulnerability assessment</span></div>
+              <div><strong>Core Focus:</strong> <span style={{color: 'rgba(255,255,255,0.7)'}}>Cybersecurity, Pen Testing & IoT-Embedded Systems</span></div>
             </div>
             <div className="hero-highlight-card bento-inner" style={{ background: 'transparent' }}>
               <div className="highlight-icon">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline><polyline points="8 13 6 15 8 17"></polyline><polyline points="16 17 18 15 16 13"></polyline><line x1="10" y1="18" x2="14" y2="12"></line></svg>
               </div>
-              <div><strong>Web Development:</strong> <span style={{color: 'rgba(255,255,255,0.7)'}}>Secure, modern full-stack web applications</span></div>
+              <div><strong>Freelance Web:</strong> <span style={{color: 'rgba(255,255,255,0.7)'}}>Full-Stack Apps, WordPress & Figma UI/UX Design</span></div>
             </div>
             <div className="hero-highlight-card bento-inner" style={{ background: 'transparent' }}>
               <div className="highlight-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="10" rx="2" ry="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path><line x1="8" y1="16" x2="8" y2="16"></line><line x1="16" y1="16" x2="16" y2="16"></line></svg>
               </div>
-              <div><strong>IoT Engineering:</strong> <span style={{color: 'rgba(255,255,255,0.7)'}}>Smart hardware with a focus on IoT Hacking</span></div>
+              <div><strong>Freelance Automation:</strong> <span style={{color: 'rgba(255,255,255,0.7)'}}>n8n workflows & intelligent AI chatbots</span></div>
             </div>
           </div>
         </div>
@@ -346,7 +469,7 @@ function Portfolio({ state, setState }) {
                 <div className="contact-mini" style={{ marginTop: 'auto' }}>
                   <p><strong>Email:</strong> tamilarasanss.dev@gmail.com</p>
                   <p><strong>Location:</strong> Namakkal, Tamil Nadu, India</p>
-                  <p><strong>Focus:</strong> Pen Testing, Web Apps, IoT Hacking</p>
+                  <p><strong>Focus:</strong> Pen Testing, Web Apps, Edge AI, IoT Hacking</p>
                 </div>
                 <div 
                   onMouseEnter={() => setIsHeroHovered(true)}
@@ -390,10 +513,10 @@ function Portfolio({ state, setState }) {
 
       <main className="main-stack">
         
-        <section id="about" className="section bento-inner">
+        <ScrollSection id="about" className="section bento-inner">
           <div className="section-heading">
             <p className="eyebrow">About me</p>
-            <h2>A hardcore Ethical Hacker with a passion for secure Web & IoT systems.</h2>
+            <h2>A Cyber Security Researcher with a passion for secure Web, AI & IoT systems.</h2>
           </div>
           <motion.div 
               className="about-grid"
@@ -440,9 +563,9 @@ function Portfolio({ state, setState }) {
                 </div>
               </motion.div>
             </motion.div>
-        </section>
+        </ScrollSection>
 
-        <section id="resume" className="section bento-inner">
+        <ScrollSection id="resume" className="section bento-inner">
           <div className="section-heading">
             <p className="eyebrow">Resume</p>
             <h2>Education, experience, and technical strengths.</h2>
@@ -498,72 +621,72 @@ function Portfolio({ state, setState }) {
                   </div>
                 </motion.div>
               </motion.div>
-        </section>
+        </ScrollSection>
 
-        <section id="insights" className="section bento-inner">
+        <ScrollSection id="insights" className="section bento-inner">
           <div className="section-heading">
             <p className="eyebrow">Dashboard</p>
             <h2>Live Coding Insights</h2>
           </div>
           
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem', marginTop: '3rem' }}>
+          <div className="contact-grid" style={{ marginTop: '2rem' }}>
             
             {/* GITHUB CARD (Purple & Pink Theme) */}
-            <div className="bento-inner" style={{ background: 'transparent', padding: '32px', display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
-              <h3 style={{ margin: 0, background: 'linear-gradient(90deg, #9900ff, #ff26b9)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', textAlign: 'center', fontSize: '1.8rem' }}>GitHub Analytics</h3>
+            <div className="bento-inner" style={{ background: 'transparent', padding: '24px', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <h3 style={{ margin: 0, background: 'linear-gradient(90deg, #9900ff, #ff26b9)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', textAlign: 'center', fontSize: '1.4rem' }}>GitHub Analytics</h3>
               
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
-                <svg width="150" height="150" viewBox="0 0 150 150">
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+                <svg width="100" height="100" viewBox="0 0 100 100">
                   <defs>
                     <linearGradient id="githubGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                       <stop offset="0%" stopColor="#9900ff" />
                       <stop offset="100%" stopColor="#ff26b9" />
                     </linearGradient>
                   </defs>
-                  <circle cx="75" cy="75" r="60" stroke="rgba(255,255,255,0.05)" strokeWidth="10" fill="none" />
+                  <circle cx="50" cy="50" r="40" stroke="rgba(255,255,255,0.05)" strokeWidth="8" fill="none" />
                   {!liveStats.loading && (
                     <motion.circle 
-                      cx="75" cy="75" r="60" 
+                      cx="50" cy="50" r="40" 
                       stroke="#9900ff" 
-                      strokeWidth="10" 
+                      strokeWidth="8" 
                       fill="none" 
-                      strokeDasharray={2 * Math.PI * 60}
-                      initial={{ strokeDashoffset: 2 * Math.PI * 60 }}
-                      whileInView={{ strokeDashoffset: (2 * Math.PI * 60) - (Math.min((liveStats.github / 50) * 100, 100) / 100) * (2 * Math.PI * 60) }}
+                      strokeDasharray={2 * Math.PI * 40}
+                      initial={{ strokeDashoffset: 2 * Math.PI * 40 }}
+                      whileInView={{ strokeDashoffset: (2 * Math.PI * 40) - (Math.min((liveStats.github / 50) * 100, 100) / 100) * (2 * Math.PI * 40) }}
                       viewport={{ once: true }}
                       transition={{ duration: 2, ease: "easeOut", delay: 0.2 }}
                       strokeLinecap="round"
-                      transform="rotate(-90 75 75)"
-                      style={{ filter: 'drop-shadow(0 0 12px rgba(153, 0, 255, 0.6))' }}
+                      transform="rotate(-90 50 50)"
+                      style={{ filter: 'drop-shadow(0 0 8px rgba(153, 0, 255, 0.6))' }}
                     />
                   )}
-                  <text x="75" y="85" textAnchor="middle" fill="#fff" fontSize="36" fontWeight="bold">
+                  <text x="50" y="58" textAnchor="middle" fill="#fff" fontSize="24" fontWeight="bold">
                     {liveStats.loading ? '...' : liveStats.github}
                   </text>
                 </svg>
-                <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Total Projects</span>
+                <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Total Projects</span>
               </div>
 
               {!liveStats.loading && liveStats.topLanguages && liveStats.topLanguages.length > 0 && (
                 <div>
-                  <h4 style={{ marginBottom: '1.5rem', color: '#fff', fontSize: '1.1rem' }}>Top Languages</h4>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+                  <h4 style={{ marginBottom: '1rem', color: '#fff', fontSize: '1rem' }}>Top Languages</h4>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
                     {liveStats.topLanguages.map((lang, idx) => {
                       const maxCount = liveStats.topLanguages[0].count;
                       const percentage = (lang.count / maxCount) * 100;
                       return (
                         <div key={lang.name}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.4rem', fontSize: '0.9rem' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.3rem', fontSize: '0.85rem' }}>
                             <span style={{ color: 'var(--text)' }}>{lang.name}</span>
                             <span style={{ color: '#ff26b9' }}>{lang.count}</span>
                           </div>
-                          <div style={{ width: '100%', height: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', overflow: 'hidden' }}>
+                          <div style={{ width: '100%', height: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '3px', overflow: 'hidden' }}>
                             <motion.div 
                               initial={{ width: 0 }}
                               whileInView={{ width: `${percentage}%` }}
                               viewport={{ once: true }}
                               transition={{ duration: 1, delay: 0.2 + idx * 0.1, ease: 'easeOut' }}
-                              style={{ height: '100%', background: 'linear-gradient(90deg, #9900ff, #ff26b9)', borderRadius: '4px' }}
+                              style={{ height: '100%', background: 'linear-gradient(90deg, #9900ff, #ff26b9)', borderRadius: '3px' }}
                             />
                           </div>
                         </div>
@@ -574,25 +697,25 @@ function Portfolio({ state, setState }) {
               )}
 
               {!liveStats.loading && liveStats.githubDetails && liveStats.githubDetails.length > 0 && (
-                <div style={{ marginTop: '1rem' }}>
-                  <h4 style={{ marginBottom: '1.5rem', color: '#fff', fontSize: '1.1rem' }}>Profile Stats</h4>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+                <div style={{ marginTop: '0.5rem' }}>
+                  <h4 style={{ marginBottom: '1rem', color: '#fff', fontSize: '1rem' }}>Profile Stats</h4>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
                     {liveStats.githubDetails.map((detail, idx) => {
                       const maxCount = Math.max(...liveStats.githubDetails.map(d => d.count), 1);
                       const percentage = (detail.count / maxCount) * 100;
                       return (
                         <div key={detail.name}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.4rem', fontSize: '0.9rem' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.3rem', fontSize: '0.85rem' }}>
                             <span style={{ color: 'var(--text)' }}>{detail.name}</span>
                             <span style={{ color: '#9900ff' }}>{detail.count}</span>
                           </div>
-                          <div style={{ width: '100%', height: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', overflow: 'hidden' }}>
+                          <div style={{ width: '100%', height: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '3px', overflow: 'hidden' }}>
                             <motion.div 
                               initial={{ width: 0 }}
                               whileInView={{ width: `${percentage}%` }}
                               viewport={{ once: true }}
                               transition={{ duration: 1, delay: 0.2 + idx * 0.1, ease: 'easeOut' }}
-                              style={{ height: '100%', background: 'linear-gradient(90deg, #9900ff, #ff26b9)', borderRadius: '4px' }}
+                              style={{ height: '100%', background: 'linear-gradient(90deg, #9900ff, #ff26b9)', borderRadius: '3px' }}
                             />
                           </div>
                         </div>
@@ -604,61 +727,61 @@ function Portfolio({ state, setState }) {
             </div>
 
             {/* LEETCODE CARD (Yellow & Orange Theme) */}
-            <div className="bento-inner" style={{ background: 'transparent', padding: '32px', display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
-              <h3 style={{ margin: 0, background: 'linear-gradient(90deg, #FFA116, #FF6B00)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', textAlign: 'center', fontSize: '1.8rem' }}>LeetCode Analytics</h3>
+            <div className="bento-inner" style={{ background: 'transparent', padding: '24px', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <h3 style={{ margin: 0, background: 'linear-gradient(90deg, #FFA116, #FF6B00)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', textAlign: 'center', fontSize: '1.4rem' }}>LeetCode Analytics</h3>
               
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
-                <svg width="150" height="150" viewBox="0 0 150 150">
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+                <svg width="100" height="100" viewBox="0 0 100 100">
                   <defs>
                     <linearGradient id="leetcodeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                       <stop offset="0%" stopColor="#FFA116" />
                       <stop offset="100%" stopColor="#FF6B00" />
                     </linearGradient>
                   </defs>
-                  <circle cx="75" cy="75" r="60" stroke="rgba(255,255,255,0.05)" strokeWidth="10" fill="none" />
+                  <circle cx="50" cy="50" r="40" stroke="rgba(255,255,255,0.05)" strokeWidth="8" fill="none" />
                   {!liveStats.loading && (
                     <motion.circle 
-                      cx="75" cy="75" r="60" 
+                      cx="50" cy="50" r="40" 
                       stroke="url(#leetcodeGradient)" 
-                      strokeWidth="10" 
+                      strokeWidth="8" 
                       fill="none" 
-                      strokeDasharray={2 * Math.PI * 60}
-                      initial={{ strokeDashoffset: 2 * Math.PI * 60 }}
-                      whileInView={{ strokeDashoffset: (2 * Math.PI * 60) - (Math.min((liveStats.leetcode / 100) * 100, 100) / 100) * (2 * Math.PI * 60) }}
+                      strokeDasharray={2 * Math.PI * 40}
+                      initial={{ strokeDashoffset: 2 * Math.PI * 40 }}
+                      whileInView={{ strokeDashoffset: (2 * Math.PI * 40) - (Math.min((liveStats.leetcode / 100) * 100, 100) / 100) * (2 * Math.PI * 40) }}
                       viewport={{ once: true }}
                       transition={{ duration: 2, ease: "easeOut", delay: 0.3 }}
                       strokeLinecap="round"
-                      transform="rotate(-90 75 75)"
-                      style={{ filter: 'drop-shadow(0 0 12px rgba(255, 161, 22, 0.6))' }}
+                      transform="rotate(-90 50 50)"
+                      style={{ filter: 'drop-shadow(0 0 8px rgba(255, 161, 22, 0.6))' }}
                     />
                   )}
-                  <text x="75" y="85" textAnchor="middle" fill="#fff" fontSize="36" fontWeight="bold">
+                  <text x="50" y="58" textAnchor="middle" fill="#fff" fontSize="24" fontWeight="bold">
                     {liveStats.loading ? '...' : liveStats.leetcode}
                   </text>
                 </svg>
-                <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Problems Solved</span>
+                <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Problems Solved</span>
               </div>
 
               {!liveStats.loading && liveStats.leetcodeDetails && liveStats.leetcodeDetails.length > 0 && (
                 <div>
-                  <h4 style={{ marginBottom: '1.5rem', color: '#fff', fontSize: '1.1rem' }}>Difficulty Breakdown</h4>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+                  <h4 style={{ marginBottom: '1rem', color: '#fff', fontSize: '1rem' }}>Difficulty Breakdown</h4>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
                     {liveStats.leetcodeDetails.map((detail, idx) => {
                       const maxCount = Math.max(...liveStats.leetcodeDetails.map(d => d.count), 1);
                       const percentage = (detail.count / maxCount) * 100;
                       return (
                         <div key={detail.name}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.4rem', fontSize: '0.9rem' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.3rem', fontSize: '0.85rem' }}>
                             <span style={{ color: 'var(--text)' }}>{detail.name}</span>
                             <span style={{ color: '#FFA116' }}>{detail.count}</span>
                           </div>
-                          <div style={{ width: '100%', height: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', overflow: 'hidden' }}>
+                          <div style={{ width: '100%', height: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '3px', overflow: 'hidden' }}>
                             <motion.div 
                               initial={{ width: 0 }}
                               whileInView={{ width: `${percentage}%` }}
                               viewport={{ once: true }}
                               transition={{ duration: 1, delay: 0.2 + idx * 0.1, ease: 'easeOut' }}
-                              style={{ height: '100%', background: 'linear-gradient(90deg, #FFA116, #FF6B00)', borderRadius: '4px' }}
+                              style={{ height: '100%', background: 'linear-gradient(90deg, #FFA116, #FF6B00)', borderRadius: '3px' }}
                             />
                           </div>
                         </div>
@@ -670,12 +793,12 @@ function Portfolio({ state, setState }) {
             </div>
 
           </div>
-        </section>
+        </ScrollSection>
 
-        <section id="portfolio" className="section bento-inner">
+        <ScrollSection id="portfolio" className="section bento-inner">
           <div className="section-heading">
             <p className="eyebrow">Portfolio</p>
-            <h2>Featured projects and certifications.</h2>
+            <h2>Featured projects.</h2>
           </div>
 
           <div className="filter-row">
@@ -685,12 +808,31 @@ function Portfolio({ state, setState }) {
           </div>
 
           <div className="w-full">
-            <FeaturedSection projects={filteredProjects} certifications={state.certifications} />
+            <FeaturedSection projects={filteredProjects} certifications={[]} />
           </div>
-        </section>
+        </ScrollSection>
+
+        {state.certifications && state.certifications.length > 0 && (
+        <ScrollSection id="certifications" className="section bento-inner">
+          <div className="section-heading">
+            <p className="eyebrow">Certifications</p>
+            <h2>Licenses and certifications.</h2>
+          </div>
+
+          <div className="filter-row">
+            {['all', 'AI & Cloud', 'AI & ML', 'Programming'].map((filter) => (
+              <button key={filter} className={`filter-chip ${activeCertFilter === filter ? 'active' : ''}`} type="button" onClick={() => setActiveCertFilter(filter)}>{filter === 'all' ? 'All' : filter}</button>
+            ))}
+          </div>
+
+          <div className="w-full">
+            <FeaturedSection projects={[]} certifications={filteredCertifications} />
+          </div>
+        </ScrollSection>
+        )}
 
         {state.researchPapers && state.researchPapers.length > 0 && (
-          <section id="research" className="section bento-inner">
+          <ScrollSection id="research" className="section bento-inner">
             <div className="section-heading">
               <p className="eyebrow">Publications</p>
               <h2>Research Papers & Articles.</h2>
@@ -711,10 +853,10 @@ function Portfolio({ state, setState }) {
                 </article>
               ))}
             </div>
-          </section>
+          </ScrollSection>
         )}
 
-        <section id="contact" className="section bento-inner">
+        <ScrollSection id="contact" className="section bento-inner">
           <div className="section-heading">
             <p className="eyebrow">Contact</p>
             <h2>Let’s discuss security work, web builds, or collaborative ideas.</h2>
@@ -741,7 +883,7 @@ function Portfolio({ state, setState }) {
               {formStatus === 'error' && <p style={{ color: '#ff375f', textAlign: 'center', marginTop: '10px' }}>Oops! Something went wrong. Please try again.</p>}
             </form>
           </div>
-        </section>
+        </ScrollSection>
       </main>
       <footer className="footer section">
         <p style={{ textAlign: 'center' }}>© 2026 Tamilarasan S. All rights reserved.</p>
