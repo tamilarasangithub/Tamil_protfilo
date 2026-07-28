@@ -3,12 +3,15 @@ import {
   SiArduino, SiJavascript, SiTypescript, SiPython, SiReact, 
   SiNextdotjs, SiTailwindcss, SiVuedotjs, SiNodedotjs, SiPostgresql, 
   SiDocker, SiUbuntu, SiHtml5, SiCss,
-  SiFigma, SiFirebase, SiSupabase, SiMongodb, SiCplusplus
+  SiFigma, SiFirebase, SiSupabase, SiMongodb, SiCplusplus,
+  SiPytorch, SiOpencv, SiHuggingface, SiGooglegemini, SiEspressif, 
+  SiDeepseek, SiAnthropic
 } from 'react-icons/si';
 import { 
   FaRobot, FaNetworkWired, FaShieldAlt, FaTerminal, FaServer, 
   FaLaptopCode, FaDatabase, FaPaintBrush, FaGlobe, FaBrain, FaLock,
-  FaCode, FaMicrochip, FaAws, FaProjectDiagram, FaGithub, FaLinkedin
+  FaCode, FaMicrochip, FaAws, FaProjectDiagram, FaGithub, FaLinkedin,
+  FaWifi, FaBluetooth, FaSpaceShuttle
 } from 'react-icons/fa';
 
 const iconMap = {
@@ -28,6 +31,8 @@ const iconMap = {
   'tailwind': SiTailwindcss, 'tailwindcss': SiTailwindcss,
   'vue': SiVuedotjs, 'vuejs': SiVuedotjs,
   'node': SiNodedotjs, 'nodejs': SiNodedotjs,
+  'pytorch': SiPytorch,
+  'opencv': SiOpencv,
   
   // Databases & Infrastructure & Tools
   'postgres': SiPostgresql, 'postgresql': SiPostgresql,
@@ -40,8 +45,22 @@ const iconMap = {
   'docker': SiDocker,
   'ubuntu': SiUbuntu,
   'figma': SiFigma,
+  'vscode': FaCode, 'vs code': FaCode, 'visual studio code': FaCode,
   'arduino': SiArduino, 'arunio': SiArduino, // typo catching
+  'esp32': SiEspressif, 'espressif': SiEspressif,
   'n8n': FaProjectDiagram, 'n8n workflow': FaProjectDiagram, 'n8n worflow': FaProjectDiagram,
+  'wifi': FaWifi, 'wi-fi': FaWifi,
+  'bluetooth': FaBluetooth,
+  
+  // AI & Machine Learning
+  'deepseek': SiDeepseek,
+  'gemini': SiGooglegemini, 'google gemini': SiGooglegemini,
+  'huggingface': SiHuggingface, 'hugging face': SiHuggingface,
+  'anthropic': SiAnthropic, 'claude': SiAnthropic,
+  'openai': FaBrain, 'chatgpt': FaBrain,
+  
+  // Miscellaneous
+  'antigravity': FaSpaceShuttle, 'anitgravity': FaSpaceShuttle,
   
   // Generic IT terms
   'ui&ux': FaPaintBrush, 'ui/ux': FaPaintBrush, 'ui': FaPaintBrush, 'ux': FaPaintBrush, 'design': FaPaintBrush,
