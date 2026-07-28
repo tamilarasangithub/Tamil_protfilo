@@ -560,8 +560,8 @@ function Portfolio({ state, setState }) {
               <motion.div variants={itemVariants} className="bento-inner" style={{ padding: '40px', display: 'flex', flexDirection: 'column', minHeight: '550px', background: 'transparent' }}>
                 <h3 style={{ marginBottom: '24px', fontSize: '2rem', color: 'var(--accent)' }}>Expertise</h3>
                 <div className="stats-grid">
-                  <div className="stat-card"><strong><AnimatedCounter from={0} to={4} suffix="+" /></strong><span>years of learning and building</span></div>
-                  <div className="stat-card"><strong><AnimatedCounter from={0} to={10} suffix="+" /></strong><span>security and web projects</span></div>
+                  <div className="stat-card bento-inner" style={{ background: 'transparent' }}><strong><AnimatedCounter from={0} to={4} suffix="+" /></strong><span>years of learning and building</span></div>
+                  <div className="stat-card bento-inner" style={{ background: 'transparent' }}><strong><AnimatedCounter from={0} to={10} suffix="+" /></strong><span>security and web projects</span></div>
                   <div className="stat-card bento-inner" style={{ background: 'transparent' }}><strong>AI</strong><span>automation + model workflows</span></div>
                   <div className="stat-card bento-inner" style={{ background: 'transparent' }}><strong>IoT</strong><span>embedded & real-time systems</span></div>
                 </div>

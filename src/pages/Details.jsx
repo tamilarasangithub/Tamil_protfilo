@@ -92,11 +92,40 @@ function Details({ type, state }) {
     
     // Fallback to standard video tag for direct MP4 links
     return (
-      <div className="video-container" style={{ marginTop: '20px', borderRadius: '16px', overflow: 'hidden', border: '1px solid var(--border)', background: '#000' }}>
-        <video controls style={{ width: '100%', display: 'block' }}>
+      <div className="video-container" style={{ position: 'relative', marginTop: '20px', borderRadius: '16px', overflow: 'hidden', border: '1px solid var(--border)', background: '#000', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <video 
+          controls 
+          controlsList="nodownload" 
+          style={{ width: '100%', maxHeight: '70vh', display: 'block', backgroundColor: '#000' }}
+          onPlay={(e) => {
+            const overlay = e.target.parentElement.querySelector('.custom-play-overlay');
+            if (overlay) overlay.style.display = 'none';
+          }}
+          onPause={(e) => {
+            const overlay = e.target.parentElement.querySelector('.custom-play-overlay');
+            if (overlay) overlay.style.display = 'flex';
+          }}
+        >
           <source src={videoUrl} />
           Your browser does not support the video tag.
         </video>
+        <div 
+          className="custom-play-overlay" 
+          style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.3)', cursor: 'pointer' }}
+          onClick={(e) => {
+            const video = e.currentTarget.parentElement.querySelector('video');
+            if (video) {
+              video.play();
+              e.currentTarget.style.display = 'none';
+            }
+          }}
+        >
+          <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'linear-gradient(135deg, #a855f7, #ec4899)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', boxShadow: '0 0 25px rgba(168, 85, 247, 0.6)', transition: 'transform 0.2s ease', cursor: 'pointer' }} onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'} onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}>
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: '5px' }}>
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+          </div>
+        </div>
       </div>
     );
   };

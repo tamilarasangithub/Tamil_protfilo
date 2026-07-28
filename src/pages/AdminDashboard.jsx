@@ -107,6 +107,7 @@ function AdminDashboard({ state, setState }) {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [activeModal, setActiveModal] = useState(null);
   
   const docRef = null;
@@ -317,18 +318,34 @@ function AdminDashboard({ state, setState }) {
     event.preventDefault();
     if (!projectForm.title.trim() || !projectForm.category.trim()) return;
     setIsSubmitting(true);
+    setFeedback('Saving project...');
     try {
+      let finalForm = { ...projectForm };
+      
+      if (finalForm.file) {
+        setFeedback('Uploading media...');
+        const uploaded = await uploadToSupabase(finalForm.file, 'projects');
+        if (uploaded.type.startsWith('video/')) {
+          finalForm.videoUrl = uploaded.url;
+          finalForm.videoStoragePath = uploaded.path;
+        } else {
+          finalForm.image = uploaded.url;
+          finalForm.imageStoragePath = uploaded.path;
+        }
+        delete finalForm.file;
+      }
+
       let newList = [...(state.projects || [])];
       if (editingId.projects) {
-        newList = newList.map(item => item.id === editingId.projects ? { ...item, ...projectForm } : item);
+        newList = newList.map(item => item.id === editingId.projects ? { ...item, ...finalForm } : item);
       } else {
-        newList = [{ id: crypto.randomUUID(), ...projectForm }, ...newList];
+        newList = [{ id: crypto.randomUUID(), ...finalForm }, ...newList];
       }
-      await setDoc(docRef, {
+      await setDoc(null, {
         projects: newList,
         lastUpdate: `Project ${editingId.projects ? 'updated' : 'added'}: ${projectForm.title.trim()}`
-      }, { merge: true });
-      setProjectForm({ title: '', category: '', link: '', videoUrl: '', description: '', livePreviewUrl: '', image: '', cardDescription: '' });
+      });
+      setProjectForm({ title: '', category: '', link: '', videoUrl: '', description: '', livePreviewUrl: '', image: '', cardDescription: '', file: null });
       setEditingId(prev => ({ ...prev, projects: null }));
       setActiveModal(null);
       setFeedback(`Project ${editingId.projects ? 'updated' : 'added'} successfully.`);
@@ -338,59 +355,59 @@ function AdminDashboard({ state, setState }) {
     setIsSubmitting(false);
   };
 
-  const handleImageUpload = (e, setFormState, formStateKey) => {
-    const file = e.target.files[0];
-    if (!file) return;
+  const uploadToSupabase = async (file, bucket) => {
+    setUploadProgress(0);
+    const interval = setInterval(() => {
+      setUploadProgress(prev => {
+        if (prev >= 90) return prev;
+        return prev + Math.floor(Math.random() * 10) + 5;
+      });
+    }, 300);
 
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = (event) => {
-      const img = new Image();
-      img.src = event.target.result;
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        const MAX_WIDTH = 600;
-        const MAX_HEIGHT = 600;
-        let width = img.width;
-        let height = img.height;
-
-        if (width > height) {
-          if (width > MAX_WIDTH) {
-            height *= MAX_WIDTH / width;
-            width = MAX_WIDTH;
-          }
-        } else {
-          if (height > MAX_HEIGHT) {
-            width *= MAX_HEIGHT / height;
-            height = MAX_HEIGHT;
-          }
-        }
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, width, height);
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
-        setFormState((prev) => ({ ...prev, [formStateKey]: dataUrl }));
-      };
-    };
+    const ext = file.name.split('.').pop();
+    const newPath = `${Date.now()}_${Math.random().toString(36).substring(7)}.${ext}`;
+    const { error } = await supabase.storage.from(bucket).upload(newPath, file);
+    
+    clearInterval(interval);
+    if (error) {
+      setUploadProgress(0);
+      throw new Error(error.message);
+    }
+    
+    setUploadProgress(100);
+    setTimeout(() => setUploadProgress(0), 2000);
+    
+    const { data } = supabase.storage.from(bucket).getPublicUrl(newPath);
+    return { url: data.publicUrl, path: newPath, type: file.type };
   };
 
   const handleCertSubmit = async (event) => {
     event.preventDefault();
     if (!certForm.title.trim() || !certForm.issuer.trim() || !certForm.description.trim()) return;
     setIsSubmitting(true);
+    setFeedback('Saving certification...');
     try {
+      let finalForm = { ...certForm };
+      
+      if (finalForm.file) {
+        setFeedback('Uploading certificate image...');
+        const uploaded = await uploadToSupabase(finalForm.file, 'certifications');
+        finalForm.image = uploaded.url;
+        finalForm.imageStoragePath = uploaded.path;
+        delete finalForm.file;
+      }
+
       let newList = [...(state.certifications || [])];
       if (editingId.certifications) {
-        newList = newList.map(item => item.id === editingId.certifications ? { ...item, ...certForm } : item);
+        newList = newList.map(item => item.id === editingId.certifications ? { ...item, ...finalForm } : item);
       } else {
-        newList = [{ id: crypto.randomUUID(), ...certForm }, ...newList];
+        newList = [{ id: crypto.randomUUID(), ...finalForm }, ...newList];
       }
-      await setDoc(docRef, {
+      await setDoc(null, {
         certifications: newList,
         lastUpdate: `Certification ${editingId.certifications ? 'updated' : 'added'}: ${certForm.title.trim()}`
-      }, { merge: true });
-      setCertForm({ title: '', issuer: '', year: '', category: '', image: '', description: '' });
+      });
+      setCertForm({ title: '', issuer: '', year: '', category: '', image: '', description: '', file: null });
       setEditingId(prev => ({ ...prev, certifications: null }));
       setActiveModal(null);
       setFeedback(`Certification ${editingId.certifications ? 'updated' : 'added'} successfully.`);
@@ -427,9 +444,23 @@ function AdminDashboard({ state, setState }) {
 
   const handleRemoveItem = async (key, id) => {
     try {
-      await setDoc(docRef, {
+      const itemToDelete = state[key].find(i => i.id === id);
+      
+      if (itemToDelete) {
+        if (itemToDelete.imageStoragePath && key === 'projects') {
+          await supabase.storage.from('projects').remove([itemToDelete.imageStoragePath]);
+        }
+        if (itemToDelete.videoStoragePath && key === 'projects') {
+          await supabase.storage.from('projects').remove([itemToDelete.videoStoragePath]);
+        }
+        if (itemToDelete.imageStoragePath && key === 'certifications') {
+          await supabase.storage.from('certifications').remove([itemToDelete.imageStoragePath]);
+        }
+      }
+
+      await setDoc(null, {
         [key]: state[key].filter((item) => item.id !== id)
-      }, { merge: true });
+      });
       setFeedback(`Item removed from ${key}.`);
     } catch(e) {
       setFeedback('Error: ' + e.message);
@@ -756,15 +787,22 @@ function AdminDashboard({ state, setState }) {
                 <input value={projectForm.link} onChange={(event) => setProjectForm({ ...projectForm, link: event.target.value })} placeholder="Project URL (e.g., GitHub Repo)" />
                 <input value={projectForm.livePreviewUrl || ''} onChange={(event) => setProjectForm({ ...projectForm, livePreviewUrl: event.target.value })} placeholder="Live Preview URL (Website Link)" />
                 <input value={projectForm.videoUrl} onChange={(event) => setProjectForm({ ...projectForm, videoUrl: event.target.value })} placeholder="Video URL (YouTube or .mp4 link)" />
-                <label style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)', marginBottom: '-5px' }}>Upload Project Image (Auto-compressed):</label>
-                <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, setProjectForm, 'image')} style={{ padding: '8px', background: 'rgba(255,255,255,0.05)' }} />
-                {projectForm.image && <img src={projectForm.image} alt="Preview" style={{ width: '100px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.2)' }} />}
+                <label style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)', marginBottom: '-5px' }}>Upload Media (Image or Video):</label>
+                <input type="file" accept="image/*,video/*" onChange={(e) => setProjectForm({ ...projectForm, file: e.target.files[0] })} style={{ padding: '8px', background: 'rgba(255,255,255,0.05)' }} />
+                {(projectForm.image || projectForm.file) && (
+                  <div style={{ fontSize: '0.8rem', color: '#a855f7' }}>Media selected/uploaded</div>
+                )}
                 
                 <textarea rows="2" value={projectForm.cardDescription || ''} onChange={(event) => setProjectForm({ ...projectForm, cardDescription: event.target.value })} placeholder="Short description for the project card" />
 
                 <div className="dark-quill" style={{ marginTop: '10px' }}>
                   <ReactQuill theme="snow" value={projectForm.description} onChange={(val) => setProjectForm({ ...projectForm, description: val })} placeholder="Detailed project description (for Details page)" />
                 </div>
+                {uploadProgress > 0 && (
+                  <div style={{ width: '100%', height: '8px', background: 'rgba(255,255,255,0.1)', borderRadius: '4px', marginTop: '10px', overflow: 'hidden' }}>
+                    <div style={{ width: `${uploadProgress}%`, height: '100%', background: 'linear-gradient(90deg, #a855f7, #ec4899)', transition: 'width 0.3s ease' }} />
+                  </div>
+                )}
                 <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
                   <button type="submit" disabled={isSubmitting} className="btn btn-primary" style={{ flex: 1 }}>{isSubmitting ? 'Saving...' : editingId.projects ? 'Update' : 'Add Project'}</button>
                   
@@ -852,11 +890,18 @@ function AdminDashboard({ state, setState }) {
                 <input value={certForm.year} onChange={(event) => setCertForm({ ...certForm, year: event.target.value })} placeholder="Year" />
                 <input value={certForm.category} onChange={(event) => setCertForm({ ...certForm, category: event.target.value })} placeholder="Category (optional)" />
                 
-                <label style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)', marginBottom: '-5px' }}>Upload Image (Auto-compressed):</label>
-                <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, setCertForm, 'image')} style={{ padding: '8px', background: 'rgba(255,255,255,0.05)' }} />
-                {certForm.image && <img src={certForm.image} alt="Preview" style={{ width: '100px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.2)' }} />}
+                <label style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)', marginBottom: '-5px' }}>Upload Image:</label>
+                <input type="file" accept="image/*" onChange={(e) => setCertForm({ ...certForm, file: e.target.files[0] })} style={{ padding: '8px', background: 'rgba(255,255,255,0.05)' }} />
+                {(certForm.image || certForm.file) && (
+                  <div style={{ fontSize: '0.8rem', color: '#a855f7' }}>Image selected/uploaded</div>
+                )}
 
                 <textarea rows="3" value={certForm.description} onChange={(event) => setCertForm({ ...certForm, description: event.target.value })} placeholder="Description" required />
+                {uploadProgress > 0 && (
+                  <div style={{ width: '100%', height: '8px', background: 'rgba(255,255,255,0.1)', borderRadius: '4px', marginTop: '10px', overflow: 'hidden' }}>
+                    <div style={{ width: `${uploadProgress}%`, height: '100%', background: 'linear-gradient(90deg, #a855f7, #ec4899)', transition: 'width 0.3s ease' }} />
+                  </div>
+                )}
                 <div style={{ display: 'flex', gap: '10px' }}>
                   <button type="submit" disabled={isSubmitting} className="btn btn-primary" style={{ flex: 1 }}>{isSubmitting ? 'Saving...' : editingId.certifications ? 'Update' : 'Add Certification'}</button>
                   
