@@ -94,7 +94,7 @@ function AdminDashboard({ state, setState }) {
   
   const [eduForm, setEduForm] = useState({ title: '', school: '', year: '', description: '' });
   const [expForm, setExpForm] = useState({ title: '', year: '', description: '' });
-  const [projectForm, setProjectForm] = useState({ title: '', category: '', link: '', videoUrl: '', description: '', livePreviewUrl: '', image: '', cardDescription: '' });
+  const [projectForm, setProjectForm] = useState({ title: '', category: '', link: '', videoUrl: '', description: '', livePreviewUrl: '', image: '', cardDescription: '', figmaLink: '' });
   const [certForm, setCertForm] = useState({ title: '', issuer: '', year: '', category: '', image: '', description: '' });
   const [researchForm, setResearchForm] = useState({ title: '', conference: '', year: '', category: '', link: '', videoUrl: '', description: '' });
   
@@ -345,7 +345,7 @@ function AdminDashboard({ state, setState }) {
         projects: newList,
         lastUpdate: `Project ${editingId.projects ? 'updated' : 'added'}: ${projectForm.title.trim()}`
       });
-      setProjectForm({ title: '', category: '', link: '', videoUrl: '', description: '', livePreviewUrl: '', image: '', cardDescription: '', file: null });
+      setProjectForm({ title: '', category: '', link: '', videoUrl: '', description: '', livePreviewUrl: '', image: '', cardDescription: '', figmaLink: '', file: null });
       setEditingId(prev => ({ ...prev, projects: null }));
       setActiveModal(null);
       setFeedback(`Project ${editingId.projects ? 'updated' : 'added'} successfully.`);
@@ -506,7 +506,7 @@ function AdminDashboard({ state, setState }) {
   const cancelEdit = (key) => {
     if (key === 'education') { setEduForm({ title: '', school: '', year: '', description: '' }); setEditingId(prev => ({ ...prev, education: null })); }
     if (key === 'experience') { setExpForm({ title: '', year: '', description: '' }); setEditingId(prev => ({ ...prev, experience: null })); }
-    if (key === 'projects') { setProjectForm({ title: '', category: '', link: '', videoUrl: '', description: '', livePreviewUrl: '', image: '', cardDescription: '' }); setEditingId(prev => ({ ...prev, projects: null })); }
+    if (key === 'projects') { setProjectForm({ title: '', category: '', link: '', videoUrl: '', description: '', livePreviewUrl: '', image: '', cardDescription: '', figmaLink: '' }); setEditingId(prev => ({ ...prev, projects: null })); }
     if (key === 'certifications') { setCertForm({ title: '', issuer: '', year: '', category: '', image: '', description: '' }); setEditingId(prev => ({ ...prev, certifications: null })); }
     if (key === 'researchPapers') { setResearchForm({ title: '', conference: '', year: '', category: '', link: '', videoUrl: '', description: '' }); setEditingId(prev => ({ ...prev, researchPapers: null })); }
     setActiveModal(null);
@@ -787,6 +787,7 @@ function AdminDashboard({ state, setState }) {
                 <input value={projectForm.link} onChange={(event) => setProjectForm({ ...projectForm, link: event.target.value })} placeholder="Project URL (e.g., GitHub Repo)" />
                 <input value={projectForm.livePreviewUrl || ''} onChange={(event) => setProjectForm({ ...projectForm, livePreviewUrl: event.target.value })} placeholder="Live Preview URL (Website Link)" />
                 <input value={projectForm.videoUrl} onChange={(event) => setProjectForm({ ...projectForm, videoUrl: event.target.value })} placeholder="Video URL (YouTube or .mp4 link)" />
+                <input value={projectForm.figmaLink} onChange={(event) => setProjectForm({ ...projectForm, figmaLink: event.target.value })} placeholder="Figma Design Link" />
                 <label style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)', marginBottom: '-5px' }}>Upload Media (Image or Video):</label>
                 <input type="file" accept="image/*,video/*" onChange={(e) => setProjectForm({ ...projectForm, file: e.target.files[0] })} style={{ padding: '8px', background: 'rgba(255,255,255,0.05)' }} />
                 {(projectForm.image || projectForm.file) && (

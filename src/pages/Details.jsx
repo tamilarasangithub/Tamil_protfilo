@@ -226,8 +226,25 @@ function Details({ type, state }) {
           </div>
         )}
 
+        {/* Figma Embed */}
+        {type === 'project' && item.figmaLink && (
+          <div style={{ marginTop: '40px', borderRadius: '16px', overflow: 'hidden', border: '1px solid rgba(176, 38, 255, 0.3)', background: 'rgba(255,255,255,0.02)', height: '700px', boxShadow: '0 8px 32px rgba(0,0,0,0.5)', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ padding: '12px 20px', background: 'rgba(20, 10, 30, 0.6)', borderBottom: '1px solid rgba(176, 38, 255, 0.2)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#ff5f56' }} />
+              <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#ffbd2e' }} />
+              <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#27c93f' }} />
+              <span style={{ marginLeft: '12px', fontSize: '0.9rem', color: 'rgba(255,255,255,0.5)', fontFamily: 'monospace' }}>Figma Design Preview</span>
+            </div>
+            <iframe 
+              src={item.figmaLink.includes('embed') ? item.figmaLink : `https://www.figma.com/embed?embed_host=share&url=${encodeURIComponent(item.figmaLink)}`} 
+              style={{ width: '100%', flex: 1, border: 'none' }}
+              allowFullScreen
+            />
+          </div>
+        )}
+
         {/* External Links */}
-        {(item.link || item.livePreviewUrl) && (
+        {(item.link || item.livePreviewUrl || item.figmaLink) && (
           <div style={{ marginTop: '30px', paddingTop: '20px', borderTop: '1px solid rgba(255,255,255,0.1)', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
             {item.link && (
               <a href={item.link} target="_blank" rel="noreferrer" className="btn btn-primary" style={{ display: 'inline-block', textDecoration: 'none' }}>
@@ -237,6 +254,11 @@ function Details({ type, state }) {
             {type === 'project' && item.livePreviewUrl && (
               <a href={item.livePreviewUrl} target="_blank" rel="noreferrer" className="btn btn-secondary" style={{ display: 'inline-block', textDecoration: 'none' }}>
                 Visit Live Site
+              </a>
+            )}
+            {type === 'project' && item.figmaLink && (
+              <a href={item.figmaLink} target="_blank" rel="noreferrer" className="btn btn-secondary" style={{ display: 'inline-block', textDecoration: 'none', background: 'rgba(242, 78, 30, 0.1)', color: '#f24e1e', borderColor: '#f24e1e' }}>
+                View in Figma
               </a>
             )}
           </div>
