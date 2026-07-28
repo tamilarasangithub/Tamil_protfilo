@@ -193,27 +193,47 @@ function Portfolio({ state, setState }) {
   }, []);
 
   const projectCategories = useMemo(() => {
-    const cats = new Set(state.projects.map(p => p.category).filter(Boolean));
+    const cats = new Set();
+    state.projects.forEach(p => {
+      if (p.category) {
+        p.category.split(',').forEach(c => {
+          const trimmed = c.trim();
+          if (trimmed) cats.add(trimmed);
+        });
+      }
+    });
     return ['all', ...Array.from(cats)];
   }, [state.projects]);
 
   const certCategories = useMemo(() => {
-    const cats = new Set((state.certifications || []).map(c => c.category).filter(Boolean));
+    const cats = new Set();
+    (state.certifications || []).forEach(c => {
+      if (c.category) {
+        c.category.split(',').forEach(cat => {
+          const trimmed = cat.trim();
+          if (trimmed) cats.add(trimmed);
+        });
+      }
+    });
     return ['all', ...Array.from(cats)];
   }, [state.certifications]);
 
   const filteredProjects = useMemo(() => {
     if (activeFilter === 'all') return state.projects;
-    return state.projects.filter((project) => 
-      (project.category || '').toLowerCase() === activeFilter.toLowerCase()
-    );
+    return state.projects.filter((project) => {
+      if (!project.category) return false;
+      const cats = project.category.split(',').map(c => c.trim().toLowerCase());
+      return cats.includes(activeFilter.toLowerCase());
+    });
   }, [activeFilter, state.projects]);
 
   const filteredCertifications = useMemo(() => {
     if (activeCertFilter === 'all') return state.certifications;
-    return state.certifications.filter((cert) => 
-      (cert.category || '').toLowerCase() === activeCertFilter.toLowerCase()
-    );
+    return state.certifications.filter((cert) => {
+      if (!cert.category) return false;
+      const cats = cert.category.split(',').map(c => c.trim().toLowerCase());
+      return cats.includes(activeCertFilter.toLowerCase());
+    });
   }, [activeCertFilter, state.certifications]);
 
   const handleLogout = () => {

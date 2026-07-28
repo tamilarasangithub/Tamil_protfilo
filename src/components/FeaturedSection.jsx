@@ -54,11 +54,11 @@ export const FeaturedSection = ({ projects, certifications }) => {
                   style={{ background: 'transparent' }}
                 >
                   {(() => {
+                    let targetLink = project.livePreviewUrl || project.figmaLink || project.link || `/project/${project.id}`;
                     let previewContent = null;
-                    let targetLink = project.livePreviewUrl || project.link || `/project/${project.id}`;
                     
                     if (project.image) {
-                      previewContent = <img src={project.image} alt={project.title} className="w-full h-full object-cover blur-[4px] group-hover/preview:blur-sm transition-all duration-300" />;
+                      previewContent = <img src={project.image} alt={project.title} className="w-full h-full object-cover transition-all duration-300" />;
                     } else if (project.videoUrl) {
                       let videoSrc = project.videoUrl;
                       if (videoSrc.includes('youtube.com') || videoSrc.includes('youtu.be')) {
@@ -67,11 +67,12 @@ export const FeaturedSection = ({ projects, certifications }) => {
                         else if (videoSrc.includes('watch?v=')) videoId = videoSrc.split('watch?v=')[1].split('&')[0];
                         if (videoId) videoSrc = `https://www.youtube.com/embed/${videoId}?autoplay=0&controls=0&showinfo=0&rel=0`;
                       }
-                      previewContent = <iframe src={videoSrc} className="w-full h-full pointer-events-none blur-[4px] group-hover/preview:blur-sm transition-all duration-300" style={{ border: 'none' }} title="Video Preview" tabIndex="-1" />;
+                      previewContent = <iframe src={videoSrc} className="w-full h-full pointer-events-none transition-all duration-300" style={{ border: 'none' }} title="Video Preview" tabIndex="-1" />;
                       targetLink = project.videoUrl;
-                    } else if (project.livePreviewUrl) {
-                      previewContent = <iframe src={project.livePreviewUrl} className="w-full h-full pointer-events-none blur-[4px] group-hover/preview:blur-sm transition-all duration-300" style={{ border: 'none' }} title="Live Preview" tabIndex="-1" />;
-                      targetLink = project.livePreviewUrl;
+                    } else if (project.livePreviewUrl || project.figmaLink) {
+                      const iframeSrc = project.livePreviewUrl || project.figmaLink;
+                      previewContent = <iframe src={iframeSrc} className="w-full h-full pointer-events-none transition-all duration-300 bg-white" style={{ border: 'none' }} title="Live Preview" tabIndex="-1" />;
+                      targetLink = iframeSrc;
                     }
 
                     if (!previewContent) return null;
@@ -84,7 +85,7 @@ export const FeaturedSection = ({ projects, certifications }) => {
                         className="block w-full aspect-video mb-4 rounded-lg overflow-hidden border border-[#a855f7]/30 bg-black/20 relative group/preview cursor-pointer flex-shrink-0"
                       >
                         {previewContent}
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover/preview:bg-black/10 transition-all duration-300">
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/30 backdrop-blur-[4px] group-hover/preview:backdrop-blur-[2px] group-hover/preview:bg-black/10 transition-all duration-300">
                           <div className="w-12 h-12 rounded-full bg-[#a855f7]/80 flex items-center justify-center text-white shadow-[0_0_15px_rgba(168,85,247,0.6)] group-hover/preview:scale-110 transition-transform duration-300">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                           </div>
