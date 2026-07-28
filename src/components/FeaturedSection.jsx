@@ -1,6 +1,8 @@
 import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { TiltCard } from './TiltCard';
+import ToolIcon from './ToolIcon';
 
 // Master Portfolio Section Container
 export const FeaturedSection = ({ projects, certifications }) => {
@@ -116,16 +118,10 @@ export const FeaturedSection = ({ projects, certifications }) => {
                   {project.tools && (
                     <div className="flex gap-2 mt-4 flex-wrap">
                       {project.tools.split(',').map((tool, idx) => {
-                        const cleanTool = tool.trim().toLowerCase();
-                        if (!cleanTool) return null;
-                        const map = { 'html': 'html5', 'css': 'css3', 'js': 'javascript', 'ts': 'typescript', 'tailwind': 'tailwindcss', 'vue': 'vuejs', 'node': 'nodejs', 'postgres': 'postgresql', 'aws': 'amazonwebservices' };
-                        const mappedTool = map[cleanTool] || cleanTool;
-                        let iconClass = `devicon-${mappedTool}-plain`;
-                        const useOriginal = ['react', 'nextjs', 'tailwindcss', 'figma', 'python', 'java', 'github', 'linkedin', 'docker', 'ubuntu', 'amazonwebservices'];
-                        if (useOriginal.includes(mappedTool)) iconClass = `devicon-${mappedTool}-original`;
+                        if (!tool.trim()) return null;
                         return (
                           <div key={idx} title={tool.trim()} className="flex items-center justify-center w-8 h-8 rounded-md bg-white/5 border border-white/10" style={{ transition: 'all 0.2s' }} onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}>
-                            <i className={iconClass} style={{ fontSize: '16px', color: '#fff' }}></i>
+                            <ToolIcon name={tool} size={16} style={{ color: '#fff' }} />
                           </div>
                         );
                       })}
@@ -206,16 +202,10 @@ export const FeaturedSection = ({ projects, certifications }) => {
                     {cert.tools && (
                       <div className="flex gap-2 mt-4 flex-wrap">
                         {cert.tools.split(',').map((tool, idx) => {
-                          const cleanTool = tool.trim().toLowerCase();
-                          if (!cleanTool) return null;
-                          const map = { 'html': 'html5', 'css': 'css3', 'js': 'javascript', 'ts': 'typescript', 'tailwind': 'tailwindcss', 'vue': 'vuejs', 'node': 'nodejs', 'postgres': 'postgresql', 'aws': 'amazonwebservices' };
-                          const mappedTool = map[cleanTool] || cleanTool;
-                          let iconClass = `devicon-${mappedTool}-plain`;
-                          const useOriginal = ['react', 'nextjs', 'tailwindcss', 'figma', 'python', 'java', 'github', 'linkedin', 'docker', 'ubuntu', 'amazonwebservices'];
-                          if (useOriginal.includes(mappedTool)) iconClass = `devicon-${mappedTool}-original`;
+                          if (!tool.trim()) return null;
                           return (
                             <div key={idx} title={tool.trim()} className="flex items-center justify-center w-8 h-8 rounded-md bg-white/5 border border-white/10" style={{ transition: 'all 0.2s' }} onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}>
-                              <i className={iconClass} style={{ fontSize: '16px', color: '#fff' }}></i>
+                              <ToolIcon name={tool} size={16} style={{ color: '#fff' }} />
                             </div>
                           );
                         })}

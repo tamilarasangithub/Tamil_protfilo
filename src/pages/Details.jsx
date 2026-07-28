@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Monitor, Tablet, Smartphone } from 'lucide-react';
 import { motion } from 'framer-motion';
+import ToolIcon from '../components/ToolIcon';
 
 function Details({ type, state }) {
   const { id } = useParams();
@@ -184,32 +185,10 @@ function Details({ type, state }) {
             <h4 style={{ margin: '0 0 16px 0', fontSize: '1.1rem', color: 'rgba(255,255,255,0.8)' }}>Tools & Technologies</h4>
             <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
               {item.tools.split(',').map((tool, idx) => {
-                const cleanTool = tool.trim().toLowerCase();
-                if (!cleanTool) return null;
-                
-                const map = {
-                  'html': 'html5',
-                  'css': 'css3',
-                  'js': 'javascript',
-                  'ts': 'typescript',
-                  'tailwind': 'tailwindcss',
-                  'vue': 'vuejs',
-                  'node': 'nodejs',
-                  'postgres': 'postgresql',
-                  'aws': 'amazonwebservices'
-                };
-                
-                const mappedTool = map[cleanTool] || cleanTool;
-                let iconClass = `devicon-${mappedTool}-plain`;
-                
-                const useOriginal = ['react', 'nextjs', 'tailwindcss', 'figma', 'python', 'java', 'github', 'linkedin', 'docker', 'ubuntu', 'amazonwebservices'];
-                if (useOriginal.includes(mappedTool)) {
-                  iconClass = `devicon-${mappedTool}-original`;
-                }
-                
+                if (!tool.trim()) return null;
                 return (
                   <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '48px', height: '48px', background: 'rgba(255,255,255,0.05)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', transition: 'all 0.2s', cursor: 'pointer' }} title={tool.trim()} onMouseOver={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; e.currentTarget.style.transform = 'translateY(-2px)'; }} onMouseOut={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.transform = 'translateY(0)'; }}>
-                    <i className={iconClass} style={{ fontSize: '24px', color: '#fff' }}></i>
+                    <ToolIcon name={tool} size={24} style={{ color: '#fff' }} />
                   </div>
                 );
               })}
