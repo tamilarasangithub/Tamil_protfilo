@@ -26,9 +26,9 @@ export const TiltCard = ({ children, className, style }) => {
   return (
     <motion.div
       onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}
-      style={{ perspective: 1000, transformStyle: "preserve-3d", ...style }} className={className}
+      style={{ perspective: 1000, transformStyle: "preserve-3d", ...style }} className={`${className} flex flex-col`}
     >
-      <motion.div style={{ rotateX, rotateY, width: "100%", height: "100%" }}>
+      <motion.div className="flex flex-col flex-grow w-full h-full" style={{ rotateX, rotateY }}>
         {children}
       </motion.div>
     </motion.div>
