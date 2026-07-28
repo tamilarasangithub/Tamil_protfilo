@@ -94,8 +94,8 @@ function AdminDashboard({ state, setState }) {
   
   const [eduForm, setEduForm] = useState({ title: '', school: '', year: '', description: '' });
   const [expForm, setExpForm] = useState({ title: '', year: '', description: '' });
-  const [projectForm, setProjectForm] = useState({ title: '', category: '', link: '', videoUrl: '', description: '', livePreviewUrl: '', image: '', cardDescription: '', figmaLink: '' });
-  const [certForm, setCertForm] = useState({ title: '', issuer: '', year: '', category: '', image: '', description: '' });
+  const [projectForm, setProjectForm] = useState({ title: '', category: '', link: '', videoUrl: '', description: '', livePreviewUrl: '', image: '', cardDescription: '', figmaLink: '', tools: '' });
+  const [certForm, setCertForm] = useState({ title: '', issuer: '', year: '', category: '', image: '', description: '', tools: '' });
   const [researchForm, setResearchForm] = useState({ title: '', conference: '', year: '', category: '', link: '', videoUrl: '', description: '' });
   
   const [editingId, setEditingId] = useState({
@@ -345,7 +345,7 @@ function AdminDashboard({ state, setState }) {
         projects: newList,
         lastUpdate: `Project ${editingId.projects ? 'updated' : 'added'}: ${projectForm.title.trim()}`
       });
-      setProjectForm({ title: '', category: '', link: '', videoUrl: '', description: '', livePreviewUrl: '', image: '', cardDescription: '', figmaLink: '', file: null });
+      setProjectForm({ title: '', category: '', link: '', videoUrl: '', description: '', livePreviewUrl: '', image: '', cardDescription: '', figmaLink: '', tools: '', file: null });
       setEditingId(prev => ({ ...prev, projects: null }));
       setActiveModal(null);
       setFeedback(`Project ${editingId.projects ? 'updated' : 'added'} successfully.`);
@@ -407,7 +407,7 @@ function AdminDashboard({ state, setState }) {
         certifications: newList,
         lastUpdate: `Certification ${editingId.certifications ? 'updated' : 'added'}: ${certForm.title.trim()}`
       });
-      setCertForm({ title: '', issuer: '', year: '', category: '', image: '', description: '', file: null });
+      setCertForm({ title: '', issuer: '', year: '', category: '', image: '', description: '', tools: '', file: null });
       setEditingId(prev => ({ ...prev, certifications: null }));
       setActiveModal(null);
       setFeedback(`Certification ${editingId.certifications ? 'updated' : 'added'} successfully.`);
@@ -506,8 +506,8 @@ function AdminDashboard({ state, setState }) {
   const cancelEdit = (key) => {
     if (key === 'education') { setEduForm({ title: '', school: '', year: '', description: '' }); setEditingId(prev => ({ ...prev, education: null })); }
     if (key === 'experience') { setExpForm({ title: '', year: '', description: '' }); setEditingId(prev => ({ ...prev, experience: null })); }
-    if (key === 'projects') { setProjectForm({ title: '', category: '', link: '', videoUrl: '', description: '', livePreviewUrl: '', image: '', cardDescription: '', figmaLink: '' }); setEditingId(prev => ({ ...prev, projects: null })); }
-    if (key === 'certifications') { setCertForm({ title: '', issuer: '', year: '', category: '', image: '', description: '' }); setEditingId(prev => ({ ...prev, certifications: null })); }
+    if (key === 'projects') { setProjectForm({ title: '', category: '', link: '', videoUrl: '', description: '', livePreviewUrl: '', image: '', cardDescription: '', figmaLink: '', tools: '' }); setEditingId(prev => ({ ...prev, projects: null })); }
+    if (key === 'certifications') { setCertForm({ title: '', issuer: '', year: '', category: '', image: '', description: '', tools: '' }); setEditingId(prev => ({ ...prev, certifications: null })); }
     if (key === 'researchPapers') { setResearchForm({ title: '', conference: '', year: '', category: '', link: '', videoUrl: '', description: '' }); setEditingId(prev => ({ ...prev, researchPapers: null })); }
     setActiveModal(null);
   };
@@ -788,6 +788,7 @@ function AdminDashboard({ state, setState }) {
                 <input value={projectForm.livePreviewUrl || ''} onChange={(event) => setProjectForm({ ...projectForm, livePreviewUrl: event.target.value })} placeholder="Live Preview URL (Website Link)" />
                 <input value={projectForm.videoUrl} onChange={(event) => setProjectForm({ ...projectForm, videoUrl: event.target.value })} placeholder="Video URL (YouTube or .mp4 link)" />
                 <input value={projectForm.figmaLink} onChange={(event) => setProjectForm({ ...projectForm, figmaLink: event.target.value })} placeholder="Figma Design Link" />
+                <input value={projectForm.tools || ''} onChange={(event) => setProjectForm({ ...projectForm, tools: event.target.value })} placeholder="Tools & Tech (e.g. html, css, react)" />
                 <label style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)', marginBottom: '-5px' }}>Upload Media (Image or Video):</label>
                 <input type="file" accept="image/*,video/*" onChange={(e) => setProjectForm({ ...projectForm, file: e.target.files[0] })} style={{ padding: '8px', background: 'rgba(255,255,255,0.05)' }} />
                 {(projectForm.image || projectForm.file) && (
@@ -890,6 +891,7 @@ function AdminDashboard({ state, setState }) {
                 <input value={certForm.issuer} onChange={(event) => setCertForm({ ...certForm, issuer: event.target.value })} placeholder="Issuer" required />
                 <input value={certForm.year} onChange={(event) => setCertForm({ ...certForm, year: event.target.value })} placeholder="Year" />
                 <input value={certForm.category} onChange={(event) => setCertForm({ ...certForm, category: event.target.value })} placeholder="Category (optional)" />
+                <input value={certForm.tools || ''} onChange={(event) => setCertForm({ ...certForm, tools: event.target.value })} placeholder="Tools & Tech (e.g. html, css, react)" />
                 
                 <label style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)', marginBottom: '-5px' }}>Upload Image:</label>
                 <input type="file" accept="image/*" onChange={(e) => setCertForm({ ...certForm, file: e.target.files[0] })} style={{ padding: '8px', background: 'rgba(255,255,255,0.05)' }} />

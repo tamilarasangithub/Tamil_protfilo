@@ -113,6 +113,25 @@ export const FeaturedSection = ({ projects, certifications }) => {
                     <p style={{ flexGrow: 1, marginBottom: 0 }} dangerouslySetInnerHTML={{ __html: project.description }} />
                   )}
                   
+                  {project.tools && (
+                    <div className="flex gap-2 mt-4 flex-wrap">
+                      {project.tools.split(',').map((tool, idx) => {
+                        const cleanTool = tool.trim().toLowerCase();
+                        if (!cleanTool) return null;
+                        const map = { 'html': 'html5', 'css': 'css3', 'js': 'javascript', 'ts': 'typescript', 'tailwind': 'tailwindcss', 'vue': 'vuejs', 'node': 'nodejs', 'postgres': 'postgresql', 'aws': 'amazonwebservices' };
+                        const mappedTool = map[cleanTool] || cleanTool;
+                        let iconClass = `devicon-${mappedTool}-plain`;
+                        const useOriginal = ['react', 'nextjs', 'tailwindcss', 'figma', 'python', 'java', 'github', 'linkedin', 'docker', 'ubuntu', 'amazonwebservices'];
+                        if (useOriginal.includes(mappedTool)) iconClass = `devicon-${mappedTool}-original`;
+                        return (
+                          <div key={idx} title={tool.trim()} className="flex items-center justify-center w-8 h-8 rounded-md bg-white/5 border border-white/10" style={{ transition: 'all 0.2s' }} onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}>
+                            <i className={iconClass} style={{ fontSize: '16px', color: '#fff' }}></i>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                  
                   <div className="flex gap-4 mt-auto pt-4">
                     <Link 
                       to={`/project/${project.id}`} 
@@ -182,6 +201,25 @@ export const FeaturedSection = ({ projects, certifications }) => {
                       <p style={{ flexGrow: 1, marginBottom: 0 }} dangerouslySetInnerHTML={{ __html: cert.description }} />
                     ) : (
                       <p style={{ flexGrow: 1, marginBottom: 0 }}>{cert.description}</p>
+                    )}
+
+                    {cert.tools && (
+                      <div className="flex gap-2 mt-4 flex-wrap">
+                        {cert.tools.split(',').map((tool, idx) => {
+                          const cleanTool = tool.trim().toLowerCase();
+                          if (!cleanTool) return null;
+                          const map = { 'html': 'html5', 'css': 'css3', 'js': 'javascript', 'ts': 'typescript', 'tailwind': 'tailwindcss', 'vue': 'vuejs', 'node': 'nodejs', 'postgres': 'postgresql', 'aws': 'amazonwebservices' };
+                          const mappedTool = map[cleanTool] || cleanTool;
+                          let iconClass = `devicon-${mappedTool}-plain`;
+                          const useOriginal = ['react', 'nextjs', 'tailwindcss', 'figma', 'python', 'java', 'github', 'linkedin', 'docker', 'ubuntu', 'amazonwebservices'];
+                          if (useOriginal.includes(mappedTool)) iconClass = `devicon-${mappedTool}-original`;
+                          return (
+                            <div key={idx} title={tool.trim()} className="flex items-center justify-center w-8 h-8 rounded-md bg-white/5 border border-white/10" style={{ transition: 'all 0.2s' }} onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}>
+                              <i className={iconClass} style={{ fontSize: '16px', color: '#fff' }}></i>
+                            </div>
+                          );
+                        })}
+                      </div>
                     )}
                   </div>
                 </TiltCard>
