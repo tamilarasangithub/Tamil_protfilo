@@ -1,26 +1,26 @@
 import React from 'react';
 import { 
-  SiArduino, SiN8N, SiJavascript, SiTypescript, SiPython, SiReact, 
+  SiArduino, SiJavascript, SiTypescript, SiPython, SiReact, 
   SiNextdotjs, SiTailwindcss, SiVuedotjs, SiNodedotjs, SiPostgresql, 
-  SiAmazon, SiGithub, SiLinkedin, SiDocker, SiUbuntu, SiHtml5, SiCss3,
-  SiFigma, SiFirebase, SiSupabase, SiMongodb, SiCplusplus, SiCsharp, SiJava
+  SiDocker, SiUbuntu, SiHtml5, SiCss,
+  SiFigma, SiFirebase, SiSupabase, SiMongodb, SiCplusplus
 } from 'react-icons/si';
 import { 
   FaRobot, FaNetworkWired, FaShieldAlt, FaTerminal, FaServer, 
   FaLaptopCode, FaDatabase, FaPaintBrush, FaGlobe, FaBrain, FaLock,
-  FaCode, FaMicrochip
+  FaCode, FaMicrochip, FaAws, FaProjectDiagram, FaGithub, FaLinkedin
 } from 'react-icons/fa';
 
 const iconMap = {
   // Languages & Core
   'html': SiHtml5, 'html5': SiHtml5,
-  'css': SiCss3, 'css3': SiCss3,
+  'css': SiCss, 'css3': SiCss,
   'js': SiJavascript, 'javascript': SiJavascript,
   'ts': SiTypescript, 'typescript': SiTypescript,
   'python': SiPython, 
-  'java': SiJava, 
+  'java': FaCode, 
   'c++': SiCplusplus, 'cpp': SiCplusplus,
-  'c#': SiCsharp, 'csharp': SiCsharp,
+  'c#': FaCode, 'csharp': FaCode,
   
   // Frameworks & Libs
   'react': SiReact, 'reactjs': SiReact,
@@ -34,14 +34,14 @@ const iconMap = {
   'mongo': SiMongodb, 'mongodb': SiMongodb,
   'firebase': SiFirebase,
   'supabase': SiSupabase,
-  'aws': SiAmazon, 'amazon web services': SiAmazon,
-  'github': SiGithub,
-  'linkedin': SiLinkedin,
+  'aws': FaAws, 'amazon web services': FaAws,
+  'github': FaGithub,
+  'linkedin': FaLinkedin,
   'docker': SiDocker,
   'ubuntu': SiUbuntu,
   'figma': SiFigma,
   'arduino': SiArduino, 'arunio': SiArduino, // typo catching
-  'n8n': SiN8N, 'n8n workflow': SiN8N, 'n8n worflow': SiN8N,
+  'n8n': FaProjectDiagram, 'n8n workflow': FaProjectDiagram, 'n8n worflow': FaProjectDiagram,
   
   // Generic IT terms
   'ui&ux': FaPaintBrush, 'ui/ux': FaPaintBrush, 'ui': FaPaintBrush, 'ux': FaPaintBrush, 'design': FaPaintBrush,
