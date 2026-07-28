@@ -192,6 +192,16 @@ function Portfolio({ state, setState }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const projectCategories = useMemo(() => {
+    const cats = new Set(state.projects.map(p => p.category).filter(Boolean));
+    return ['all', ...Array.from(cats)];
+  }, [state.projects]);
+
+  const certCategories = useMemo(() => {
+    const cats = new Set((state.certifications || []).map(c => c.category).filter(Boolean));
+    return ['all', ...Array.from(cats)];
+  }, [state.certifications]);
+
   const filteredProjects = useMemo(() => {
     if (activeFilter === 'all') return state.projects;
     return state.projects.filter((project) => 
@@ -806,7 +816,7 @@ function Portfolio({ state, setState }) {
           </div>
 
           <div className="filter-row">
-            {['all', 'AI & ML', 'Prompt Engineering', 'IoT Projects', 'Ethical Hacking', 'Cybersecurity', 'Web Development', 'Frontend'].map((filter) => (
+            {projectCategories.map((filter) => (
               <button key={filter} className={`filter-chip ${activeFilter === filter ? 'active' : ''}`} type="button" onClick={() => setActiveFilter(filter)}>{filter === 'all' ? 'All' : filter}</button>
             ))}
           </div>
@@ -824,7 +834,7 @@ function Portfolio({ state, setState }) {
           </div>
 
           <div className="filter-row">
-            {['all', 'AI & Cloud', 'AI & ML', 'Programming'].map((filter) => (
+            {certCategories.map((filter) => (
               <button key={filter} className={`filter-chip ${activeCertFilter === filter ? 'active' : ''}`} type="button" onClick={() => setActiveCertFilter(filter)}>{filter === 'all' ? 'All' : filter}</button>
             ))}
           </div>
