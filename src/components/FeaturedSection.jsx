@@ -115,26 +115,28 @@ export const FeaturedSection = ({ projects, certifications }) => {
                     <p style={{ flexGrow: 1, marginBottom: 0 }} dangerouslySetInnerHTML={{ __html: project.description }} />
                   )}
                   
-                  {project.tools && (
-                    <div className="flex gap-2 mt-4 flex-wrap">
-                      {project.tools.split(',').map((tool, idx) => {
-                        if (!tool.trim()) return null;
-                        return (
-                          <div key={idx} title={tool.trim()} className="flex items-center justify-center w-8 h-8 rounded-md bg-white/5 border border-white/10" style={{ transition: 'all 0.2s' }} onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}>
-                            <ToolIcon name={tool} size={16} style={{ color: '#fff' }} />
-                          </div>
-                        );
-                      })}
+                  <div className="mt-auto flex flex-col gap-4">
+                    {project.tools && (
+                      <div className="flex gap-2 pt-4 flex-wrap">
+                        {project.tools.split(',').map((tool, idx) => {
+                          if (!tool.trim()) return null;
+                          return (
+                            <div key={idx} title={tool.trim()} className="flex items-center justify-center w-8 h-8 rounded-md bg-white/5 border border-white/10" style={{ transition: 'all 0.2s' }} onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}>
+                              <ToolIcon name={tool} size={16} style={{ color: '#fff' }} />
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                    
+                    <div className="flex gap-4">
+                      <Link 
+                        to={`/project/${project.id}`} 
+                        className="text-[#a855f7] hover:text-[#b026ff] flex items-center gap-1 font-semibold transition-colors inline-block group-hover:drop-shadow-[0_0_8px_rgba(168,85,247,0.6)]"
+                      >
+                        View Details <span>→</span>
+                      </Link>
                     </div>
-                  )}
-                  
-                  <div className="flex gap-4 mt-auto pt-4">
-                    <Link 
-                      to={`/project/${project.id}`} 
-                      className="text-[#a855f7] hover:text-[#b026ff] flex items-center gap-1 font-semibold transition-colors inline-block group-hover:drop-shadow-[0_0_8px_rgba(168,85,247,0.6)]"
-                    >
-                      View Details <span>→</span>
-                    </Link>
                   </div>
                 </TiltCard>
               ))}
@@ -200,7 +202,7 @@ export const FeaturedSection = ({ projects, certifications }) => {
                     )}
 
                     {cert.tools && (
-                      <div className="flex gap-2 mt-4 flex-wrap">
+                      <div className="flex gap-2 mt-auto pt-4 flex-wrap">
                         {cert.tools.split(',').map((tool, idx) => {
                           if (!tool.trim()) return null;
                           return (
