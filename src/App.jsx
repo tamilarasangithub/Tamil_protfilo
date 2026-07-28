@@ -184,9 +184,9 @@ import Details from './pages/Details';
 import Chatbot from './components/Chatbot';
 
 import defaultState from './data.json';
-import { db, auth } from './firebase';
-import { doc, setDoc, onSnapshot, increment } from 'firebase/firestore';
+import { auth } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
+import { supabase } from './supabase';
 
 function AnimatedRoutes({ state, setState }) {
   const location = useLocation();
@@ -216,42 +216,57 @@ function App() {
       }));
     });
 
-    const docRef = doc(db, 'portfolio', 'main');
-
-    // Track daily visit
-    try {
+    // Track daily visit via Supabase RPC
+    const trackVisit = async () => {
       const today = new Date().toISOString().split('T')[0];
-      setDoc(doc(db, 'portfolio', 'analytics'), {
-        [today]: increment(1)
-      }, { merge: true }).catch(() => {});
-    } catch(e) {}
+      try {
+        await supabase.rpc('increment_visit', { visit_date: today });
+      } catch (e) {
+        console.error("Analytics error", e);
+      }
+    };
+    trackVisit();
 
-    const unsubscribeDb = onSnapshot(docRef, async (docSnap) => {
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        
+    const fetchPortfolio = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('portfolio')
+          .select('*')
+          .eq('id', 'main')
+          .single();
+          
+        if (data) {
+          setState(prevState => ({ 
+            ...defaultState, 
+            ...data,
+            loggedIn: prevState.loggedIn 
+          }));
+        } else if (error && error.code === 'PGRST116') {
+          // Document doesn't exist, seed it
+          await supabase.from('portfolio').insert({ id: 'main', ...defaultState });
+        } else if (error) {
+          setDbError(error.message);
+        }
+      } catch (err) {
+        setDbError(err.message);
+      }
+    };
+    
+    fetchPortfolio();
+
+    const channel = supabase.channel('portfolio-updates')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'portfolio', filter: 'id=eq.main' }, (payload) => {
         setState(prevState => ({ 
           ...defaultState, 
-          ...data,
+          ...payload.new,
           loggedIn: prevState.loggedIn 
         }));
-      } else {
-        try {
-          await setDoc(docRef, defaultState);
-        } catch(e) {
-           console.error("Error seeding DB", e);
-           setDbError("Permission Denied: Could not create database. Did you enable Firestore in Test Mode?");
-        }
-      }
-    }, (error) => {
-      console.error("Firebase Snapshot Error:", error);
-      // We log the error but don't block the UI anymore, it will just use defaultState.
-      setDbError(error.message);
-    });
+      })
+      .subscribe();
 
     return () => {
       unsubscribeAuth();
-      unsubscribeDb();
+      supabase.removeChannel(channel);
     };
   }, []);
 

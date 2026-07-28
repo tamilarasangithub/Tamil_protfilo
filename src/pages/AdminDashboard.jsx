@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Home, LogOut, Edit, X, ArrowLeft, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { db, auth } from '../firebase';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { auth } from '../firebase';
+import { supabase } from '../supabase';
 import { signOut } from 'firebase/auth';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -12,6 +12,17 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 function AdminDashboard({ state, setState }) {
   const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
+
+  const setDoc = async (_, data) => {
+    // Optimistically update the UI instantly
+    setState(prev => ({ ...prev, ...data }));
+    
+    const { error } = await supabase.from('portfolio').update(data).eq('id', 'main');
+    if (error) {
+      console.error("Supabase update error:", error);
+      throw new Error(error.message);
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -41,8 +52,13 @@ function AdminDashboard({ state, setState }) {
     
     const fetchAnalytics = async () => {
       try {
-        const analyticsDoc = await getDoc(doc(db, 'portfolio', 'analytics'));
-        const data = analyticsDoc.exists() ? analyticsDoc.data() : {};
+        const { data, error } = await supabase.from('analytics').select('*');
+        if (error) throw error;
+        
+        const analyticsMap = {};
+        if (data) {
+          data.forEach(row => { analyticsMap[row.visit_date] = row.visits; });
+        }
         
         const dates = Array.from({length: 7}).map((_, i) => {
           const d = new Date();
@@ -55,7 +71,7 @@ function AdminDashboard({ state, setState }) {
           const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'short' });
           return {
             name: dayName,
-            visitors: data[dateStr] || 0
+            visitors: analyticsMap[dateStr] || 0
           };
         });
         
@@ -71,7 +87,9 @@ function AdminDashboard({ state, setState }) {
   const [adminForms, setAdminForms] = useState({
     about1: state.aboutIntro1 || '',
     about2: state.aboutIntro2 || '',
-    skills: state.skills ? state.skills.join(', ') : ''
+    skills: state.skills ? state.skills.join(', ') : '',
+    resumeUrl: state.resumeUrl || '',
+    resumeFileUrl: state.resumeFileUrl || ''
   });
   
   const [eduForm, setEduForm] = useState({ title: '', school: '', year: '', description: '' });
@@ -91,7 +109,7 @@ function AdminDashboard({ state, setState }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeModal, setActiveModal] = useState(null);
   
-  const docRef = doc(db, 'portfolio', 'main');
+  const docRef = null;
 
   useEffect(() => {
     if (!feedback) return;
@@ -136,6 +154,110 @@ function AdminDashboard({ state, setState }) {
       }, { merge: true });
       setFeedback('Skills updated.');
     } catch(e) {
+      setFeedback('Error: ' + e.message);
+    }
+    setIsSubmitting(false);
+  };
+
+  const handleResumeLinkSave = async (event) => {
+    event.preventDefault();
+    if (!adminForms.resumeUrl.trim()) return;
+    setIsSubmitting(true);
+    try {
+      await setDoc(docRef, {
+        resumeUrl: adminForms.resumeUrl.trim(),
+        lastUpdate: 'Resume link updated'
+      }, { merge: true });
+      setFeedback('Resume link updated.');
+    } catch(e) {
+      setFeedback('Error: ' + e.message);
+    }
+    setIsSubmitting(false);
+  };
+
+  const handleResumeUpload = async (event) => {
+    event.preventDefault();
+    const file = event.target.elements.resumeFile.files[0];
+    if (!file) return;
+    setIsSubmitting(true);
+    setFeedback('Uploading resume...');
+    try {
+      if (state.resumeStoragePath) {
+        try {
+          const { error: delErr } = await supabase.storage.from('resumes').remove([state.resumeStoragePath]);
+          if (delErr) console.warn("Could not delete old resume:", delErr);
+        } catch (delErr) {
+          console.warn("Could not delete old resume:", delErr);
+        }
+      }
+
+      const newPath = `${Date.now()}_${file.name}`;
+      
+      const { data, error } = await supabase.storage
+        .from('resumes')
+        .upload(newPath, file);
+
+      if (error) {
+        throw new Error(error.message);
+      }
+      
+      const { data: publicUrlData } = supabase.storage
+        .from('resumes')
+        .getPublicUrl(newPath);
+      
+      const downloadURL = publicUrlData.publicUrl;
+      
+      await setDoc(docRef, {
+        resumeFileUrl: downloadURL,
+        resumeStoragePath: newPath,
+        lastUpdate: 'Resume file uploaded'
+      }, { merge: true });
+      
+      setAdminForms(prev => ({ ...prev, resumeFileUrl: downloadURL }));
+      setFeedback('Resume uploaded successfully!');
+    } catch(e) {
+      console.error(e);
+      setFeedback('Error: ' + e.message);
+    }
+    setIsSubmitting(false);
+  };
+
+  const handleResumeLinkDelete = async () => {
+    setIsSubmitting(true);
+    setFeedback('Deleting external link...');
+    try {
+      await setDoc(docRef, {
+        resumeUrl: null,
+        lastUpdate: 'Resume external link deleted'
+      }, { merge: true });
+      setAdminForms(prev => ({ ...prev, resumeUrl: '' }));
+      setFeedback('External link deleted.');
+    } catch(e) {
+      setFeedback('Error: ' + e.message);
+    }
+    setIsSubmitting(false);
+  };
+
+  const handleResumeDelete = async () => {
+    if (!state.resumeStoragePath) return;
+    setIsSubmitting(true);
+    setFeedback('Deleting resume...');
+    try {
+      const { error } = await supabase.storage.from('resumes').remove([state.resumeStoragePath]);
+      if (error) {
+        throw new Error(error.message);
+      }
+      
+      await setDoc(docRef, {
+        resumeFileUrl: null,
+        resumeStoragePath: null,
+        lastUpdate: 'Resume file deleted'
+      }, { merge: true });
+      
+      setAdminForms(prev => ({ ...prev, resumeFileUrl: '' }));
+      setFeedback('Resume deleted successfully!');
+    } catch(e) {
+      console.error(e);
       setFeedback('Error: ' + e.message);
     }
     setIsSubmitting(false);
@@ -490,6 +612,33 @@ function AdminDashboard({ state, setState }) {
                 <textarea rows="3" value={adminForms.skills} onChange={(event) => setAdminForms({ ...adminForms, skills: event.target.value })} placeholder="Skills separated by commas" />
                 <button type="submit" disabled={isSubmitting} className="btn btn-primary">{isSubmitting ? 'Saving...' : 'Save Skills'}</button>
               </form>
+            </div>
+            
+            <div className="bento-inner" style={{ padding: '24px' }}>
+              <h3>Edit Resume Link (External URL)</h3>
+              <form className="stack-form" onSubmit={handleResumeLinkSave}>
+                <input type="url" value={adminForms.resumeUrl} onChange={(event) => setAdminForms({ ...adminForms, resumeUrl: event.target.value })} placeholder="Resume URL (e.g. Google Drive Link)" style={{ width: '100%', padding: '12px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', borderRadius: '8px' }} required />
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <button type="submit" disabled={isSubmitting} className="btn btn-primary" style={{ flex: 1 }}>{isSubmitting ? 'Saving...' : 'Save Resume Link'}</button>
+                  {adminForms.resumeUrl && (
+                    <button type="button" disabled={isSubmitting} onClick={handleResumeLinkDelete} className="btn" style={{ background: 'rgba(255,0,0,0.2)', color: '#ff4444' }}>Delete Link</button>
+                  )}
+                </div>
+              </form>
+            </div>
+            
+            <div className="bento-inner" style={{ padding: '24px' }}>
+              <h3>Upload Resume (PDF/Doc)</h3>
+              <form className="stack-form" onSubmit={handleResumeUpload}>
+                <input type="file" name="resumeFile" accept=".pdf,.doc,.docx" style={{ width: '100%', padding: '12px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', borderRadius: '8px' }} required />
+                <button type="submit" disabled={isSubmitting} className="btn btn-primary">{isSubmitting ? 'Uploading...' : 'Upload Resume File'}</button>
+              </form>
+              {adminForms.resumeFileUrl && (
+                <div style={{ marginTop: '10px', fontSize: '0.9rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span>Current Uploaded File: <a href={adminForms.resumeFileUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#b026ff' }}>View File</a></span>
+                  <button type="button" disabled={isSubmitting} onClick={handleResumeDelete} style={{ background: 'rgba(255,0,0,0.2)', color: '#ff4444', border: 'none', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer' }}>Delete File</button>
+                </div>
+              )}
             </div>
           </div>
         </div>

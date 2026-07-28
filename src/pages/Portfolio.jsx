@@ -410,7 +410,11 @@ function Portfolio({ state, setState }) {
             My primary focus is on Cybersecurity, Ethical Hacking, and IoT-Embedded Systems. As a freelancer, I also deliver Full-Stack Web Apps, Figma Designs, WordPress sites, and n8n Automations.
           </p>
           <div className="hero-actions">
-            <a className="btn btn-primary" href="#contact">Let’s connect</a>
+            {(state.resumeFileUrl || state.resumeUrl) ? (
+              <a className="btn btn-primary" href={state.resumeFileUrl || state.resumeUrl} target="_blank" rel="noopener noreferrer" download>Download CV</a>
+            ) : (
+              <a className="btn btn-primary" href="#contact">Download CV</a>
+            )}
             <a className="btn btn-secondary" href="#portfolio">See projects</a>
           </div>
           
