@@ -196,7 +196,7 @@ function Portfolio({ state, setState }) {
     const cats = new Set();
     state.projects.forEach(p => {
       if (p.category) {
-        p.category.split(',').forEach(c => {
+        p.category.split(/[,-]/).forEach(c => {
           const trimmed = c.trim();
           if (trimmed) cats.add(trimmed);
         });
@@ -209,7 +209,7 @@ function Portfolio({ state, setState }) {
     const cats = new Set();
     (state.certifications || []).forEach(c => {
       if (c.category) {
-        c.category.split(',').forEach(cat => {
+        c.category.split(/[,-]/).forEach(cat => {
           const trimmed = cat.trim();
           if (trimmed) cats.add(trimmed);
         });
@@ -222,7 +222,7 @@ function Portfolio({ state, setState }) {
     if (activeFilter === 'all') return state.projects;
     return state.projects.filter((project) => {
       if (!project.category) return false;
-      const cats = project.category.split(',').map(c => c.trim().toLowerCase());
+      const cats = project.category.split(/[,-]/).map(c => c.trim().toLowerCase());
       return cats.includes(activeFilter.toLowerCase());
     });
   }, [activeFilter, state.projects]);
@@ -231,7 +231,7 @@ function Portfolio({ state, setState }) {
     if (activeCertFilter === 'all') return state.certifications;
     return state.certifications.filter((cert) => {
       if (!cert.category) return false;
-      const cats = cert.category.split(',').map(c => c.trim().toLowerCase());
+      const cats = cert.category.split(/[,-]/).map(c => c.trim().toLowerCase());
       return cats.includes(activeCertFilter.toLowerCase());
     });
   }, [activeCertFilter, state.certifications]);

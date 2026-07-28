@@ -95,8 +95,16 @@ export const FeaturedSection = ({ projects, certifications }) => {
                   })()}
                   <h4 style={{ marginBottom: '8px', fontSize: '1.15rem' }}>{project.title}</h4>
                   
-                  <div className="pill-tag" style={{ width: 'fit-content', marginBottom: '8px' }}>
-                    {project.category}
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {project.category && project.category.split(/[,-]/).map((cat, i) => {
+                      const trimmedCat = cat.trim();
+                      if (!trimmedCat) return null;
+                      return (
+                        <div key={i} className="pill-tag" style={{ width: 'fit-content', marginBottom: 0 }}>
+                          {trimmedCat}
+                        </div>
+                      );
+                    })}
                   </div>
                   
                   {project.cardDescription ? (
